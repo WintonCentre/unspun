@@ -9,6 +9,6 @@
     "exponent": "~11.0.0",
     "react": "~15.3.2",
     "react-native": "github:exponentjs/react-native#sdk-11.0.3",
-    "react-native-svg": "^4.4.1"
+    "react-native-svg": "^4.2.1"
   }
 }
