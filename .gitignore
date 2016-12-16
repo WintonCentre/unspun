@@ -18,3 +18,8 @@ main.js
 /env/dev/env/dev.cljs
 /env/dev/env/index.cljs
 yarn.lock
+.DS_Store
+.exponent/
+assets/.DS_Store
+sources/
+src/unspun/components/
