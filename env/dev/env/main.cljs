@@ -8,7 +8,6 @@
 (figwheel/watch-and-reload
  :websocket-url (str "ws://" env.dev/ip ":3449/figwheel-ws")
  :heads-up-display false
- ;; TODO make this Rum something
  :jsload-callback #(#'core/mount-app))
 
 (core/init)

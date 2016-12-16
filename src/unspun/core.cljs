@@ -16,24 +16,42 @@
 (defn alert [title]
   (.alert rn/alert title))
 
-(defonce app-state (atom {:greeting "Hello Clojure in iOS and Android!"}))
+(defonce app-state (atom {:brand "Winton Centre"}))
 
-(def page-style {:flexDirection   "column"
-                 :flex            1
+(def page-style {:flex 1
                  :marginLeft      0
                  :paddingLeft 10
                  :alignItems      "center"
+                 :justifyContent "space-around"
                  :backgroundColor (:primary app-palette)})
+
+(def brand-style {:fontSize 30
+                  :fontWeight "400"
+                  :textAlign "center"
+                  :color (:dark-primary app-palette)})
 
 
 (defc AppRoot < rum/reactive [state]
   (view {:style page-style}
-        (text {:style {:fontSize 30 :fontWeight "100" :marginBottom 20 :textAlign "center"}} (str @state))
-        (view {:style {:alignItems "center" :flexDirection "row" :flex 1 :margin 40}}
-          (image {:source logo-img :style {:flex 1}}))
-        (touchable-highlight {:style   {:backgroundColor (:accent app-palette) :padding 10 :borderRadius 5 :margin 40}
+        (text {:style (merge {:paddingTop 80} brand-style)}
+              (:brand @state))
+        (view {:justifyContent "center" :style {:flexDirection "row" }}
+              (view (:style {:flexDirection "column" :textAlign "center"})
+                    (image {:source logo-img
+                            :style  {:transform [{:scale 0.5}]
+                                     }
+                            })))
+        (touchable-highlight {:style   {:marginBottom 40
+                                        :backgroundColor (:accent app-palette)
+                                        :padding         10
+                                        :borderRadius    30 :height 60 :width 60
+                                        :shadowColor     "#000"
+                                        :shadowOffset    {:width 3 :height 3}
+                                        :shadowRadius 3
+                                        :shadowOpacity 0.5
+                                        :justifyContent  "center"}
                               :onPress #(alert "HELLO!")}
-                             (text {:style {:color "white" :textAlign "center" :fontWeight "bold" }} "press me"))))
+                             (text {:style {:color "white" :textAlign "center" :fontWeight "bold"}} "Start"))))
 
 (defonce root-component-factory (support/make-root-component-factory))
 
