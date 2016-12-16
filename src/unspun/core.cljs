@@ -20,15 +20,15 @@
 
 (def page-style {
                  :marginLeft      0
-                 :padding 0
+                 :padding         0
                  :alignItems      "center"
-                 :justifyContent "space-around"
+                 :justifyContent  "space-around"
                  :backgroundColor (:primary app-palette)})
 
-(def brand-style {:fontSize 30
+(def brand-style {:fontSize   30
                   :fontWeight "400"
-                  :textAlign "center"
-                  :color (:dark-primary app-palette)})
+                  :textAlign  "center"
+                  :color      (:dark-primary app-palette)})
 
 
 (defc AppRoot < rum/reactive [state]
@@ -36,22 +36,21 @@
         (text {:style (merge {:paddingTop 40} brand-style)}
               (:brand @state))
         (image {:source logo-img
-
-                :style  {:transform [{:scale 0.3}]
-
-                         }
-                })
-        (touchable-highlight {:style   {
+                :style  {:transform [{:scale 0.5}]}})
+        (touchable-highlight {:style   {:margin          40
                                         :backgroundColor (:accent app-palette)
-                                        :padding         10
-                                        :borderRadius    30 :height 60 :width 60
+                                        :borderRadius    30
+                                        :height          60
+                                        :width           60
                                         :shadowColor     "#000"
                                         :shadowOffset    {:width 3 :height 3}
                                         :shadowRadius 3
                                         :shadowOpacity 0.5
-                                        :justifyContent  "center"}
+                                        :alignItems "center"
+                                        :justifyContent  "center"
+                                        }
                               :onPress #(alert "HELLO!")}
-                             (text {:style {:color "white" :textAlign "center" :fontWeight "bold"}} "Start"))))
+                             (text {:style {:color "white" :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))
 
 (defonce root-component-factory (support/make-root-component-factory))
 
