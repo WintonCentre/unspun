@@ -36,7 +36,9 @@
 (def shadow-size)
 
 (defc AppRoot < rum/reactive [state]
+
   (view {:fill 1 :style (page-style)}
+
         (text {:style (merge {:paddingTop 40} (brand-style))}
               (:brand @state))
         (image {:source logo-img
@@ -53,8 +55,8 @@
                                         :alignItems      "center"
                                         :justifyContent  "center"
                                         }
-                              :onPress #(alert "HELLO!")}
-                             (text {:style {:color "white" :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))
+                              :onPress #(alert "Hello!")}
+                             (text {:style {:color (:text-icons (palette)) :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))
 
 (defonce root-component-factory (support/make-root-component-factory))
 

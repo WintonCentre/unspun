@@ -6,9 +6,10 @@
 (enable-console-print!)
 
 (figwheel/watch-and-reload
- :websocket-url (str "ws://" env.dev/ip ":3449/figwheel-ws")
- :heads-up-display false
- :jsload-callback #(#'core/mount-app))
+  :websocket-url (str "ws://" env.dev/ip ":3449/figwheel-ws")
+  :heads-up-display false
+  :jsload-callback #(#'core/mount-app)
+  )
 
 (core/init)
 
