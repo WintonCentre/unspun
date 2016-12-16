@@ -18,23 +18,22 @@
 
 (defonce app-state (atom {:greeting "Hello Clojure in iOS and Android!"}))
 
-
-
 (def page-style {:flexDirection   "column"
                  :flex            1
                  :marginLeft      0
                  :paddingLeft 10
-                 :alignItems      "flex-start"
+                 :alignItems      "center"
                  :backgroundColor (:primary app-palette)})
 
 
 (defc AppRoot < rum/reactive [state]
   (view {:style page-style}
         (text {:style {:fontSize 30 :fontWeight "100" :marginBottom 20 :textAlign "center"}} (str @state))
-        (image {:source logo-img})
-        (touchable-highlight {:style   {:backgroundColor "#999" :padding 10 :borderRadius 5}
+        (view {:style {:alignItems "center" :flexDirection "row" :flex 1 :margin 40}}
+          (image {:source logo-img :style {:flex 1}}))
+        (touchable-highlight {:style   {:backgroundColor (:accent app-palette) :padding 10 :borderRadius 5 :margin 40}
                               :onPress #(alert "HELLO!")}
-                             (text {:style {:color "white" :textAlign "center" :fontWeight "bold"}} "press me"))))
+                             (text {:style {:color "white" :textAlign "center" :fontWeight "bold" }} "press me"))))
 
 (defonce root-component-factory (support/make-root-component-factory))
 
