@@ -18,9 +18,9 @@
 
 (defonce app-state (atom {:brand "Winton Centre"}))
 
-(def page-style {:flex 1
+(def page-style {
                  :marginLeft      0
-                 :paddingLeft 10
+                 :padding 0
                  :alignItems      "center"
                  :justifyContent "space-around"
                  :backgroundColor (:primary app-palette)})
@@ -32,16 +32,16 @@
 
 
 (defc AppRoot < rum/reactive [state]
-  (view {:style page-style}
-        (text {:style (merge {:paddingTop 80} brand-style)}
+  (view {:fill 1 :style page-style}
+        (text {:style (merge {:paddingTop 40} brand-style)}
               (:brand @state))
-        (view {:justifyContent "center" :style {:flexDirection "row" }}
-              (view (:style {:flexDirection "column" :textAlign "center"})
-                    (image {:source logo-img
-                            :style  {:transform [{:scale 0.5}]
-                                     }
-                            })))
-        (touchable-highlight {:style   {:marginBottom 40
+        (image {:source logo-img
+
+                :style  {:transform [{:scale 0.3}]
+
+                         }
+                })
+        (touchable-highlight {:style   {
                                         :backgroundColor (:accent app-palette)
                                         :padding         10
                                         :borderRadius    30 :height 60 :width 60
