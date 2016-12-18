@@ -1,4 +1,4 @@
-(ns unspun.shared.palettes)
+(ns themes.palettes)
 
 ;;;
 ; See https://www.materialpalette.com/blue/orange
@@ -43,3 +43,13 @@
     :primary-text   "#212121"
     :secondary-text "#757575"
     :divider        "#BDBDBD"}})
+
+(def palette-keys (vec (keys palettes)))
+(def palette-vals (mapv val palettes))
+
+(defn- next-palette-index [n]
+  (mod (inc n) (count (palette-keys))))
+
+(defn get-palette [n]
+  "get current palette"
+  (palette-vals n))

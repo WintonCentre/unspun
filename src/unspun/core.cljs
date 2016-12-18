@@ -3,7 +3,9 @@
   (:require [re-natal.support :as support]
             [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
-            [unspun.shared.palettes :refer [palettes]]))
+            [unspun.db :refer [app-state brand-title palette-index]]
+            [themes.palettes :refer [palettes get-palette]]
+            [unspun.components.startup-page :refer [startup-page]]))
 
 
 ;;;
@@ -11,52 +13,53 @@
 ;;;
 (def logo-img (js/require "./assets/images/logo.png"))
 
-#_(defn palette [] (:deep-purple-pink palettes))
-(defn palette [] (:cyan-deep-orange palettes))
-
-
 (defn alert [title]
   (.alert rn/alert title))
 
-(defonce app-state (atom {:brand "Winton Centre"}))
+(defn canvas []
+  {:position "absolute"
+   :top 0
+   :right 0
+   :bottom 0
+   :left 0})
 
 (defn page-style []
-  {:marginLeft      0
-   :padding         0
-   :alignItems      "center"
-   :justifyContent  "space-around"
-   :backgroundColor (:primary (palette))})
+  {:flex 1
+   :backgroundColor (:primary (get-palette (rum/react palette-index)))})
 
 (defn brand-style []
   {:fontSize   30
    :fontWeight "400"
    :textAlign  "center"
-   :color      (:light-primary (palette))})
+   :color      (:light-primary (get-palette (rum/react palette-index)))})
 
-(def shadow-size)
+(def shadow-size 2)
 
 (defc AppRoot < rum/reactive [state]
 
-  (view {:fill 1 :style (page-style)}
+  (startup-page)
 
-        (text {:style (merge {:paddingTop 40} (brand-style))}
-              (:brand @state))
+  #_(view {:style (page-style)}
+
+        #_(text {:style (merge {:paddingTop 40} (brand-style))}
+              (rum/react brand-title))
         (image {:source logo-img
-                :style  {:transform [{:scale 0.5}]}})
-        (touchable-highlight {:style   {:margin          40
-                                        :backgroundColor (:accent (palette))
+                ;;:resizeMode "stretch"
+                :style  {:transform [{:scale 0.3}]}})
+        #_(touchable-highlight {:style   {:margin          40
+                                        :backgroundColor (:accent (get-palette 0))
                                         :borderRadius    30
                                         :height          60
                                         :width           60
                                         :shadowColor     "#000"
-                                        :shadowOffset    {:width 2 :height 2}
-                                        :shadowRadius    2
+                                        :shadowOffset    {:width shadowSize :height shadowSize}
+                                        :shadowRadius    shadowSize
                                         :shadowOpacity   0.5
                                         :alignItems      "center"
                                         :justifyContent  "center"
                                         }
                               :onPress #(alert "Hello!")}
-                             (text {:style {:color (:text-icons (palette)) :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))
+                             (text {:style {:color (:text-icons (get-palette 0)) :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))
 
 (defonce root-component-factory (support/make-root-component-factory))
 
