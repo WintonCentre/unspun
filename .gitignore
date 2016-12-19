@@ -22,4 +22,3 @@ yarn.lock
 .exponent/
 assets/.DS_Store
 sources/
-src/unspun/components/
