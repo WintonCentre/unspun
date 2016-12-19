@@ -5,7 +5,8 @@
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
             [unspun.db :refer [app-state brand-title palette-index]]
             [themes.palettes :refer [palettes get-palette]]
-            [unspun.components.startup-page :refer [startup-page]]))
+            [unspun.components.startup-page :refer [startup-page]]
+            [unspun.components.bars :as bars]))
 
 
 ;;;
@@ -37,7 +38,8 @@
 
 (defc AppRoot < rum/reactive [state]
 
-  (startup-page)
+  ;(startup-page)
+  (bars/page)
 
   #_(view {:style (page-style)}
 

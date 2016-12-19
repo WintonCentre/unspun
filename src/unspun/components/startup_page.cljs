@@ -17,10 +17,6 @@
   {:flex            1
    :backgroundColor (:primary palette)})
 
-;(def svg (aget cljs-exponent.core/exponent "Components" "Svg"))
-;(def circle (r/adapt-react-class (aget svg "Circle")))
-
-
 (defc startup-title < rum/reactive [& {:keys [title style]
                                        :or   {title "Relative Risks Unspun"
                                               style (title-style (get-palette (rum/react palette-index)))}}]
@@ -30,9 +26,10 @@
 (defc startup-page < rum/reactive [& {:keys [title logo launcher style]
                                       :or   {title startup-title
                                              style (startup-page-style (get-palette (rum/react palette-index)))}}]
-  (view {:style style}
-        (title)
-        (svg {:flex 1}
-             (rect {:x 50 :y 50 :width 200 :height 200 :fill "red"})
-             (circle {:cx   360 :cy   460 :r    50 :fill "blue"}))))
+  (let [palette (get-palette (rum/react palette-index))]
+    (view {:style style}
+          (title)
+          (svg {:flex 1}
+               (rect {:x 50 :y 50 :width 200 :height 200 :fill (:accent palette)})
+               (circle {:cx 150 :cy 150 :r 50 :fill (:dark-primary palette)})))))
 

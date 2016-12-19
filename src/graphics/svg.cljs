@@ -21,24 +21,27 @@
    "Defs"
    "Stop"])
 
-(def exp-svg
-  (partial aget exponent "Components" "Svg"))
-
-
-(def svg
-  (partial element
-           (aget exponent "Components" "Svg")))
+(def wrap-svg (partial aget exponent "Components" "Svg"))
 
 (defn wrap-svg-component [name]
-  (partial element (exp-svg name)))
+  (partial element (wrap-svg name)))
 
-#_(doseq [svg-component svg-components]
-  (def (symbol (lower-case svg-component)) (exp-svg svg-component)))
+(def svg (partial element (wrap-svg)))
+(def circle (wrap-svg-component "Circle"))
+(def ellipse (wrap-svg-component "Ellipse"))
+(def g (wrap-svg-component "G"))
+(def linearGradient (wrap-svg-component "LinearGradient"))
+(def radialGradient (wrap-svg-component "RadialGRadient"))
+(def line (wrap-svg-component "Line"))
+(def path (wrap-svg-component "Path"))
+(def polygon (wrap-svg-component "Polygon"))
+(def polyline (wrap-svg-component "PolyLine"))
+(def rect (wrap-svg-component "Rect"))
+(def svg-symbol (wrap-svg-component "Symbol"))
+(def text (wrap-svg-component "Text"))
+(def svg-use (wrap-svg-component "Use"))
+(def defs (wrap-svg-component "Defs"))
+(def stop (wrap-svg-component "Stop"))
 
 
-(def circle
-  (partial element (exp-svg "Circle")))
 
-(def rect
-  (partial element
-           (aget exponent "Components" "Svg" "Rect")))
