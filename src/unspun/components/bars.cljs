@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index]]
+            [unspun.db :refer [app-state palette-index baseline-risk relative-risk *baseline-risk-percent *exposed-risk *exposed-risk-percent]]
             [graphics.svg :refer [svg circle rect]]
             ))
 
@@ -30,8 +30,15 @@
                       (text {:style {:color      (:light-primary palette)
                                      :fontWeight "400"
                                      :padding 20
-                                     :fontSize   26}}
-                            "Without treatment, the risk of heart damage is 70%, decreasing to 60% with treatment"))
+                                     :fontSize   24}}
+                            (str "Without bacon sandwiches, the risk of heart attack or stroke is "
+                                 (rum/react *baseline-risk-percent)
+                                 "%, "
+                                 (if (< (rum/react *baseline-risk-percent) (rum/react *exposed-risk-percent)) "increasing" "decreasing")
+                                 " to "
+                                 (rum/react *exposed-risk-percent)
+                                 "% with bacon sandwiches"
+                                 )))
                 (view {:style {:flex          0.6
                                :flexDirection "row"
                                ;:backgroundColor "pink"
@@ -44,27 +51,27 @@
                                            :paddingRight 10}}
                                   "Without"))
                       (view {:style {:flex 0.2}}
-                            (view {:style {:flex 0.3
+                            (view {:style {:flex (- 1 (rum/react baseline-risk)) ;; 0.3
                                            :position "relative"}}
                                   (text {:style {:color (:text-icons palette)
                                                  :position "absolute"
                                                  :bottom 0
                                                  :fontSize 30
                                                  :fontWeight "400"}
-                                         } "70%"))
-                            (view {:style {:flex 0.7
+                                         } (str (rum/react *baseline-risk-percent) "%")))
+                            (view {:style {:flex (rum/react baseline-risk)
                                            :backgroundColor (:light-primary palette)}}))
                       (view {:style {:flex 0.04}})
                       (view {:style {:flex 0.2}}
-                            (view {:style {:flex 0.4}}
+                            (view {:style {:flex (- 1 (rum/react *exposed-risk))}}
                                   (text {:style {:color (:text-icons palette)
                                                  :position "absolute"
                                                  :bottom 0
                                                  :fontSize 30
                                                  :fontWeight "400"
                                                  :textAlign "center"}
-                                         } "60%"))
-                            (view {:style {:flex 0.6
+                                         } (str (rum/react *exposed-risk-percent) "%")))
+                            (view {:style {:flex (rum/react *exposed-risk)
                                            :backgroundColor (:light-primary palette)}}))
                       (view {:style {:flex 0.3
                                      :justifyContent "center"}}
