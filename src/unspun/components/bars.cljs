@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index baseline-risk relative-risk *baseline-risk-percent *exposed-risk *exposed-risk-percent]]
+            [unspun.db :refer [app-state palette-index baseline-risk relative-risk to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]
             ))
 
@@ -17,11 +17,14 @@
     ))
 
 (defc page < rum/reactive []
-  (let [palette (get-palette (rum/react palette-index))
+  (let [br (rum/react baseline-risk)
+        rr (rum/react relative-risk)
+        brpc (to-pc br)
+        er (* br rr)
+        erpc (to-pc (clamp 0 1 er))
+        palette (get-palette (rum/react palette-index))
         page-style {:flex             1
-                    :backgroundColor (:primary palette)
-
-                    }]
+                    :backgroundColor (:primary palette)}]
     (view {:style {:flex 1}}
           (header)
           (view {:style page-style}
@@ -32,11 +35,11 @@
                                      :padding 20
                                      :fontSize   24}}
                             (str "Without bacon sandwiches, the risk of heart attack or stroke is "
-                                 (rum/react *baseline-risk-percent)
+                                 brpc
                                  "%, "
-                                 (if (< (rum/react *baseline-risk-percent) (rum/react *exposed-risk-percent)) "increasing" "decreasing")
+                                 (if (< brpc erpc) "increasing" "decreasing")
                                  " to "
-                                 (rum/react *exposed-risk-percent)
+                                 erpc
                                  "% with bacon sandwiches"
                                  )))
                 (view {:style {:flex          0.6
@@ -51,19 +54,22 @@
                                            :paddingRight 10}}
                                   "Without"))
                       (view {:style {:flex 0.2}}
-                            (view {:style {:flex (- 1 (rum/react baseline-risk)) ;; 0.3
-                                           :position "relative"}}
-                                  (text {:style {:color (:text-icons palette)
-                                                 :position "absolute"
-                                                 :bottom 0
-                                                 :fontSize 30
-                                                 :fontWeight "400"}
-                                         } (str (rum/react *baseline-risk-percent) "%")))
-                            (view {:style {:flex (rum/react baseline-risk)
-                                           :backgroundColor (:light-primary palette)}}))
+                            (view {:style {:flex     (- 1 br)
+                                           :position "relative"}})
+                            (view {:style {:flex            br
+                                           :backgroundColor (:light-primary palette)}}
+                                  (view {:style {:flex          1
+                                                 :flexDirection "row"
+                                                 :justifyContent "center"}}
+                                        (text {:style {:color      (:dark-primary palette)
+                                                       :fontSize   26
+                                                       :flex 1
+                                                       :textAlign "center"
+                                                       :fontWeight "400"}
+                                               } (str brpc "%")))))
                       (view {:style {:flex 0.04}})
                       (view {:style {:flex 0.2}}
-                            (view {:style {:flex (- 1 (rum/react *exposed-risk))}}
+                            (view {:style {:flex (- 1 er)}}
                                   (text {:style {:color (:text-icons palette)
                                                  :position "absolute"
                                                  :bottom 0
@@ -71,8 +77,8 @@
                                                  :fontSize 26
                                                  :fontWeight "400"
                                                  :textAlign "center"}
-                                         } (str (rum/react *exposed-risk-percent) "%")))
-                            (view {:style {:flex (rum/react *exposed-risk)
+                                         } (str erpc "%")))
+                            (view {:style {:flex            er
                                            :backgroundColor (:light-primary palette)}}))
                       (view {:style {:flex 0.3
                                      :justifyContent "center"}}

@@ -91,29 +91,42 @@ Baseline risk 11.5%
 ;;;
 ;; DERIVED STATE
 ;;;
-(def *exposed-risk
-  (rum/derived-atom [relative-risk baseline-risk] ::er
-                    (fn [rr br] (Math.max 0 (Math.min 100 (* rr br))))))
 
-(def *number-needed
-  (rum/derived-atom [relative-risk baseline-risk] ::nn
-                    (fn [rr br]
-                      (let [effect (- (* rr br) br)]
-                        (if (zero? effect)
-                          max-nn
-                          (let [nn-val (Math.abs (/ 1 effect))]
-                            (cond
-                              (> nn-val max-nn) max-nn
-                              (< nn-val 0) 0
-                              :else (Math.round nn-val))))))))
+(defn number-needed [rr br]
+  (let [effect (- (* rr br) br)]
+    (if (zero? effect)
+      max-nn
+      (let [nn-val (Math.abs (/ 1 effect))]
+        (cond
+          (> nn-val max-nn) max-nn
+          (< nn-val 0) 0
+          :else (Math.round nn-val))))))
 
-(defn to-pc [x] (Math.round (* 100 x)))
+(defn clamp
+  "clamp v to the range [a,b]"
+  [a b v]
+  (if (<= a b)
+    (Math.max a (Math.min b v))
+    a))
 
-(def *baseline-risk-percent
-  (rum/derived-atom [baseline-risk] ::brpc
-                    (fn [br] (to-pc br))))
+(defn to-pc
+  "convert x to a percentage"
+  [x]
+  (Math.round (* 100 x)))
 
-(def *exposed-risk-percent
-  (rum/derived-atom [*exposed-risk] ::erpc
-                    (fn [er] (to-pc er))))
+#_(comment
+  ;; may not need derived atoms
+  (def *exposed-risk
+    (rum/derived-atom [relative-risk baseline-risk] ::er
+                      (fn [rr br] (Math.max 0 (Math.min 1 (* rr br))))))
+
+  (def *number-needed
+    (rum/derived-atom [relative-risk baseline-risk] ::nn number-needed))
+
+  (def *baseline-risk-percent
+    (rum/derived-atom [baseline-risk] ::brpc to-pc))
+
+  (def *exposed-risk-percent
+    (rum/derived-atom [*exposed-risk] ::erpc to-pc))
+  )
 
