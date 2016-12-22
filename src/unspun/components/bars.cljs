@@ -67,7 +67,8 @@
                                   (text {:style {:color (:text-icons palette)
                                                  :position "absolute"
                                                  :bottom 0
-                                                 :fontSize 30
+                                                 :paddingLeft 2
+                                                 :fontSize 26
                                                  :fontWeight "400"
                                                  :textAlign "center"}
                                          } (str (rum/react *exposed-risk-percent) "%")))

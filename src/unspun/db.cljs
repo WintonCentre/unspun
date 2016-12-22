@@ -3,6 +3,24 @@
 
 (def max-nn 100)                                            ; maximum number needed to treat
 
+#_(def women-doctors "Hormone Replacement Therapy
+People: women in their 50s
+
+Exposure: take HRT for 5 years
+
+Event: breast cancer in their lifetime
+
+relative risk: 1.05
+baseline risk : 10%
+
+People: US over-65s admitted to hospital under Medicare
+Exposure: being seen by a female doctor
+Event: Die within 30 days of admission
+Relative risk: 0.96
+Baseline risk 11.5%
+")
+
+
 (def presets {:icon-moods    #{:ok
                                :happy
                                :sad
@@ -32,11 +50,13 @@
               :exposures     #{:bacon "eating a bacon sandwich"
                                :hrt5 "taking HRT for 5 years"
                                :wine "drinking half a bottle of wine per day"
+                               :wdoc "being seen by a female doctor"
                                :custom "enter exposure"}
 
               :future-events #{:none "no outcome"
                                :cardio10 "heart attack or stroke in 10 years"
                                :breast "breast cancer"
+                               :death-on-admission "die within 30 days of admission"
                                :custom "enter future event"}
 
               :graphics      #{:text-only
@@ -73,7 +93,7 @@
 ;;;
 (def *exposed-risk
   (rum/derived-atom [relative-risk baseline-risk] ::er
-                    (fn [rr br] (* rr br))))
+                    (fn [rr br] (Math.max 0 (Math.min 100 (* rr br))))))
 
 (def *number-needed
   (rum/derived-atom [relative-risk baseline-risk] ::nn
