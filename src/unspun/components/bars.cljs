@@ -12,13 +12,21 @@
 (def animated (aget react-native "Animated"))
 (def animated-value (aget react-native "Animated" "Value"))
 (def animated-timing (aget react-native "Animated" "timing"))
+(def animated-spring (aget react-native "Animated" "spring"))
 
-(defn animate-value [key initial-value]
-  {:init (fn [state props]
-           (console.log (new animated-value initial-value))
-           state
-           #_(assoc state ::height (new animated-value initial-value)))
-   })
+
+(defn animate-function [key f initial-value]
+  (letfn [(upd [state]
+            (let [[_ _ value] (:rum/args state)]
+              (.log js/console value)
+              (.start (animated-spring (key state) #js {:toValue (f value) :friction 10}))
+              state))]
+    {:init        (fn [state props]
+                    (.log js/console (new animated-value initial-value))
+                    ;state
+                    (assoc state key (new animated-value initial-value)))
+     :did-mount   upd
+     :will-update upd}))
 
 (defc header < rum/reactive []
   (let [palette (get-palette (rum/react palette-index))
@@ -27,7 +35,51 @@
     (view {:style header-style})
     ))
 
-(defcs page < rum/reactive (animate-value ::height 0.5) [state]
+
+(def inner-label-options {:color-key    :text-icons
+                          :position-key :bottom})
+
+(def outer-label-options {:color-key    :light-primary
+                          :position-key :top})
+
+(defn bar-value-label [options palette formatter value]
+  (view {:style {:flex                   1
+                 :position               "absolute"
+                 (:position-key options) 0
+                 :flexDirection          "row"
+                 :justifyContent         "center"}}
+        (text {:style {:color      ((:color-key options) palette)
+                       :fontSize   26
+                       :flex       1
+                       :textAlign  "center"
+                       :fontWeight "400"}
+               } (formatter value))))
+
+
+(defcs top-bar < rum/static
+                 (animate-function ::height #(- 1 %) 0.5)
+  [state palette formatter value]
+  (animated-view {:style {:flex            (::height state)
+                 :backgroundColor (:primary palette)}}
+        (when (< value 0.1)
+          (bar-value-label {:color-key :text-icons :position-key :bottom} palette formatter value))))
+
+(defcs bottom-bar < rum/static
+                    (animate-function ::height identity 0.5)
+  [state palette formatter value]
+  (animated-view {:style {:flex            (::height state)
+                           :backgroundColor (:light-primary palette)}}
+        (when (>= value 0.1)
+          (bar-value-label {:color-key :dark-primary :position-key :top} palette formatter value))))
+
+(defcs labelled-vertical-bar < rum/static
+  [state palette formatter value]
+  (view {:style {:flex 1}}
+        (top-bar palette formatter value)
+        (bottom-bar palette formatter value)
+        ))
+
+(defcs page < rum/reactive [state]
   (let [br (rum/react baseline-risk)
         rr (rum/react relative-risk)
         brpc (to-pc br)
@@ -36,7 +88,7 @@
         palette (get-palette (rum/react palette-index))
         page-style {:flex            1
                     :backgroundColor (:primary palette)}]
-    (animated-view
+    (view
       {:style {:flex 1}}
       (status-bar {:hidden          false
                    :barStyle        "dark-content"
@@ -68,33 +120,9 @@
                                        :textAlign    "right"
                                        :paddingRight 10}}
                               "Without"))
-                  (view {:style {:flex 0.2}}
-                        (view {:style {:flex     (- 1 br)
-                                       :position "relative"}})
-                        (view {:style {:flex            br
-                                       :backgroundColor (:light-primary palette)}}
-                              (view {:style {:flex           1
-                                             :flexDirection  "row"
-                                             :justifyContent "center"}}
-                                    (text {:style {:color      (:dark-primary palette)
-                                                   :fontSize   26
-                                                   :flex       1
-                                                   :textAlign  "center"
-                                                   :fontWeight "400"}
-                                           } (str brpc "%")))))
+                  (view {:style {:flex 0.2}} (labelled-vertical-bar palette #(str (to-pc %) "%") br))
                   (view {:style {:flex 0.04}})
-                  (view {:style {:flex 0.2}}
-                        (view {:style {:flex (- 1 er)}}
-                              (text {:style {:color       (:text-icons palette)
-                                             :position    "absolute"
-                                             :bottom      0
-                                             :paddingLeft 2
-                                             :fontSize    26
-                                             :fontWeight  "400"
-                                             :textAlign   "center"}
-                                     } (str erpc "%")))
-                        (view {:style {:flex            er
-                                       :backgroundColor (:light-primary palette)}}))
+                  (view {:style {:flex 0.2}} (labelled-vertical-bar palette #(str (to-pc %) "%") er))
                   (view {:style {:flex           0.3
                                  :justifyContent "center"}}
                         (text {:style {:color     (:text-icons palette)
