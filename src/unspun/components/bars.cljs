@@ -13,17 +13,18 @@
 (def animated-value (aget react-native "Animated" "Value"))
 (def animated-timing (aget react-native "Animated" "timing"))
 (def animated-spring (aget react-native "Animated" "spring"))
+(def ease (aget react-native "Easing" "ease"))
+(def ease-out (aget react-native "Easing" "out"))
 
 
 (defn animate-function [key f initial-value]
   (letfn [(upd [state]
             (let [[_ _ value] (:rum/args state)]
-              (.log js/console value)
-              (.start (animated-spring (key state) #js {:toValue (f value) :friction 10}))
+              #_(.start (animated-spring (key state) #js {:toValue (f value) :friction 10 :tension 60}))
+              (.start (animated-timing (key state) #js {:toValue (f value) :duration 200
+                                                        :easing  (ease-out ease)}))
               state))]
     {:init        (fn [state props]
-                    (.log js/console (new animated-value initial-value))
-                    ;state
                     (assoc state key (new animated-value initial-value)))
      :did-mount   upd
      :will-update upd}))
@@ -32,45 +33,50 @@
   (let [palette (get-palette (rum/react palette-index))
         header-style {:height          header-height
                       :backgroundColor (:dark-primary palette)}]
-    (view {:style header-style})
-    ))
+    (view {:style header-style})))
 
 
-(def inner-label-options {:color-key    :text-icons
-                          :position-key :bottom})
-
-(def outer-label-options {:color-key    :light-primary
-                          :position-key :top})
-
-(defn bar-value-label [options palette formatter value]
-  (view {:style {:flex                   1
-                 :position               "absolute"
-                 (:position-key options) 0
-                 :flexDirection          "row"
-                 :justifyContent         "center"}}
-        (text {:style {:color      ((:color-key options) palette)
-                       :fontSize   26
+(defn bar-value-label [{:keys [font-size font-weight text-color on-edge]} palette formatter value]
+  (view {:style {:flex           1
+                 :position       "absolute"
+                 on-edge         0
+                 :flexDirection  "row"
+                 :justifyContent "center"}}
+        (text {:style {:color      (text-color palette)
+                       :fontSize   font-size
                        :flex       1
                        :textAlign  "center"
-                       :fontWeight "400"}
-               } (formatter value))))
+                       :fontWeight font-weight}}
+              (formatter value))))
 
+(def inner-top-label (partial bar-value-label {:font-size   26
+                                               :font-weight "400"
+                                               :text-color  :text-icons
+                                               :on-edge     :bottom}))
+
+(def outer-bottom-label (partial bar-value-label {:font-size   26
+                                                  :font-weight "400"
+                                                  :text-color  :dark-primary
+                                                  :on-edge     :top}))
 
 (defcs top-bar < rum/static
                  (animate-function ::height #(- 1 %) 0.5)
+                 "The top and bottom bars split the vertical space in the ratio (1-value) : value.
+                 Here we only allow 2 bars so we can label them inside if there is space, or above if not.
+                 The top bar colours are chosen to be the same as the background"
   [state palette formatter value]
   (animated-view {:style {:flex            (::height state)
-                 :backgroundColor (:primary palette)}}
-        (when (< value 0.1)
-          (bar-value-label {:color-key :text-icons :position-key :bottom} palette formatter value))))
+                          :backgroundColor (:primary palette)}}
+                 (when (< value 0.1)
+                   (inner-top-label palette formatter value))))
 
 (defcs bottom-bar < rum/static
                     (animate-function ::height identity 0.5)
   [state palette formatter value]
   (animated-view {:style {:flex            (::height state)
-                           :backgroundColor (:light-primary palette)}}
-        (when (>= value 0.1)
-          (bar-value-label {:color-key :dark-primary :position-key :top} palette formatter value))))
+                          :backgroundColor (:light-primary palette)}}
+                 (when (>= value 0.1)
+                   (outer-bottom-label palette formatter value))))
 
 (defcs labelled-vertical-bar < rum/static
   [state palette formatter value]
