@@ -19,7 +19,7 @@
 
 (defn animate-function [key f initial-value]
   (letfn [(upd [state]
-            (let [[_ _ value] (:rum/args state)]
+            (let [[_ value] (:rum/args state)]
               #_(.start (animated-spring (key state) #js {:toValue (f value) :friction 10 :tension 60}))
               (.start (animated-timing (key state) #js {:toValue (f value) :duration 200
                                                         :easing  (ease-out ease)}))
@@ -36,7 +36,7 @@
     (view {:style header-style})))
 
 
-(defn bar-value-label [{:keys [font-size font-weight text-color on-edge]} palette formatter value]
+(defn bar-value-label [{:keys [font-size font-weight text-color on-edge formatter]} palette value]
   (view {:style {:flex           1
                  :position       "absolute"
                  on-edge         0
@@ -49,40 +49,46 @@
                        :fontWeight font-weight}}
               (formatter value))))
 
+(defn percentage [value]
+  (str (to-pc value) "%"))
+
 (def inner-top-label (partial bar-value-label {:font-size   26
                                                :font-weight "400"
                                                :text-color  :text-icons
-                                               :on-edge     :bottom}))
+                                               :on-edge     :bottom
+                                               :formatter   percentage}))
 
 (def outer-bottom-label (partial bar-value-label {:font-size   26
                                                   :font-weight "400"
                                                   :text-color  :dark-primary
-                                                  :on-edge     :top}))
+                                                  :on-edge     :top
+                                                  :formatter percentage}))
 
 (defcs top-bar < rum/static
                  (animate-function ::height #(- 1 %) 0.5)
-                 "The top and bottom bars split the vertical space in the ratio (1-value) : value.
+                 "The top and bottom bars split the vertical flex space in the ratio (1-value) : value.
+                 Both are animated views which morph between changed values.
                  Here we only allow 2 bars so we can label them inside if there is space, or above if not.
                  The top bar colours are chosen to be the same as the background"
-  [state palette formatter value]
+  [state palette value]
   (animated-view {:style {:flex            (::height state)
                           :backgroundColor (:primary palette)}}
                  (when (< value 0.1)
-                   (inner-top-label palette formatter value))))
+                   (inner-top-label palette value))))
 
 (defcs bottom-bar < rum/static
                     (animate-function ::height identity 0.5)
-  [state palette formatter value]
+  [state palette value]
   (animated-view {:style {:flex            (::height state)
                           :backgroundColor (:light-primary palette)}}
                  (when (>= value 0.1)
-                   (outer-bottom-label palette formatter value))))
+                   (outer-bottom-label palette value))))
 
 (defcs labelled-vertical-bar < rum/static
-  [state palette formatter value]
+  [state palette value]
   (view {:style {:flex 1}}
-        (top-bar palette formatter value)
-        (bottom-bar palette formatter value)
+        (top-bar palette value)
+        (bottom-bar palette value)
         ))
 
 (defcs page < rum/reactive [state]
@@ -126,9 +132,9 @@
                                        :textAlign    "right"
                                        :paddingRight 10}}
                               "Without"))
-                  (view {:style {:flex 0.2}} (labelled-vertical-bar palette #(str (to-pc %) "%") br))
+                  (view {:style {:flex 0.2}} (labelled-vertical-bar palette br))
                   (view {:style {:flex 0.04}})
-                  (view {:style {:flex 0.2}} (labelled-vertical-bar palette #(str (to-pc %) "%") er))
+                  (view {:style {:flex 0.2}} (labelled-vertical-bar palette er))
                   (view {:style {:flex           0.3
                                  :justifyContent "center"}}
                         (text {:style {:color     (:text-icons palette)
