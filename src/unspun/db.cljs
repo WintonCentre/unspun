@@ -91,7 +91,6 @@ Baseline risk 11.5%
 ;;;
 ;; DERIVED STATE
 ;;;
-
 (defn number-needed [rr br]
   (let [effect (- (* rr br) br)]
     (if (zero? effect)
@@ -113,20 +112,4 @@ Baseline risk 11.5%
   "convert x to a percentage"
   [x]
   (Math.round (* 100 x)))
-
-#_(comment
-  ;; may not need derived atoms
-  (def *exposed-risk
-    (rum/derived-atom [relative-risk baseline-risk] ::er
-                      (fn [rr br] (Math.max 0 (Math.min 1 (* rr br))))))
-
-  (def *number-needed
-    (rum/derived-atom [relative-risk baseline-risk] ::nn number-needed))
-
-  (def *baseline-risk-percent
-    (rum/derived-atom [baseline-risk] ::brpc to-pc))
-
-  (def *exposed-risk-percent
-    (rum/derived-atom [*exposed-risk] ::erpc to-pc))
-  )
 

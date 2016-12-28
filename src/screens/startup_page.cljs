@@ -1,4 +1,4 @@
-(ns unspun.components.startup-page
+(ns unspun.screens.startup-page
   (:require-macros [rum.core :refer [defc]])
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]

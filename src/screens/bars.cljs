@@ -1,4 +1,4 @@
-(ns unspun.components.bars
+(ns unspun.screens.bars
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight status-bar animated-view] :as rn]
@@ -110,9 +110,8 @@
     (view
       {:style {:flex 1}}
       (status-bar {:hidden          false
-                   :barStyle        "dark-content"
-                   :backgroundColor "red"})
-      (header)
+                   :barStyle        "light-content"})
+
       ;(.log js/console (::height state))
       ;(.log js/console animated-value)
       (view {:style page-style}
@@ -121,6 +120,7 @@
                   (text {:style {:color      (:light-primary palette)
                                  :fontWeight "400"
                                  :padding    20
+                                 :paddingTop 40
                                  :fontSize   24}}
                         (str "Without bacon sandwiches, the risk of heart attack or stroke is "
                              brpc
