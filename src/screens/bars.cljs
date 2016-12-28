@@ -21,11 +21,12 @@
   (letfn [(upd [state]
             (let [[_ value] (:rum/args state)]
               #_(.start (animated-spring (key state) #js {:toValue (f value) :friction 10 :tension 60}))
-              (.start (animated-timing (key state) #js {:toValue (f value) :duration 200
+              (.start (animated-timing (key state) #js {:toValue (f value)
+                                                        :duration 200
                                                         :easing  (ease-out ease)}))
               state))]
     {:init        (fn [state props]
-                    (assoc state key (new animated-value initial-value)))
+                    (assoc state key (new animated-value (f initial-value))))
      :did-mount   upd
      :will-update upd}))
 

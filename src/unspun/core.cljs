@@ -14,8 +14,8 @@
 (defc AppRoot < rum/reactive [state]
 
   ;(startup-page)
-  ;(bars/page)
-  (logo-page)
+  (bars/page)
+  ;(logo-page)
   )
 
 (defonce root-component-factory (support/make-root-component-factory))
