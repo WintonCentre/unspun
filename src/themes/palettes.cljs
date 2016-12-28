@@ -12,7 +12,8 @@
     :accent         "#FE9700"
     :primary-text   "#212121"
     :secondary-text "#757575"
-    :divider        "#BDBDBD"}
+    :divider        "#BDBDBD"
+    :error          "#FF6688"}
 
    :cyan-deep-orange
    {:dark-primary   "#0097A7"
@@ -22,7 +23,8 @@
     :accent         "#FF5722"
     :primary-text   "#212121"
     :secondary-text "#757575"
-    :divider        "#BDBDBD"}
+    :divider        "#BDBDBD"
+    :error          "#FF6688"}
 
    :light-green-teal
    {:dark-primary   "#689F38"
@@ -32,7 +34,8 @@
     :accent         "#009688"
     :primary-text   "#212121"
     :secondary-text "#757575"
-    :divider        "#BDBDBD"}
+    :divider        "#BDBDBD"
+    :error          "#FF6688"}
 
    :deep-purple-pink
    {:dark-primary   "#512DA8"
@@ -42,7 +45,8 @@
     :accent         "#FF4081"
     :primary-text   "#212121"
     :secondary-text "#757575"
-    :divider        "#BDBDBD"}})
+    :divider        "#BDBDBD"
+    :error          "#FF6688"}})
 
 (def palette-keys (vec (keys palettes)))
 (def palette-vals (mapv val palettes))

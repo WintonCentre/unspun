@@ -62,13 +62,18 @@
                                                   :font-weight "400"
                                                   :text-color  :dark-primary
                                                   :on-edge     :top
-                                                  :formatter percentage}))
+                                                  :formatter   percentage}))
 
+(def error-label (partial bar-value-label {:font-size   26
+                                           :font-weight "400"
+                                           :text-color  :error
+                                           :on-edge     :top
+                                           :formatter   percentage}))
 (defcs top-bar < rum/static
                  (animate-function ::height #(- 1 %) 0.5)
                  "The top and bottom bars split the vertical flex space in the ratio (1-value) : value.
-                 Both are animated views which morph between changed values.
-                 Here we only allow 2 bars so we can label them inside if there is space, or above if not.
+                 Both are animated views which animate height as a function of value.
+                 Here we only allow 2 bars and so we can label them inside if there is space, or above if not.
                  The top bar colours are chosen to be the same as the background"
   [state palette value]
   (animated-view {:style {:flex            (::height state)
@@ -82,7 +87,9 @@
   (animated-view {:style {:flex            (::height state)
                           :backgroundColor (:light-primary palette)}}
                  (when (>= value 0.1)
-                   (outer-bottom-label palette value))))
+                       (if (> value 1)
+                         (error-label palette 1)
+                         (outer-bottom-label palette value)))))
 
 (defcs labelled-vertical-bar < rum/static
   [state palette value]
