@@ -117,11 +117,13 @@
       ;(.log js/console animated-value)
       (view {:style page-style}
             (view {:style {:flex            0.3
+                           :justifyContent "center"
+                           :alignItems "center"
                            :backgroundColor (:dark-primary palette)}}
                   (text {:style {:color      (:light-primary palette)
                                  :fontWeight "400"
                                  :padding    20
-                                 :paddingTop 40
+                                 ;:paddingTop 40
                                  :fontSize   24}}
                         (str "Without bacon sandwiches, the risk of heart attack or stroke is "
                              brpc

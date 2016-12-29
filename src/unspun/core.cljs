@@ -4,18 +4,28 @@
             [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
             [unspun.db :refer [app-state brand-title palette-index]]
+            [unspun.navigation.router :refer [Router]]
+            [unspun.screens.top-drawer :refer [drawer]]
             [themes.palettes :refer [palettes get-palette]]
-            [unspun.screens.startup-page :refer [startup-page]]
-            [unspun.screens.bars :as bars]
-            [unspun.screens.logo :as logo :refer [logo-page]]))
-
+            [unspun.navigation.router :refer [Router ex-navigation create-router navigation-provider
+                                              stack-navigation drawer-navigation drawer-navigation-item]]
+            [unspun.screens.top-drawer :refer [drawer]]
+            ))
 
 
 (defc AppRoot < rum/reactive [state]
 
   ;(startup-page)
-  (bars/page)
+  ;(bars/page)
   ;(logo-page)
+
+  (navigation-provider {:router Router}
+                       (drawer)
+                       ;(stack-navigation {:initialRoute (.getRoute Router "home")})
+                       ;(startup-page)
+                       ;(bars/page)
+                       ;(logo-page)
+                       )
   )
 
 (defonce root-component-factory (support/make-root-component-factory))
