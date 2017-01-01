@@ -15,34 +15,25 @@
 
 ;; vector-icons
 (def vector-icons (js/require "@exponent/vector-icons"))
-(def material-icons (aget vector-icons "MaterialIcons"))
+(def Ionicons (aget vector-icons "Ionicons"))
 
+(defn ionicon [attrs] (.createElement js/React Ionicons attrs))
 
-;(def FontAwesome (js/require "@exponent/vector-icons/FontAwesome"))
+(def ac-unit (ionicon (clj->js {:name  "md-checkmark-circle"
+                                :size  30
+                                :style {:transform [{:rotate "90deg"} {:scale 0.8}]}
+                                :color "white"})))
 
-;(def icon (r/adapt-react-class (aget FontAwesome "default")))
-;(def FontAwesomeButton (aget FontAwesome "default" "Button"))
-;(def icon-button (r/adapt-react-class FontAwesomeButton))
+(defn vector-icon [family attrs] (.createElement js/React family attrs))
 
-;(def MaterialIcons (js/require "@exponent/vector-icons/MaterialIcons"))
+(def bars-icon (vector-icon Ionicons (clj->js {:name  "ios-podium"
+                                               :size  30
+                                               :style {:width 14}
+                                               :color "white"})))
 
-
-(defn material-icon [name]
-  (partial element (aget material-icons name)))
-;(def material-icon (r/adapt-react-class (aget MaterialIcons "default")))
-
-#_(def MaterialIconButton (aget MaterialIcons "default" "Button"))
-;(def material-icon-button (r/adapt-react-ass MaterialIconButton))
-
-#_(comment
-    (def wrap-material (partial aget MaterialIcons))
-
-    (defn wrap-svg-component [name]
-      (partial element (wrap-svg name)))
-
-    (def svg (partial element (wrap-svg)))
-    (def circle (wrap-svg-component "Circle")))
-
+(defn menu-icon [name] (ionicon (clj->js {:name  name
+                                          :size  30
+                                          :color "white"})))
 
 (defn styles [palette] (.create style-sheet
 
@@ -72,10 +63,8 @@
                              (if isSelected (aget st "selectedText")))}
           a-string)))
 
-(rum/defc icon [icon-name isSelected]
-  (view {:style {:alignItems     "center"
-                 :justifyContent "center"}}
-        ))
+(rum/defc icon [name isSelected]
+  (menu-icon name))
 
 (rum/defc drawer < rum/reactive []
   (let [palette (get-palette (rum/react palette-index))
@@ -91,6 +80,7 @@
       (drawer-navigation-item
         {:id            "startup"
          :selectedStyle (aget st "selectedItemStyle")
+         :renderIcon    #(menu-icon "ios-arrow-up-outline")
          :renderTitle   (fn [isSelected] (title palette "Home" isSelected))
          }
         (stack-navigation
@@ -102,7 +92,8 @@
       (drawer-navigation-item
         {:id            "bars"
          :selectedStyle (aget st "selectedItemStyle")
-         :renderTitle   (fn [isSelected] (title palette "Bars" isSelected))}
+         :renderIcon    #(menu-icon "ios-body")
+         :renderTitle   (fn [isSelected] (title palette "Icon Array" isSelected))}
         (stack-navigation
           {:id                 "bars-stack"
            :defaultRouteConfig {:navigationBar {:backgroundColor "#0084FF"
@@ -112,7 +103,30 @@
       (drawer-navigation-item
         {:id            "rum-bars"
          :selectedStyle (aget st "selectedItemStyle")
-         :renderTitle   (fn [isSelected] (title palette "Rum-Bars" isSelected))}
+         :renderIcon    (fn [] bars-icon)
+         :renderTitle   (fn [isSelected] (title palette "Bars" isSelected))}
+        (stack-navigation
+          {:id                 "rum-bars-stack"
+           :defaultRouteConfig {:navigationBar {:backgroundColor "#0084FF"
+                                                :tintColor       "#fff"}}
+           :initialRoute       (.getRoute Router "rum-bars")}))
+
+      (drawer-navigation-item
+        {:id            "settings"
+         :selectedStyle (aget st "selectedItemStyle")
+         :renderIcon    #(menu-icon "ios-settings")
+         :renderTitle   (fn [isSelected] (title palette "Settings" isSelected))}
+        (stack-navigation
+          {:id                 "rum-bars-stack"
+           :defaultRouteConfig {:navigationBar {:backgroundColor "#0084FF"
+                                                :tintColor       "#fff"}}
+           :initialRoute       (.getRoute Router "rum-bars")}))
+
+      (drawer-navigation-item
+        {:id            "share"
+         :selectedStyle (aget st "selectedItemStyle")
+         :renderIcon    #(menu-icon "ios-share-outline")
+         :renderTitle   (fn [isSelected] (title palette "Share" isSelected))}
         (stack-navigation
           {:id                 "rum-bars-stack"
            :defaultRouteConfig {:navigationBar {:backgroundColor "#0084FF"
