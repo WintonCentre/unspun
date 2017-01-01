@@ -21,10 +21,6 @@
 
   (navigation-provider {:router Router}
                        (drawer)
-                       ;(stack-navigation {:initialRoute (.getRoute Router "home")})
-                       ;(startup-page)
-                       ;(bars/page)
-                       ;(logo-page)
                        )
   )
 

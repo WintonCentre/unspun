@@ -1,33 +1,118 @@
-(ns unspun.screens.bars
+(ns unspun.screens.rum-bars
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
-            [cljs-exponent.components :refer [text view image touchable-highlight status-bar animated-view] :as rn]
+            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index baseline-risk relative-risk to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]
             ))
 
+
+#_[icon-button {:name             "facebook"
+                :width            184.5
+                :background-color "#3b5998"
+                :on-press         (fn []
+                                    (login/login-with-facebook))}
+   "Sign in with Facebook"]
+;(def wrap-svg (partial aget exponent "Components" "Svg"))
+;
+;(defn wrap-svg-component [name]
+;  (partial element (wrap-svg name)))
+;
+;(def svg (partial element (wrap-svg)))
+;(def circle (wrap-svg-component "Circle"))
+
+
+;; vector-icons
+(def vector-icons (js/require "@exponent/vector-icons"))
+(def Ionicons (aget vector-icons "Ionicons"))
+
+(defn ionicon [attrs] (.createElement js/React Ionicons attrs))
+
+(def ac-unit (ionicon (clj->js {:name  "md-checkmark-circle"
+                                :size  30
+                                :style {:transform [{:rotate "90deg"} {:scale 0.8}]}
+                                :color "white"})))
+
+
+#_(def checkmark (ion-icons {:name  "md-checkmark-circle"
+                             :size  32
+                             :color "green"}))
+
+
+;(def MaterialIcons (js/require "@exponent/vector-icons/MaterialIcons"))
+;(defn material-icon-class [name] (aget MaterialIcons "default" name))
+;(defn material-icon [name] (partial element (material-icon-class name)))
+#_(def material-icons (aget vector-icons "MaterialIcons"))
+
+
+;(def FontAwesome (js/require "@exponent/vector-icons/FontAwesome"))
+
+;(def icon (r/adapt-react-class (aget FontAwesome "default")))
+;(def FontAwesomeButton (aget FontAwesome "default" "Button"))
+;(def icon-button (r/adapt-react-class FontAwesomeButton))
+
+;(def MaterialIcons (js/require "@exponent/vector-icons/MaterialIcons"))
+
+
+#_(defn m-icon [name]
+    (partial element (aget m name)))
+
+
+#_(def MaterialIconButton (aget MaterialIcons "default" "Button"))
+;(def material-icon-button (r/adapt-react-ass MaterialIconButton))
+
+#_(comment
+    (def wrap-material (partial aget MaterialIcons))
+
+    (defn wrap-svg-component [name]
+      (partial element (wrap-svg name)))
+
+    (def svg (partial element (wrap-svg)))
+    (def circle (wrap-svg-component "Circle")))
+
+
 (def header-height 23)
 (def react-native (js/require "react-native"))
-(def animated (aget react-native "Animated"))
-(def animated-value (aget react-native "Animated" "Value"))
-(def animated-timing (aget react-native "Animated" "timing"))
-(def animated-spring (aget react-native "Animated" "spring"))
-(def ease (aget react-native "Easing" "ease"))
-(def ease-out (aget react-native "Easing" "out"))
 
-(defn animate-function [key f initial-value]
-  (letfn [(upd [state]
-            (let [[_ value] (:rum/args state)]
-              #_(.start (animated-spring (key state) #js {:toValue (f value) :friction 10 :tension 60}))
-              (.start (animated-timing (key state) #js {:toValue  (f value)
-                                                        :duration 200
-                                                        :easing   (ease-out ease)}))
-              state))]
-    {:init        (fn [state props]
-                    (assoc state key (new animated-value (f initial-value))))
-     :did-mount   upd
-     :will-update upd}))
+(defn easeOutQuad
+  [elapsed-t duration]
+  (let [dt (/ elapsed-t duration)]
+    (* dt (- 2 dt))))
+
+(defn animate-to-new-value! [state easing interval duration key new-value]
+  (let [anim-key (keyword (str (name key) "-anim"))
+        initial-value (key @state)]
+    (letfn [(tick [_]
+              (let [a-map (anim-key @state)
+                    t (- (.now js/Date) (::t0 a-map))]
+                (if (< t duration)
+                  (let [progress (easing t duration)
+                        new-val (+ (::initial-value a-map) (* progress (::delta a-map)))]
+                    (swap! state assoc key new-val))
+                  (do
+                    (js/clearInterval (::ticker a-map))
+                    (swap! state dissoc anim-key)
+                    (swap! state assoc key new-value)
+                    ))))]
+      (swap! state assoc anim-key {::t0            (.now js/Date.)
+                                   ::ticker        (js/setInterval tick interval)
+                                   ::delta         (- new-value initial-value)
+                                   ::initial-value initial-value}))))
+
+#_(comment
+    (defn log-val [key ref old-state new-state]
+      (prn (:val new-state)))
+
+    (def foo (atom {:val 0}))
+
+    (add-watch foo :goo log-val)
+
+    (animate-to-new-value! foo easeOutQuad 50 1000 :val 20)
+
+    (remove-watch foo :goo))
+
+
 
 (defc header < rum/reactive []
   (let [palette (get-palette (rum/react palette-index))
@@ -42,6 +127,7 @@
                  on-edge         0
                  :flexDirection  "row"
                  :justifyContent "center"}}
+        ac-unit
         (text {:style {:color      (text-color palette)
                        :fontSize   font-size
                        :flex       1
@@ -70,26 +156,24 @@
                                            :on-edge     :top
                                            :formatter   percentage}))
 (defcs top-bar < rum/static
-                 (animate-function ::height #(- 1 %) 0.5)
                  "The top and bottom bars split the vertical flex space in the ratio (1-value) : value.
                  Both are animated views which animate height as a function of value.
                  Here we only allow 2 bars and so we can label them inside if there is space, or above if not.
                  The top bar colours are chosen to be the same as the background"
   [state palette value]
-  (animated-view {:style {:flex            (::height state)
-                          :backgroundColor (:primary palette)}}
-                 (when (< value 0.1)
-                   (inner-top-label palette value))))
+  (view {:style {:flex            (- 1 value)
+                 :backgroundColor (:primary palette)}}
+        (when (< value 0.1)
+          (inner-top-label palette value))))
 
 (defcs bottom-bar < rum/static
-                    (animate-function ::height identity 0.5)
   [state palette value]
-  (animated-view {:style {:flex            (::height state)
-                          :backgroundColor (:light-primary palette)}}
-                 (when (>= value 0.1)
-                   (if (> value 1)
-                     (error-label palette 1)
-                     (outer-bottom-label palette value)))))
+  (view {:style {:flex            value
+                 :backgroundColor (:light-primary palette)}}
+        (when (>= value 0.1)
+          (if (> value 1)
+            (error-label palette 1)
+            (outer-bottom-label palette value)))))
 
 (defcs labelled-vertical-bar < rum/static
   [state palette value]
@@ -112,13 +196,12 @@
       (status-bar {:hidden   false
                    :barStyle "light-content"})
 
-      ;(.log js/console (::height state))comment "tests"
-      ;(.log js/console animated-value)
       (view {:style page-style}
             (view {:style {:flex            0.3
                            :justifyContent  "center"
                            :alignItems      "center"
                            :backgroundColor (:dark-primary palette)}}
+
                   (text {:style {:color      (:light-primary palette)
                                  :fontWeight "400"
                                  :padding    20

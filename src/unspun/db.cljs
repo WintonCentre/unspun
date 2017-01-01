@@ -1,7 +1,7 @@
 (ns unspun.db
   (:require [rum.core :as rum]))
 
-(def max-nn 100)                                            ; maximum number needed to treat
+(def max-nn 1000)                                            ; maximum number needed to treat
 
 #_(def women-doctors "Hormone Replacement Therapy
 People: women in their 50s

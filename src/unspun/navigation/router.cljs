@@ -4,6 +4,7 @@
             [clojure.string :refer [lower-case]]
             [unspun.screens.startup-page :refer [startup-page]]
             [unspun.screens.bars :as bars]
+            [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
             ))
 
@@ -28,6 +29,7 @@
 (def Router (create-router (fn []
                              #js {:home  (fn [] (:rum/class (meta startup-page)))
                                   :bars (fn [] (:rum/class (meta bars/page)))
+                                  :rum-bars (fn [] (:rum/class (meta rum-bars/page)))
                                   :startup  (fn [] (:rum/class (meta logo-page)))})))
 
 
