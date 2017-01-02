@@ -3,6 +3,7 @@
             [cljs-exponent.components :refer [element]]
             [clojure.string :refer [lower-case]]
             [unspun.screens.startup-page :refer [startup-page]]
+            [unspun.screens.number-needed :as number-needed]
             [unspun.screens.bars :as bars]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
@@ -27,10 +28,11 @@
       c))
 
 (def Router (create-router (fn []
-                             #js {:home  (fn [] (:rum/class (meta startup-page)))
-                                  :bars (fn [] (:rum/class (meta bars/page)))
-                                  :rum-bars (fn [] (:rum/class (meta rum-bars/page)))
-                                  :startup  (fn [] (:rum/class (meta logo-page)))})))
+                             #js {:home       (fn [] (:rum/class (meta startup-page)))
+                                  :icon-array (fn [] (:rum/class (meta number-needed/page)))
+                                  :bars       (fn [] (:rum/class (meta bars/page)))
+                                  :rum-bars   (fn [] (:rum/class (meta rum-bars/page)))
+                                  :startup    (fn [] (:rum/class (meta logo-page)))})))
 
 
 #_(comment

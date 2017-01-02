@@ -18,7 +18,6 @@
   ;(startup-page)
   ;(bars/page)
   ;(logo-page)
-
   (navigation-provider {:router Router}
                        (drawer)
                        )
