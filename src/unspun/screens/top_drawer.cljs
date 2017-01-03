@@ -94,7 +94,7 @@
         (stack-navigation
           {:id                 "startup-stack"
            :defaultRouteConfig {:navigationBar {:height          (navbar-height)
-                                                :backgroundColor (:dark-primary palette)
+                                                :backgroundColor (:accent palette)
                                                 :tintColor       (:text-icons palette)
                                                 :title           "Startup"}}
            :initialRoute       (.getRoute Router "startup")}))
@@ -107,8 +107,8 @@
         (stack-navigation
           {:id                 "icons-stack"
            :defaultRouteConfig {:navigationBar {:height          (navbar-height)
-                                                :backgroundColor "#0084FF"
-                                                :tintColor       "#fff"
+                                                :backgroundColor (:accent palette)
+                                                :tintColor       (:text-icons palette)
                                                 :title           "Number Needed"}}
            :initialRoute       (.getRoute Router "icon-array")}))
 
@@ -120,8 +120,8 @@
         (stack-navigation
           {:id                 "bars-stack"
            :defaultRouteConfig {:navigationBar {:height          (navbar-height)
-                                                :backgroundColor "#0084FF"
-                                                :tintColor       "#fff"
+                                                :backgroundColor (:accent palette)
+                                                :tintColor       (:text-icons palette)
                                                 :title           "Compare with and without"}}
            :initialRoute       (.getRoute Router "rum-bars")}))
 
@@ -133,8 +133,8 @@
         (stack-navigation
           {:id                 "settings-stack"
            :defaultRouteConfig {:navigationBar {:height          (navbar-height)
-                                                :backgroundColor "#0084FF"
-                                                :tintColor       "#fff"
+                                                :backgroundColor (:accent palette)
+                                                :tintColor       (:text-icons palette)
                                                 :title           "Settings"}}
            :initialRoute       (.getRoute Router "rum-bars")}))
 
@@ -146,8 +146,8 @@
         (stack-navigation
           {:id                 "share-stack"
            :defaultRouteConfig {:navigationBar {:height          (navbar-height)
-                                                :backgroundColor "#0084FF"
-                                                :tintColor       "#fff"
+                                                :backgroundColor (:accent palette)
+                                                :tintColor       (:text-icons palette)
                                                 :title           "Share"}}
            :initialRoute       (.getRoute Router "rum-bars")}))
 
