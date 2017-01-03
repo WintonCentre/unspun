@@ -5,10 +5,10 @@
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index baseline-risk relative-risk to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]
+            [unspun.common :refer [react-native]]
             ))
 
 (def header-height 23)
-(def react-native (js/require "react-native"))
 (def animated (aget react-native "Animated"))
 (def animated-value (aget react-native "Animated" "Value"))
 (def animated-timing (aget react-native "Animated" "timing"))

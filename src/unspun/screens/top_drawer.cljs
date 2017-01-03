@@ -6,13 +6,17 @@
             [unspun.db :refer [app-state brand-title palette-index]]
             [themes.palettes :refer [palettes get-palette]]
             [unspun.navigation.router :refer [Router ex-navigation create-router navigation-provider
-                                              stack-navigation drawer-navigation drawer-navigation-item]]
+                                              stack-navigation drawer-navigation-layout drawer-navigation drawer-navigation-item]]
             [unspun.screens.startup-page :refer [startup-page]]
             [unspun.screens.bars :as bars]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
-            [unspun.common :refer [ios?]]))
+            [unspun.common :refer [react-native ios?]]))
 
+;; statusbar
+(def StatusBar (aget react-native "StatusBar"))
+(defn hide-status-bar [] (.setHidden StatusBar true))
+(defn show-status-bar [] (.setHidden StatusBar false))
 
 ;; vector-icons
 (def vector-icons (js/require "@exponent/vector-icons"))
@@ -77,22 +81,22 @@
       {:drawerPosition "right"
        :renderHeader   #(header palette)
        :drawerWidth    200
-       :drawerStyle    {:backgroundColor (:accent palette)}
-       :initialItem    "startup"}
+       :drawerStyle    {:backgroundColor (:accent palette)
+                        :height 20}
+       :initialItem    "startup"
+       }
 
       (drawer-navigation-item
         {:id            "startup"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-arrow-up-outline")
-         :renderTitle   (fn [isSelected] (title palette "Startup" isSelected))
-         }
+         :renderTitle   (fn [isSelected] (title palette "Startup" isSelected))}
         (stack-navigation
           {:id                 "startup-stack"
-           :defaultRouteConfig {:navigationBar {:height (navbar-height)
+           :defaultRouteConfig {:navigationBar {:height          (navbar-height)
                                                 :backgroundColor "yellow"
                                                 :tintColor       "red"
-                                                :title "Startup"
-                                                }}
+                                                :title           "Startup"}}
            :initialRoute       (.getRoute Router "startup")}))
 
       (drawer-navigation-item
@@ -102,10 +106,10 @@
          :renderTitle   (fn [isSelected] (title palette "Number needed" isSelected))}
         (stack-navigation
           {:id                 "icons-stack"
-           :defaultRouteConfig {:navigationBar {:height (navbar-height)
+           :defaultRouteConfig {:navigationBar {:height          (navbar-height)
                                                 :backgroundColor "#0084FF"
                                                 :tintColor       "#fff"
-                                                :title "Number Needed"}}
+                                                :title           "Number Needed"}}
            :initialRoute       (.getRoute Router "icon-array")}))
 
       (drawer-navigation-item
@@ -115,10 +119,10 @@
          :renderTitle   (fn [isSelected] (title palette "  Compare" isSelected))}
         (stack-navigation
           {:id                 "bars-stack"
-           :defaultRouteConfig {:navigationBar {:height (navbar-height)
+           :defaultRouteConfig {:navigationBar {:height          (navbar-height)
                                                 :backgroundColor "#0084FF"
                                                 :tintColor       "#fff"
-                                                :title "Compare with and without"}}
+                                                :title           "Compare with and without"}}
            :initialRoute       (.getRoute Router "rum-bars")}))
 
       (drawer-navigation-item
@@ -128,10 +132,10 @@
          :renderTitle   (fn [isSelected] (title palette "Settings" isSelected))}
         (stack-navigation
           {:id                 "settings-stack"
-           :defaultRouteConfig {:navigationBar {:height (navbar-height)
+           :defaultRouteConfig {:navigationBar {:height          (navbar-height)
                                                 :backgroundColor "#0084FF"
                                                 :tintColor       "#fff"
-                                                :title "Settings"}}
+                                                :title           "Settings"}}
            :initialRoute       (.getRoute Router "rum-bars")}))
 
       (drawer-navigation-item
@@ -141,10 +145,10 @@
          :renderTitle   (fn [isSelected] (title palette "Share" isSelected))}
         (stack-navigation
           {:id                 "share-stack"
-           :defaultRouteConfig {:navigationBar {:height (navbar-height)
+           :defaultRouteConfig {:navigationBar {:height          (navbar-height)
                                                 :backgroundColor "#0084FF"
                                                 :tintColor       "#fff"
-                                                :title "Share"}}
+                                                :title           "Share"}}
            :initialRoute       (.getRoute Router "rum-bars")}))
 
       )))

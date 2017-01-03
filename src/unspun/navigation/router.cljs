@@ -15,6 +15,7 @@
 
 (def navigation-provider (partial element (aget ex-navigation "NavigationProvider")))
 (def stack-navigation (partial element (aget ex-navigation "StackNavigation")))
+(def drawer-navigation-layout (partial element (aget ex-navigation "DrawerNavigationLayout")))
 (def drawer-navigation (partial element (aget ex-navigation "DrawerNavigation")))
 (def drawer-navigation-item (partial element (aget ex-navigation "DrawerNavigationItem")))
 
