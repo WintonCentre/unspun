@@ -73,64 +73,6 @@ Baseline risk 11.5%
 (def nn2 "On average, for one extra person to experience ~a, woulr require ~r more ~:*~[people~;person~:;people~] ~a.")
 
 
-
-(def format (partial cl-format nil))
-
-(defn increases? [a b] (if (> a b) "decreases" "increases"))
-
-(def scenarios {:bacon  {:exposure      "eating bacon sandwiches every day"
-                         :baseline-risk 0.06
-                         :relative-risk 1.18
-                         :increases?    increases?
-                         :outcome       "a heart attack or stroke"
-                         :cmp-form      [compare1 :exposure :increases? :outcome]
-                         :nn-form       [nn1 :number-needed :outcome]}
-                :hrt5   {:exposure      "taking HRT for 5 years"
-                         :baseline-risk 0.1
-                         :relative-risk  0.07
-                         :increases?    increases?
-                         :outcome       "ostioporosis"
-                         :cmp-form      [compare1 :exposure :increases? :outcome]
-                         :nn-form       [nn2 :outcome :number-needed]}
-                :wine   {:exposure      "drinking half a bottle of wine a day"
-                         :baseline-risk 0.06
-                         :relative-risk  0.07
-                         :increases?    increases?
-                         :outcome       "breast cancer"
-                         :cmp-form      [compare1 :exposure :increases? :outcome]
-                         :nn-form       [nn1 :number-needed :outcome]}
-                :wdoc   {:exposure      "being seen by a woman doctor"
-                         :baseline-risk 0.1
-                         :relative-risk  0.09
-                         :increases?    increases?
-                         :outcome       "death within 30 days of admission"
-                         :cmp-form      [compare1 :exposure :increases? :outcome]
-                         :nn-form       [nn1 :number-needed :outcome]}
-                :custom {:exposure      "enter the activity in question"
-                         :baseline-risk 0.5
-                         :relative-risk  0.6
-                         :increases?    increases?
-                         :outcome       "a heart attack or stroke"
-                         :cmp-form      [compare1 :exposure :increases? :outcome]
-                         :nn-form       [nn1 :number-needed :outcome]}})
-
-(defn text-generator [scenario-key form]
-  (let [scenario (scenario-key scenarios)
-        form (:form scenario)]))
-
-(format compare1 "eating bacon sandwiches every day" (increases? 6 7) "a heart attack or stroke" 6 7)
-(format nn1 2400 "eating bacon sandwiches every day" "a heart attack or stroke")
-
-(def presets2 {:bacon {:bar           [:format-bar "eating bacon sandwiches every day" [:increasing :a :b] "a heart attack or stroke" :a :b]
-                       :nnt           ""                    ;If [round(1/(P1 - P0))] people like you ate [A] we would have one extra person experiencing [B].
-                       :number-needed "On average, number-needed more people must eat a bacon sandwich every day before we see one extra heart attack or stroke"}})
-
-
-
-
-(defn summary-text [scenario presentation]
-  (get-in presets2 scenario presentation))
-
 ;;;
 ;; APP-STATE
 ;;;
@@ -178,4 +120,69 @@ Baseline risk 11.5%
   "convert x to a percentage"
   [x]
   (Math.round (* 100 x)))
+
+
+;;;;;
+
+
+(def format (partial cl-format nil))
+
+(defn increases? [a b] (if (> a b) "decreases" "increases"))
+
+(def scenarios {:bacon {:exposure      "eating bacon sandwiches every day"
+                        :baseline-risk 0.06
+                        :relative-risk 1.18
+                        :increases?    increases?
+                        :outcome       "a heart attack or stroke"
+                        :cmp-form      [compare1 :exposure :increases? :outcome]
+                        :nn-form       [nn1 :number-needed :outcome]}
+                :hrt5  {:exposure      "taking HRT for 5 years"
+                        :baseline-risk 0.1
+                        :relative-risk 0.93
+                        :increases?    increases?
+                        :outcome       "ostioporosis"
+                        :cmp-form      [compare1 :exposure :increases? :outcome]
+                        :nn-form       [nn2 :outcome :number-needed]}
+                :wine  {:exposure      "drinking half a bottle of wine a day"
+                        :baseline-risk 0.06
+                        :relative-risk 0.07
+                        :increases?    increases?
+                        :outcome       "breast cancer"
+                        :cmp-form      [compare1 :exposure :increases? :outcome]
+                        :nn-form       [nn1 :number-needed :outcome]}
+                :wdoc  {:exposure      "being seen by a woman doctor"
+                        :baseline-risk 0.1
+                        :relative-risk 0.9
+                        :increases?    increases?
+                        :outcome       "death within 30 days of admission"
+                        :cmp-form      [compare1 :exposure :increases? :outcome]
+                        :nn-form       [nn1 :number-needed :outcome]}
+                })
+
+(defn text-generator [presentation {:keys [exposure baseline-risk relative-risk increases? outcome]}]
+  (let [brpc (to-pc baseline-risk)
+        erpc (to-pc (* baseline-risk relative-risk))]
+    (cond
+      (= presentation compare1)
+      (format compare1 exposure (increases? brpc erpc) outcome brpc erpc)
+
+      (= presentation nn1)
+      (format nn1 (number-needed relative-risk baseline-risk) exposure outcome)
+
+      :else
+      nil)))
+
+(format compare1 "eating bacon sandwiches every day" (increases? 6 7) "a heart attack or stroke" 6 7)
+(format nn1 2400 "eating bacon sandwiches every day" "a heart attack or stroke")
+
+
+(prn (text-generator nn1 (:hrt5 scenarios)))
+(prn (text-generator compare1 (:hrt5 scenarios)))
+(prn (text-generator nn1 (:bacon scenarios)))
+(prn (text-generator compare1 (:bacon scenarios)))
+(prn (text-generator nn1 (:wine scenarios)))
+(prn (text-generator compare1 (:wine scenarios)))
+(prn (text-generator nn1 (:wdoc scenarios)))
+(prn (text-generator compare1 (:wdoc scenarios)))
+
 
