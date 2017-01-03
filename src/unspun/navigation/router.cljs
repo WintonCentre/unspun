@@ -2,7 +2,7 @@
   (:require [cljs-exponent.core :refer [exponent]]
             [cljs-exponent.components :refer [element]]
             [clojure.string :refer [lower-case]]
-            [unspun.screens.startup-page :refer [startup-page]]
+            [unspun.screens.svg-test-page :refer [test-page]]
             [unspun.screens.number-needed :as number-needed]
             [unspun.screens.bars :as bars]
             [unspun.screens.rum-bars :as rum-bars]
@@ -29,7 +29,7 @@
       c))
 
 (def Router (create-router (fn []
-                             #js {:home       (fn [] (:rum/class (meta startup-page)))
+                             #js {:home       (fn [] (:rum/class (meta test-page)))
                                   :icon-array (fn [] (:rum/class (meta number-needed/page)))
                                   :bars       (fn [] (:rum/class (meta bars/page)))
                                   :rum-bars   (fn [] (:rum/class (meta rum-bars/page)))

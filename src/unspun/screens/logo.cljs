@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index baseline-risk relative-risk brand-title to-pc clamp]]
+            [unspun.db :refer [app-state palette-index baseline-risk relative-risk brand-title app-banner to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]))
 
 (def logo-img (js/require "./assets/images/logo.png"))
@@ -26,13 +26,18 @@
 (defc logo-page < rum/reactive []
   (view {:style (page-style)}
         (text {:style (merge {:paddingTop 40 :flex 0.1} (brand-style))}
-                (rum/react brand-title))
-        (view {:style {:flex 0.8
+              (rum/react brand-title))
+        (text {:style (merge {:paddingTop 0 :flex 0.1} (brand-style))}
+              (rum/react app-banner))
+        (view {:style {:flex 0.4
+                       ;:backgroundColor "red"
+                       :justifyContent "flex-start"
                        :alignItems "center"}}
               (image {:source     logo-img
-                      :resizeMode "stretch"
-                      :style      {:transform [{:scale 0.3}]}}))
-        (touchable-highlight {:style   {:flex 0.1
+                      :resizeMode "contain"
+                      :style      {:marginTop -170
+                                   :transform [{:scale 0.3}]}}))
+        (touchable-highlight {:style   {:flex 0.075
                                         :margin          20
                                         :backgroundColor (:accent (get-palette 0))
                                         :borderRadius    30

@@ -1,7 +1,8 @@
 (ns unspun.db
-  (:require [rum.core :as rum]))
+  (:require [rum.core :as rum]
+            [clojure.pprint :refer [cl-format]]))
 
-(def max-nn 1000)                                            ; maximum number needed to treat
+(def max-nn 1000)                                           ; maximum number needed to treat
 
 #_(def women-doctors "Hormone Replacement Therapy
 People: women in their 50s
@@ -66,12 +67,34 @@ Baseline risk 11.5%
 
 (defn get-icon-set [kind style] {})
 
+(def bacon-bar "Without bacon sandwiches, the risk of ~a is ~d%, ~a to ~d% with ")
+(def bacon-nn "On average ~r more ~:*~[people~;person~:;people~] ~a would mean one extra person experiences ~a.")
+(def format (partial cl-format nil))
+
+(defn increasing? [a b] [a (if (> a b) "increasing" "decreasing") b])
+(format bacon-bar "a heart attack or stroke" 6 "increasing" 7)
+(format bacon-nn 2400 "eating bacon sandwiches every day" "a heart attack or stroke")
+
+(def presets2 {:bacon {:compare       (str "Without bacon sandwiches, the risk of heart attack or stroke is "
+                                           ;brpc
+                                           "%, "
+                                           ;(if (< brpc erpc) "increasing" "decreasing")
+                                           " to "
+                                           ;erpc
+                                           "% with bacon sandwiches")
+                       :nnt           ""                    ;If [round(1/(P1 - P0))] people like you ate [A] we would have one extra person experiencing [B].
+                       :number-needed "On average, number-needed more people must eat a bacon sandwich every day before we see one extra heart attack or stroke"}})
+
+
+(defn summary-text [scenario presentation]
+  (get-in presets2 scenario presentation))
 
 ;;;
 ;; APP-STATE
 ;;;
 (defonce app-state (atom {:palette-index   0
                           :brand-title     "Winton Centre"
+                          :app-banner      "Relative Risks Unspun"
                           :icon-set        (get-icon-set :women :head)
                           :future-event    :cardio10
                           :exposure        :bacon
@@ -82,6 +105,7 @@ Baseline risk 11.5%
 
 (def palette-index (rum/cursor-in app-state [:palette-index]))
 (def brand-title (rum/cursor-in app-state [:brand-title]))
+(def app-banner (rum/cursor-in app-state [:app-banner]))
 (def icon-set (rum/cursor-in app-state [:icon-set]))
 (def future-event (rum/cursor-in app-state [:future-event]))
 (def exposure (rum/cursor-in app-state [:exposure]))

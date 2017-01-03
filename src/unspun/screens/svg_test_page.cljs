@@ -1,4 +1,4 @@
-(ns unspun.screens.startup-page
+(ns unspun.screens.svg-test-page
   (:require-macros [rum.core :refer [defc]])
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
@@ -13,7 +13,7 @@
    :fontSize       50
    })
 
-(defn startup-page-style [palette]
+(defn test-page-style [palette]
   {:flex            1
    :backgroundColor (:primary palette)})
 
@@ -23,9 +23,9 @@
   (text {
          :style style} title))
 
-(defc startup-page < rum/reactive [& {:keys [title logo launcher style]
+(defc test-page < rum/reactive [& {:keys [title logo launcher style]
                                       :or   {title startup-title
-                                             style (startup-page-style (get-palette (rum/react palette-index)))}}]
+                                             style (test-page-style (get-palette (rum/react palette-index)))}}]
   (let [palette (get-palette (rum/react palette-index))]
     (view {:style style}
           (title)

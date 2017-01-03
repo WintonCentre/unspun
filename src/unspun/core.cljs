@@ -15,7 +15,7 @@
 
 (defc AppRoot < rum/reactive [state]
 
-  ;(startup-page)
+  ;(test-page)
   ;(bars/page)
   ;(logo-page)
   (navigation-provider {:router Router}

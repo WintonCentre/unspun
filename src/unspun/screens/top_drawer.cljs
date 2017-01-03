@@ -7,7 +7,7 @@
             [themes.palettes :refer [palettes get-palette]]
             [unspun.navigation.router :refer [Router ex-navigation create-router navigation-provider
                                               stack-navigation drawer-navigation-layout drawer-navigation drawer-navigation-item]]
-            [unspun.screens.startup-page :refer [startup-page]]
+            [unspun.screens.svg-test-page :refer [test-page]]
             [unspun.screens.bars :as bars]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
@@ -94,8 +94,8 @@
         (stack-navigation
           {:id                 "startup-stack"
            :defaultRouteConfig {:navigationBar {:height          (navbar-height)
-                                                :backgroundColor "yellow"
-                                                :tintColor       "red"
+                                                :backgroundColor (:dark-primary palette)
+                                                :tintColor       (:text-icons palette)
                                                 :title           "Startup"}}
            :initialRoute       (.getRoute Router "startup")}))
 
