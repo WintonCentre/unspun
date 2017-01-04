@@ -13,33 +13,6 @@
             [unspun.screens.logo :as logo :refer [logo-page]]
             [unspun.common :refer [react-native ios?]]))
 
-;; statusbar
-(def StatusBar (aget react-native "StatusBar"))
-(defn hide-status-bar [] (.setHidden StatusBar true))
-(defn show-status-bar [] (.setHidden StatusBar false))
-
-;; vector-icons
-(def vector-icons (js/require "@exponent/vector-icons"))
-(def Ionicons (aget vector-icons "Ionicons"))
-
-(defn ionicon [attrs] (.createElement js/React Ionicons attrs))
-
-(def ac-unit (ionicon (clj->js {:name  "md-checkmark-circle"
-                                :size  30
-                                :style {:transform [{:rotate "90deg"} {:scale 0.8}]}
-                                :color "white"})))
-
-(defn vector-icon [family attrs] (.createElement js/React family attrs))
-
-(def bars-icon (vector-icon Ionicons (clj->js {:name  "ios-podium"
-                                               :size  30
-                                               :style {:width 14}
-                                               :color "white"})))
-
-(defn menu-icon [name] (ionicon (clj->js {:name  name
-                                          :size  30
-                                          :color "white"})))
-
 (defn styles [palette] (.create style-sheet
 
                                 (clj->js {:header            {:flex       1
@@ -58,6 +31,26 @@
                                           :selectedItemStyle {:backgroundColor (:light-primary palette)}
                                           })))
 
+
+;; statusbar
+(def StatusBar (aget react-native "StatusBar"))
+(defn hide-status-bar [] (.setHidden StatusBar true))
+(defn show-status-bar [] (.setHidden StatusBar false))
+
+;; vector-icons
+(def vector-icons (js/require "@exponent/vector-icons"))
+(def Ionicons (aget vector-icons "Ionicons"))
+
+(defn ionicon [attrs] (.createElement js/React Ionicons attrs))
+
+(defn menu-icon [name palette isSelected]
+  (let [st (styles palette)]
+    (ionicon (clj->js {:name  name
+                       :size  24
+                       :style (js/Array. (aget st "buttonTitleText")
+                                         (when isSelected (aget st "selectedText"))
+                                         (when (= name "ios-podium") #js {:width 12}))}))))
+
 (rum/defc header [palette]
   (let [st (styles palette)]
     (view {:style (aget st "header")})))
@@ -68,8 +61,8 @@
                              (if isSelected (aget st "selectedText")))}
           a-string)))
 
-(rum/defc icon [name isSelected]
-  (menu-icon name))
+(rum/defc icon [name palette isSelected]
+  (menu-icon name palette isSelected))
 
 (defn navbar-height [] (if (ios?) 60 71))
 
@@ -82,14 +75,14 @@
        :renderHeader   #(header palette)
        :drawerWidth    200
        :drawerStyle    {:backgroundColor (:accent palette)
-                        :height 20}
+                        :height          20}
        :initialItem    "startup"
        }
 
       (drawer-navigation-item
         {:id            "startup"
          :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    #(menu-icon "ios-arrow-up-outline")
+         :renderIcon    #(menu-icon "ios-arrow-up-outline" palette %)
          :renderTitle   (fn [isSelected] (title palette "Startup" isSelected))}
         (stack-navigation
           {:id                 "startup-stack"
@@ -102,7 +95,7 @@
       (drawer-navigation-item
         {:id            "icon-array"
          :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    #(menu-icon "ios-body")
+         :renderIcon    #(menu-icon "ios-body" palette %)
          :renderTitle   (fn [isSelected] (title palette "Number needed" isSelected))}
         (stack-navigation
           {:id                 "icons-stack"
@@ -110,12 +103,12 @@
                                                 :backgroundColor (:accent palette)
                                                 :tintColor       (:text-icons palette)
                                                 :title           "Number Needed"}}
-           :initialRoute       (.getRoute Router "icon-array")}))
+           :initialRoute       (.getRoute Router "not-yet")}))
 
       (drawer-navigation-item
         {:id            "rum-bars"
          :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    (fn [] bars-icon)
+         :renderIcon    #(menu-icon "ios-podium" palette %)
          :renderTitle   (fn [isSelected] (title palette "  Compare" isSelected))}
         (stack-navigation
           {:id                 "bars-stack"
@@ -128,7 +121,7 @@
       (drawer-navigation-item
         {:id            "settings"
          :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    #(menu-icon "ios-settings")
+         :renderIcon    #(menu-icon "ios-settings" palette %)
          :renderTitle   (fn [isSelected] (title palette "Settings" isSelected))}
         (stack-navigation
           {:id                 "settings-stack"
@@ -136,12 +129,13 @@
                                                 :backgroundColor (:accent palette)
                                                 :tintColor       (:text-icons palette)
                                                 :title           "Settings"}}
-           :initialRoute       (.getRoute Router "rum-bars")}))
+           :initialRoute       (.getRoute Router "not-yet")}))
+
 
       (drawer-navigation-item
         {:id            "share"
          :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    #(menu-icon "ios-share-outline")
+         :renderIcon    #(menu-icon "ios-share-outline" palette %)
          :renderTitle   (fn [isSelected] (title palette "Share" isSelected))}
         (stack-navigation
           {:id                 "share-stack"
@@ -149,6 +143,6 @@
                                                 :backgroundColor (:accent palette)
                                                 :tintColor       (:text-icons palette)
                                                 :title           "Share"}}
-           :initialRoute       (.getRoute Router "rum-bars")}))
+           :initialRoute       (.getRoute Router "not-yet")}))
 
       )))

@@ -175,14 +175,14 @@ Baseline risk 11.5%
 (format compare1 "eating bacon sandwiches every day" (increases? 6 7) "a heart attack or stroke" 6 7)
 (format nn1 2400 "eating bacon sandwiches every day" "a heart attack or stroke")
 
-
-(prn (text-generator nn1 (:hrt5 scenarios)))
-(prn (text-generator compare1 (:hrt5 scenarios)))
-(prn (text-generator nn1 (:bacon scenarios)))
-(prn (text-generator compare1 (:bacon scenarios)))
-(prn (text-generator nn1 (:wine scenarios)))
-(prn (text-generator compare1 (:wine scenarios)))
-(prn (text-generator nn1 (:wdoc scenarios)))
-(prn (text-generator compare1 (:wdoc scenarios)))
+(comment
+  (prn (text-generator nn1 (:hrt5 scenarios)))
+  (prn (text-generator compare1 (:hrt5 scenarios)))
+  (prn (text-generator nn1 (:bacon scenarios)))
+  (prn (text-generator compare1 (:bacon scenarios)))
+  (prn (text-generator nn1 (:wine scenarios)))
+  (prn (text-generator compare1 (:wine scenarios)))
+  (prn (text-generator nn1 (:wdoc scenarios)))
+  (prn (text-generator compare1 (:wdoc scenarios))))
 
 

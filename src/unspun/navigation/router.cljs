@@ -7,6 +7,7 @@
             [unspun.screens.bars :as bars]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
+            [unspun.screens.not-yet :as not-yet]
             ))
 
 ;; ex-navigation
@@ -33,7 +34,8 @@
                                   :icon-array (fn [] (:rum/class (meta number-needed/page)))
                                   :bars       (fn [] (:rum/class (meta bars/page)))
                                   :rum-bars   (fn [] (:rum/class (meta rum-bars/page)))
-                                  :startup    (fn [] (:rum/class (meta logo-page)))})))
+                                  :startup    (fn [] (:rum/class (meta logo-page)))
+                                  :not-yet    (fn [] (:rum/class (meta not-yet/page)))})))
 
 
 #_(comment
