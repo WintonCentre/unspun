@@ -8,7 +8,6 @@
             [unspun.navigation.router :refer [Router ex-navigation create-router navigation-provider
                                               stack-navigation drawer-navigation-layout drawer-navigation drawer-navigation-item]]
             [unspun.screens.svg-test-page :refer [test-page]]
-            [unspun.screens.bars :as bars]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
             [unspun.common :refer [react-native ios?]]))
@@ -103,7 +102,7 @@
                                                 :backgroundColor (:accent palette)
                                                 :tintColor       (:text-icons palette)
                                                 :title           "Number Needed"}}
-           :initialRoute       (.getRoute Router "not-yet")}))
+           :initialRoute       (.getRoute Router "number-needed")}))
 
       (drawer-navigation-item
         {:id            "rum-bars"
@@ -129,7 +128,7 @@
                                                 :backgroundColor (:accent palette)
                                                 :tintColor       (:text-icons palette)
                                                 :title           "Settings"}}
-           :initialRoute       (.getRoute Router "not-yet")}))
+           :initialRoute       (.getRoute Router "settings")}))
 
 
       (drawer-navigation-item

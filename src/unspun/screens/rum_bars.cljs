@@ -3,25 +3,9 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index baseline-risk relative-risk to-pc clamp]]
+            [unspun.db :refer [app-state palette-index scenario scenarios text-generator compare1 to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]
             ))
-
-
-#_[icon-button {:name             "facebook"
-                :width            184.5
-                :background-color "#3b5998"
-                :on-press         (fn []
-                                    (login/login-with-facebook))}
-   "Sign in with Facebook"]
-;(def wrap-svg (partial aget exponent "Components" "Svg"))
-;
-;(defn wrap-svg-component [name]
-;  (partial element (wrap-svg name)))
-;
-;(def svg (partial element (wrap-svg)))
-;(def circle (wrap-svg-component "Circle"))
-
 
 ;; vector-icons
 (def vector-icons (js/require "@exponent/vector-icons"))
@@ -33,44 +17,6 @@
                                 :size  30
                                 :style {:transform [{:rotate "90deg"} {:scale 0.8}]}
                                 :color "white"})))
-
-
-#_(def checkmark (ion-icons {:name  "md-checkmark-circle"
-                             :size  32
-                             :color "green"}))
-
-
-;(def MaterialIcons (js/require "@exponent/vector-icons/MaterialIcons"))
-;(defn material-icon-class [name] (aget MaterialIcons "default" name))
-;(defn material-icon [name] (partial element (material-icon-class name)))
-#_(def material-icons (aget vector-icons "MaterialIcons"))
-
-
-;(def FontAwesome (js/require "@exponent/vector-icons/FontAwesome"))
-
-;(def icon (r/adapt-react-class (aget FontAwesome "default")))
-;(def FontAwesomeButton (aget FontAwesome "default" "Button"))
-;(def icon-button (r/adapt-react-class FontAwesomeButton))
-
-;(def MaterialIcons (js/require "@exponent/vector-icons/MaterialIcons"))
-
-
-#_(defn m-icon [name]
-    (partial element (aget m name)))
-
-
-#_(def MaterialIconButton (aget MaterialIcons "default" "Button"))
-;(def material-icon-button (r/adapt-react-ass MaterialIconButton))
-
-#_(comment
-    (def wrap-material (partial aget MaterialIcons))
-
-    (defn wrap-svg-component [name]
-      (partial element (wrap-svg name)))
-
-    (def svg (partial element (wrap-svg)))
-    (def circle (wrap-svg-component "Circle")))
-
 
 (def header-height 23)
 (def react-native (js/require "react-native"))
@@ -100,7 +46,7 @@
                                    ::delta         (- new-value initial-value)
                                    ::initial-value initial-value}))))
 
-#_(comment
+#_(comment                                                  ;; tests
     (defn log-val [key ref old-state new-state]
       (prn (:val new-state)))
 
@@ -127,7 +73,6 @@
                  on-edge         0
                  :flexDirection  "row"
                  :justifyContent "center"}}
-        ac-unit
         (text {:style {:color      (text-color palette)
                        :fontSize   font-size
                        :flex       1
@@ -155,19 +100,19 @@
                                            :text-color  :error
                                            :on-edge     :top
                                            :formatter   percentage}))
-(defcs top-bar < rum/static
+(defc top-bar < rum/static
                  "The top and bottom bars split the vertical flex space in the ratio (1-value) : value.
                  Both are animated views which animate height as a function of value.
                  Here we only allow 2 bars and so we can label them inside if there is space, or above if not.
                  The top bar colours are chosen to be the same as the background"
-  [state palette value]
+  [palette value]
   (view {:style {:flex            (- 1 value)
                  :backgroundColor (:primary palette)}}
         (when (< value 0.1)
           (inner-top-label palette value))))
 
-(defcs bottom-bar < rum/static
-  [state palette value]
+(defc bottom-bar < rum/static
+  [palette value]
   (view {:style {:flex            value
                  :backgroundColor (:light-primary palette)}}
         (when (>= value 0.1)
@@ -175,16 +120,18 @@
             (error-label palette 1)
             (outer-bottom-label palette value)))))
 
-(defcs labelled-vertical-bar < rum/static
-  [state palette value]
+(defc labelled-vertical-bar < rum/static
+  [palette value]
   (view {:style {:flex 1}}
         (top-bar palette value)
         (bottom-bar palette value)
         ))
 
-(defcs page < rum/reactive [state]
-  (let [br (rum/react baseline-risk)
-        rr (rum/react relative-risk)
+(defc page < rum/reactive []
+  (let [scenar ((rum/react scenario) scenarios)
+        db (rum/react app-state)
+        br (:baseline-risk scenar)
+        rr (:relative-risk scenar)
         brpc (to-pc br)
         er (* br rr)
         erpc (to-pc (clamp 0 1 er))
@@ -207,14 +154,9 @@
                                  :padding    20
                                  ;:paddingTop 40
                                  :fontSize   24}}
-                        (str "Without bacon sandwiches, the risk of heart attack or stroke is "
-                             brpc
-                             "%, "
-                             (if (< brpc erpc) "increasing" "decreasing")
-                             " to "
-                             erpc
-                             "% with bacon sandwiches"
-                             )))
+                        (text-generator compare1 scenar)
+
+                        ))
             (view {:style {:flex          0.6
                            :flexDirection "row"}}
                   (view {:style {:flex           0.3

@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index baseline-risk relative-risk brand-title app-banner to-pc clamp]]
+            [unspun.db :refer [app-state palette-index brand-title app-banner to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]))
 
 (def logo-img (js/require "./assets/images/logo.png"))
