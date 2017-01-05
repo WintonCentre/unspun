@@ -5,8 +5,10 @@
             [cljs-exponent.components :refer [element text view image touchable-highlight style-sheet] :as rn]
             [unspun.db :refer [app-state brand-title palette-index]]
             [themes.palettes :refer [palettes get-palette]]
-            [unspun.navigation.router :refer [Router ex-navigation create-router navigation-provider
-                                              stack-navigation drawer-navigation-layout drawer-navigation drawer-navigation-item]]
+            [shared.ui :refer [ex-navigation create-router navigation-provider
+                               stack-navigation drawer-navigation-layout drawer-navigation drawer-navigation-item
+                               ionicon]]
+            [unspun.navigation.router :refer [Router]]
             [unspun.screens.svg-test-page :refer [test-page]]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
@@ -36,11 +38,7 @@
 (defn hide-status-bar [] (.setHidden StatusBar true))
 (defn show-status-bar [] (.setHidden StatusBar false))
 
-;; vector-icons
-(def vector-icons (js/require "@exponent/vector-icons"))
-(def Ionicons (aget vector-icons "Ionicons"))
 
-(defn ionicon [attrs] (.createElement js/React Ionicons attrs))
 
 (defn menu-icon [name palette isSelected]
   (let [st (styles palette)]

@@ -37,20 +37,19 @@
 ;;;
 ;; APP-STATE
 ;;;
-(defonce app-state (atom {:palette-index   0
-                          :brand-title     "Winton Centre"
-                          :app-banner      "Relative Risks Unspun"
-                          :scenario        :hrt5
-                          ;:exposure        :bacon
-                          ;:relative-risk   1.18
-                          ;:baseline-risk   0.06
-                          ;:evidence-source "enter evidence source"
+(defonce app-state (atom {:palette-index 0
+                          :brand-title   "Winton Centre"
+                          :app-banner    "Relative Risks Unspun"
+                          :scenario      :hrt5
+                          :notifications true
+                          :screen        :home
                           }))
 
 (def palette-index (rum/cursor-in app-state [:palette-index]))
 (def brand-title (rum/cursor-in app-state [:brand-title]))
 (def app-banner (rum/cursor-in app-state [:app-banner]))
 (def scenario (rum/cursor-in app-state [:scenario]))
+(def notifications (rum/cursor-in app-state [:notifications]))
 
 
 ;;;
@@ -82,45 +81,48 @@
 ;;;;;
 
 
-(def format (partial cl-format nil))
-
-(defn increases? [a b] (if (> a b) "decrease" "increase"))
-
-(def scenarios {:bacon {:subjects      ["person" "people"]
-                        :risk          "their risk"
-                        :exposure      "eating bacon sandwiches every day"
-                        :baseline-risk 0.06
-                        :relative-risk 1.18
-                        :increases?    increases?
-                        :outcome       "a heart attack or stroke"
-                        }
-                :hrt5  {:subjects      ["woman" "women in their 50s"]
-                        :risk          "their lifetime risk"
-                        :exposure      "taking HRT for 5 years"
-                        :baseline-risk 0.1
-                        :relative-risk 1.05
-                        :increases?    increases?
-                        :outcome       "breast cancer"
-                        }
-                :wine  {:subjects      ["woman" "women"]
-                        :risk          "their lifetime risk"
-                        :exposure      "drinking half a bottle of wine a day"
-                        :baseline-risk 0.12
-                        :relative-risk 1.30
-                        :increases?    increases?
-                        :outcome       "breast cancer"
-                        }
-                :wdoc  {:subjects      ["person" "US people over 65 admitted to hospital under Medicare"]
-                        :risk          "their risk"
-                        :exposure      "being seen by a female doctor"
-                        :baseline-risk 0.115
-                        :relative-risk 0.96
-                        :increases?    increases?
-                        :outcome       "death within 30 days of admission"
-                        }})
 
 
-
+(def scenarios {:bacon   {:subjects        ["person" "people"]
+                          :risk            "their risk"
+                          :exposure        "eating bacon sandwiches every day"
+                          :baseline-risk   0.06
+                          :relative-risk   1.18
+                          :outcome         "a heart attack or stroke"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }
+                :hrt5    {:subjects        ["woman" "women in their 50s"]
+                          :risk            "their lifetime risk"
+                          :exposure        "taking HRT for 5 years"
+                          :baseline-risk   0.1
+                          :relative-risk   1.05
+                          :outcome         "breast cancer"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }
+                :wine    {:subjects        ["woman" "women"]
+                          :risk            "their lifetime risk"
+                          :exposure        "drinking half a bottle of wine a day"
+                          :baseline-risk   0.12
+                          :relative-risk   1.30
+                          :outcome         "breast cancer"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }
+                :wdoc    {:subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
+                          :risk            "their risk"
+                          :exposure        "being seen by a female doctor"
+                          :baseline-risk   0.115
+                          :relative-risk   0.96
+                          :outcome         "death within 30 days of admission"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }
+                :statins {:subjects        ["person" "people"]
+                          :risk            "their risk"
+                          :exposure        "taking statins"
+                          :baseline-risk   0.1
+                          :relative-risk   0.09
+                          :outcome         "heart attack or stroke in 10 years"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }})
 
 
 #_(def women-doctors "Hormone Replacement Therapy
@@ -140,6 +142,12 @@ Relative risk: 0.96
 Baseline risk 11.5%
 ")
 
+(def format (partial cl-format nil))
+
+(defn increase? [a b] (if (> a b) "decrease" "increase"))
+
+(defn extra [a b] (if (< a b) "extra" "fewer"))
+
 (defn singular-form [[singular _]] singular)
 
 (defn n-plural-form [[singular plural]]
@@ -148,9 +156,9 @@ Baseline risk 11.5%
 (defn compare1 [subjects]
   "~@(~a~) ~a ~a ~a of ~b from ~d% to ~d%")
 (defn nn1 [subjects]
-  (str "On average, ~d more ~:*" (n-plural-form subjects) " ~a would mean one extra " (singular-form subjects) " experiences ~a."))
+  (str "On average, ~d more ~:*" (n-plural-form subjects) " ~a would mean one ~a " (singular-form subjects) " experiences ~a."))
 (defn nn2 [subjects]
-  (str "On average, for one extra " (singular-form subjects) " to experience ~a, ~d more ~:*" (n-plural-form subjects) " would need to be ~a."))
+  (str "On average, for one ~a " (singular-form subjects) " to experience ~a, ~d more ~:*" (n-plural-form subjects) " would need to be ~a."))
 
 
 (defn text-generator [presentation {:keys [subjects risk exposure baseline-risk relative-risk outcome]}]
@@ -158,29 +166,38 @@ Baseline risk 11.5%
         erpc (to-pc (* baseline-risk relative-risk))]
     (cond
       (= presentation compare1)
-      (format (compare1 subjects) (second subjects) exposure (increases? brpc erpc) risk outcome brpc erpc)
+      (format (compare1 subjects) (second subjects) exposure (increase? brpc erpc) risk outcome brpc erpc)
 
       (= presentation nn1)
-      (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure outcome)
+      (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure (extra baseline-risk relative-risk) outcome)
 
       (= presentation nn2)
-      (format (nn2 subjects) outcome (number-needed relative-risk baseline-risk) exposure)
+      (format (nn2 subjects) (extra baseline-risk relative-risk) outcome (number-needed relative-risk baseline-risk) exposure)
 
       :else
       nil)))
 
+;; todo: Cache these, or just generate as needed?
 
-(text-generator nn1 (:hrt5 scenarios))
-(text-generator nn2 (:hrt5 scenarios))
-(text-generator compare1 (:hrt5 scenarios))
-(text-generator nn1 (:bacon scenarios))
-(text-generator nn2 (:bacon scenarios))
-(text-generator compare1 (:bacon scenarios))
-(text-generator nn1 (:wine scenarios))
-(text-generator nn2 (:wine scenarios))
-(text-generator compare1 (:wine scenarios))
-(text-generator nn1 (:wdoc scenarios))
-(text-generator nn2 (:wdoc scenarios))
-(text-generator compare1 (:wdoc scenarios))
+(comment
+  (text-generator nn1 (:hrt5 scenarios))
+  (text-generator nn2 (:hrt5 scenarios))
+  (text-generator compare1 (:hrt5 scenarios))
+
+  (text-generator nn1 (:bacon scenarios))
+  (text-generator nn2 (:bacon scenarios))
+  (text-generator compare1 (:bacon scenarios))
+
+  (text-generator nn1 (:wine scenarios))
+  (text-generator nn2 (:wine scenarios))
+  (text-generator compare1 (:wine scenarios))
+
+  (text-generator nn1 (:wdoc scenarios))
+  (text-generator nn2 (:wdoc scenarios))
+  (text-generator compare1 (:wdoc scenarios))
+
+  (text-generator nn1 (:statins scenarios))
+  (text-generator nn2 (:statins scenarios))
+  (text-generator compare1 (:statins scenarios)))
 
 

@@ -7,8 +7,8 @@
             [unspun.navigation.router :refer [Router]]
             [unspun.screens.top-drawer :refer [drawer]]
             [themes.palettes :refer [palettes get-palette]]
-            [unspun.navigation.router :refer [Router ex-navigation create-router navigation-provider
-                                              stack-navigation drawer-navigation drawer-navigation-item]]
+            [shared.ui :refer [ex-navigation create-router navigation-provider
+                               stack-navigation drawer-navigation drawer-navigation-item]]
             [unspun.screens.top-drawer :refer [drawer]]
             ))
 

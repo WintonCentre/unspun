@@ -2,42 +2,25 @@
   (:require [cljs-exponent.core :refer [exponent]]
             [cljs-exponent.components :refer [element]]
             [clojure.string :refer [lower-case]]
+            [shared.ui :refer [create-router]]
             [unspun.screens.svg-test-page :refer [test-page]]
             [unspun.screens.number-needed :as number-needed]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
+            [unspun.screens.palette :as palette]
             [unspun.screens.settings :as settings]
             [unspun.screens.not-yet :as not-yet]
             ))
 
-;; ex-navigation
-(def ex-navigation (js/require "@exponent/ex-navigation"))
-
-
-(def navigation-provider (partial element (aget ex-navigation "NavigationProvider")))
-(def stack-navigation (partial element (aget ex-navigation "StackNavigation")))
-(def drawer-navigation-layout (partial element (aget ex-navigation "DrawerNavigationLayout")))
-(def drawer-navigation (partial element (aget ex-navigation "DrawerNavigation")))
-(def drawer-navigation-item (partial element (aget ex-navigation "DrawerNavigationItem")))
-
-(def create-router (aget ex-navigation "createRouter"))
-
-#_(defn wrap-route
-    [component route-opts]
-    (let [c (r/create-class {:component-will-mount set-nav
-                             :reagent-render       (fn [] component)})]
-      (aset c "route" (clj->js route-opts))
-      c))
-
 (def Router (create-router (fn []
-                             #js {:home       (fn [] (:rum/class (meta test-page)))
-                                  :icon-array (fn [] (:rum/class (meta number-needed/page)))
-                                  :rum-bars   (fn [] (:rum/class (meta rum-bars/page)))
-                                  :number-needed   (fn [] (:rum/class (meta number-needed/page)))
-                                  :startup    (fn [] (:rum/class (meta logo-page)))
-                                  :settings   (fn [] (:rum/class (meta settings/page)))
-                                  :not-yet    (fn [] (:rum/class (meta not-yet/page)))})))
-
+                             #js {:home          (fn [] (:rum/class (meta test-page)))
+                                  :icon-array    (fn [] (:rum/class (meta number-needed/page)))
+                                  :rum-bars      (fn [] (:rum/class (meta rum-bars/page)))
+                                  :number-needed (fn [] (:rum/class (meta number-needed/page)))
+                                  :startup       (fn [] (:rum/class (meta logo-page)))
+                                  :theming       (fn [] (:rum/class (meta palette/page)))
+                                  :settings      (fn [] (:rum/class (meta settings/page)))
+                                  :not-yet       (fn [] (:rum/class (meta not-yet/page)))})))
 
 #_(comment
     (def StackNavigation (aget ExNavigation "StackNavigation"))
