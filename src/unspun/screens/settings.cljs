@@ -27,7 +27,7 @@
                       :size        30})))
 
 
-(rum/defc page < rum/reactive []
+(rum/defcs page < rum/reactive [state]
   (let [palette (get-palette (rum/react palette-index))
         notifications-on (rum/react notifications)]
     (this-as this-page
@@ -55,8 +55,7 @@
                                              :color     "#fff"}})
                     (settings-list-item
                       {:icon    (palette-icon palette)
-                       :onPress #(.log js/console this-page)
-                       ;:onPress #(.push (.-navigator (.-props this-page)) "theming")
+                       :onPress #(.push (aget (:rum/react-component state) "props" "navigator") "theming")
                        :title   "App colour scheme" :hasNavArrow true})
                     )
                   )))))

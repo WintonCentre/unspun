@@ -142,4 +142,18 @@
                                                 :title           "Share"}}
            :initialRoute       (.getRoute Router "not-yet")}))
 
+      (drawer-navigation-item
+        {:id            "native-base"
+         :selectedStyle (aget st "selectedItemStyle")
+         :renderIcon    #(menu-icon "ios-share-outline" palette %)
+         :renderTitle   (fn [isSelected] (title palette "Native Base" isSelected))}
+        (stack-navigation
+          {:id                 "n-base-stack"
+           :defaultRouteConfig {:navigationBar {:height          (navbar-height)
+                                                :backgroundColor (:accent palette)
+                                                :tintColor       (:text-icons palette)
+                                                :title           "Native Base"}}
+           :initialRoute       (.getRoute Router "native-base")}))
+
+
       )))
