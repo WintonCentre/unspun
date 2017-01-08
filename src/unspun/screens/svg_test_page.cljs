@@ -1,7 +1,7 @@
 (ns unspun.screens.svg-test-page
   (:require-macros [rum.core :refer [defc]])
   (:require [rum.core :as rum]
-            [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
+            [cljs-exponent.components :refer [text view image touchable-highlight status-bar] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index]]
             [graphics.svg :refer [svg circle rect]]

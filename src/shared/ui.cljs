@@ -38,6 +38,20 @@
 (def SwipeableListView (js/require "SwipeableListView"))
 (def swipeable-list-view (partial element SwipeableListView))
 
+;; react-native-settings-list
+(def native-base (js/require "native-base"))
+(def my-theme (js/require "./themes/nativetheme"))
 
-;; Page jumps
-(def goto-palette-screen "")
+(def container (partial element (aget native-base "Container")))
+(def content (partial element (aget native-base "Content")))
+(def n-icon (partial element (aget native-base "Icon")))
+(def card (partial element (aget native-base "Card")))
+(def card-item (partial element (aget native-base "CardItem")))
+(def txt (partial element (aget native-base "Text")))
+(def n-list (partial element (aget native-base "List")))
+(def n-list-item (partial element (aget native-base "ListItem")))
+(def radio (partial element (aget native-base "Radio")))
+(def grid (partial element (aget native-base "Grid")))
+(def row (partial element (aget native-base "Row")))
+(def button (partial element (aget native-base "Button")))
+

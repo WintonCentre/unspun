@@ -61,7 +61,8 @@
 
 (def header-background "#616161"
   )
-(def header-foreground "#FEFEFE")
+(def header-foreground "#FEFEFE"
+  )
 
 
 (def palette-keys (vec (keys palettes)))

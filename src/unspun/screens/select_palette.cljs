@@ -1,28 +1,10 @@
 (ns unspun.screens.select-palette
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
-            [shared.ui :refer [ionicon]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio]]
             [unspun.db :refer [app-state palette-index]]
             [themes.palettes :refer [palettes get-palette]]
             ))
-
-
-;; react-native-settings-list
-(def native-base (js/require "native-base"))
-(def my-theme (js/require "./themes/nativetheme"))
-
-(def container (partial element (aget native-base "Container")))
-(def content (partial element (aget native-base "Content")))
-(def n-icon (partial element (aget native-base "Icon")))
-(def card (partial element (aget native-base "Card")))
-(def card-item (partial element (aget native-base "CardItem")))
-(def txt (partial element (aget native-base "Text")))
-(def n-list (partial element (aget native-base "List")))
-(def n-list-item (partial element (aget native-base "ListItem")))
-(def radio (partial element (aget native-base "Radio")))
-(def grid (partial element (aget native-base "Grid")))
-(def row (partial element (aget native-base "Row")))
-
 
 (comment
   (def settings-list (partial element SettingsList))
@@ -40,7 +22,7 @@
   (n-list-item
     {:key index}
     (radio {:key      1
-            :onPress #(reset! palette-index index)
+            :onPress  #(reset! palette-index index)
             :selected (= @palette-index index)})
     (txt {:key 2} (palette-titles index))))
 
@@ -51,10 +33,10 @@
     (container
       {:style {:flex 1}}
       (content
-        {:key 2
+        {:key   2
          :theme (aget my-theme "default")
          :style {:flex 1}}
-        (status-bar {:key 10
+        (status-bar {:key      10
                      :hidden   false
                      :barStyle "light-content"})
         (apply n-list

@@ -17,9 +17,10 @@
 (defn styles [palette] (.create style-sheet
 
                                 (clj->js {:header            {:flex       1
-                                                              :height     180
-                                                              :width      nil
-                                                              :paddingTop 40
+                                                              ;:height     64
+                                                              :width      180
+                                                              ;:backgroundColor "red"
+                                                              :paddingTop 64
                                                               }
 
                                           :buttonTitleText   {:color      (:text-icons palette)
@@ -51,7 +52,8 @@
 
 (rum/defc header []
   (let [st (styles (get-palette @palette-index))]
-    (view {:style (aget st "header")})))
+    (view {:style (aget st "header")}
+          (text {:style {:color "#fff"}} "Hi there"))))
 
 (rum/defc title [palette a-string isSelected]
   (let [st (styles palette)]
@@ -62,10 +64,11 @@
 (rum/defc icon [name palette isSelected]
   (menu-icon name palette isSelected))
 
-(defn navbar-height [] (if (ios?) 60 71))
+(defn navbar-height [] (if (ios?) nil 71))
 
 (defn defaultRouteConfig [name]
   {:navigationBar {:height          (navbar-height)
+                   ;:translucent     true
                    :backgroundColor header-background
                    :tintColor       header-foreground
                    :title           name}})
@@ -101,7 +104,7 @@
         (stack-navigation
           {:id                 "n-base-stack"
            :defaultRouteConfig (defaultRouteConfig "Stories")
-           :initialRoute       (.getRoute Router "select-palette")}))
+           :initialRoute       (.getRoute Router "stories")}))
 
       (drawer-navigation-item
         {:id            "icon-array"

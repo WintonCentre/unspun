@@ -10,8 +10,9 @@
             [unspun.screens.old-palette :as palette]
             [unspun.screens.settings :as settings]
             [unspun.screens.not-yet :as not-yet]
+            [unspun.screens.story-list :as story-list]
             [unspun.screens.select-palette :as select-palette]
-            [themes.palettes :refer [get-palette]]
+            [themes.palettes :refer [get-palette header-background]]
             [unspun.db :refer [palette-index]]
             ))
 
@@ -21,12 +22,13 @@
 
 (defn wrap [screen]
   (let [cp-class (:rum/class (meta screen))]
-    #(wrap-route cp-class {:navigationBar {:backgroundColor "black" ;(:dark-primary (get-palette @palette-index))
+    #(wrap-route cp-class {:navigationBar {:backgroundColor header-background
+                                           ;:translucent true
                                            }})))
 
 
 (def Router (create-router (fn []
-                             #js {:home           (wrap test-page)
+                             #js {:svg-test       (wrap test-page)
                                   :icon-array     (wrap number-needed/page)
                                   :rum-bars       (wrap rum-bars/page)
                                   :number-needed  (wrap number-needed/page)
@@ -34,7 +36,9 @@
                                   :theming        (wrap palette/page)
                                   :settings       (wrap settings/page)
                                   :not-yet        (wrap not-yet/page)
-                                  :select-palette (wrap select-palette/page)})))
+                                  :select-palette (wrap select-palette/page)
+                                  :stories        (wrap story-list/page)
+                                  })))
 
 (def r-help "May be my question is just how to pass props when we use the Navigator to route my app?
 

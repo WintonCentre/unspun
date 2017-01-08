@@ -37,18 +37,77 @@
 ;;;
 ;; APP-STATE
 ;;;
-(defonce app-state (atom {:palette-index 0
-                          :brand-title   "Winton Centre"
-                          :app-banner    "Relative Risks Unspun"
-                          :scenario      :hrt5
-                          :notifications true
-                          :screen        :home
-                          }))
+(def scenarios {:bacon   {:icon            "ios-man"
+                          :subjects        ["person" "people"]
+                          :risk            "their risk"
+                          :exposure        "eating bacon sandwiches every day"
+                          :baseline-risk   0.06
+                          :relative-risk   1.18
+                          :outcome         "a heart attack or stroke"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }
+                :hrt5    {:icon            "ios-woman"
+                          :subjects        ["woman" "women in their 50s"]
+                          :risk            "their lifetime risk"
+                          :exposure        "taking HRT for 5 years"
+                          :baseline-risk   0.1
+                          :relative-risk   1.05
+                          :outcome         "breast cancer"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }
+                :wine    {:icon            "ios-wine"
+                          :subjects        ["woman" "women"]
+                          :risk            "their lifetime risk"
+                          :exposure        "drinking half a bottle of wine a day"
+                          :baseline-risk   0.12
+                          :relative-risk   1.30
+                          :outcome         "breast cancer"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }
+                :wdoc    {:icon            "ios-contacts"
+                          :subjects        ["person" "people over 65 admitted to hospital under US Medicare"]
+                          :risk            "their risk"
+                          :exposure        "being seen by a female doctor"
+                          :baseline-risk   0.115
+                          :relative-risk   0.96
+                          :outcome         "death within 30 days of admission"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }
+                :statins {:icon            "ios-contact"
+                          :subjects        ["person" "people"]
+                          :risk            "their risk"
+                          :exposure        "taking statins"
+                          :baseline-risk   0.1
+                          :relative-risk   0.09
+                          :outcome         "heart attack or stroke in 10 years"
+                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          }})
+
+(defn initial-stories []
+  (mapv second scenarios))
+
+(defn story [scenario]
+  (str (second (:subjects scenario)) " " (:exposure scenario)))
+
+(defn story-icon [scenario]
+  (:icon scenario))
+
+(def app-state (atom {:palette-index 0
+                      :brand-title   "Winton Centre"
+                      :app-banner    "Relative Risks Unspun"
+                      :scenario      :hrt5
+                      :stories       (initial-stories)
+                      :story-index   0
+                      :notifications true
+                      :screen        :home
+                      }))
 
 (def palette-index (rum/cursor-in app-state [:palette-index]))
 (def brand-title (rum/cursor-in app-state [:brand-title]))
 (def app-banner (rum/cursor-in app-state [:app-banner]))
 (def scenario (rum/cursor-in app-state [:scenario]))
+(def story-index (rum/cursor-in app-state [:story-index]))
+(def stories (rum/cursor-in app-state [:stories]))
 (def notifications (rum/cursor-in app-state [:notifications]))
 
 
@@ -83,46 +142,8 @@
 
 
 
-(def scenarios {:bacon   {:subjects        ["person" "people"]
-                          :risk            "their risk"
-                          :exposure        "eating bacon sandwiches every day"
-                          :baseline-risk   0.06
-                          :relative-risk   1.18
-                          :outcome         "a heart attack or stroke"
-                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          }
-                :hrt5    {:subjects        ["woman" "women in their 50s"]
-                          :risk            "their lifetime risk"
-                          :exposure        "taking HRT for 5 years"
-                          :baseline-risk   0.1
-                          :relative-risk   1.05
-                          :outcome         "breast cancer"
-                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          }
-                :wine    {:subjects        ["woman" "women"]
-                          :risk            "their lifetime risk"
-                          :exposure        "drinking half a bottle of wine a day"
-                          :baseline-risk   0.12
-                          :relative-risk   1.30
-                          :outcome         "breast cancer"
-                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          }
-                :wdoc    {:subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
-                          :risk            "their risk"
-                          :exposure        "being seen by a female doctor"
-                          :baseline-risk   0.115
-                          :relative-risk   0.96
-                          :outcome         "death within 30 days of admission"
-                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          }
-                :statins {:subjects        ["person" "people"]
-                          :risk            "their risk"
-                          :exposure        "taking statins"
-                          :baseline-risk   0.1
-                          :relative-risk   0.09
-                          :outcome         "heart attack or stroke in 10 years"
-                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          }})
+
+
 
 
 #_(def women-doctors "Hormone Replacement Therapy

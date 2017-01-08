@@ -33,31 +33,43 @@
     (this-as this-page
       (view {:style {:backgroundColor (:primary palette)
                      :flex            1}}
-            (status-bar {:key      10
+            (status-bar {:key      1
                          :hidden   false
                          :barStyle "light-content"})
-            (view {:key   1
-                   :style {:marginTop 20
+            (view {:key   2
+                   :style {:marginTop 0
                            :flex      1}}
                   (settings-list
+                    {:flex 1
+                     :height nil
+                     :width nil}
                     (settings-list-header
-                      #js {:headerText  "fooey"
-                           :headerStyle #js {:marginTop 50 :color "#fff"}})
+                      {:key         1
+                       :headerText  "not yet ready"
+                       :headerStyle {:marginTop 30
+                                     :color "rgba(255,255,255,0.8)"}})
                     (settings-list-item
-                      {:hasNavArrow         false
+                      {:key                 2
+                       :style {:backgroundColor "#888"
+                                   :opacity 0.3}
+                       :hasNavArrow         false
                        :switchState         notifications-on
                        :switchOnValueChange #(reset! notifications %)
                        :hasSwitch           true
                        :icon                (notifications-icon notifications-on)
                        :title               (str "Notifications " (if notifications-on "on" "off"))
-                       :title-style         #js {:width 120}})
+                       :title-style         {:width 120
+                                             :opacity 0.5
+                                             }})
                     (settings-list-header
-                      #js {:headerText  "theming"
-                           :headerStyle #js {:marginTop 50
-                                             :color     "#fff"}})
+                      {:key 3
+                       :headerText  "theming"
+                       :headerStyle {:marginTop 30
+                                     :color     "rgba(255,255,255,0.8)"}})
                     (settings-list-item
-                      {:icon    (palette-icon palette)
+                      {:key 4
+                       :icon    (palette-icon palette)
                        :onPress #(.push (aget (:rum/react-component state) "props" "navigator") "select-palette")
-                       :title   "App colour scheme" :hasNavArrow true})
+                       :title   "Choose a colour scheme" :hasNavArrow true})
                     )
                   )))))
