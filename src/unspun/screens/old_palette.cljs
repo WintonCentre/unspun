@@ -1,4 +1,4 @@
-(ns unspun.screens.palette
+(ns unspun.screens.old-palette
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index scenario to-pc number-needed]]
@@ -15,10 +15,11 @@
                     ;:color "white"
                     :backgroundColor (:primary palette)}]
     (view {:style {:flex 1}}
-          (:status-bar {:hidden   false
-                        :barStyle "light-content"})
-
-          (view {:style page-style}
+          (status-bar {:key 10
+                       :hidden   false
+                       :barStyle "light-content"})
+          (view {:style page-style
+                 :key 1}
                 (text {:style {:color    (:text-icons palette)
                                :fontSize 30}} "hello")
                 (apply picker

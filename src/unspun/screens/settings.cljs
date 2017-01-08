@@ -33,9 +33,11 @@
     (this-as this-page
       (view {:style {:backgroundColor (:primary palette)
                      :flex            1}}
-            (:status-bar {:hidden   false
-                          :barStyle "light-content"})
-            (view {:style {:marginTop 20
+            (status-bar {:key      10
+                         :hidden   false
+                         :barStyle "light-content"})
+            (view {:key   1
+                   :style {:marginTop 20
                            :flex      1}}
                   (settings-list
                     (settings-list-header
@@ -55,7 +57,7 @@
                                              :color     "#fff"}})
                     (settings-list-item
                       {:icon    (palette-icon palette)
-                       :onPress #(.push (aget (:rum/react-component state) "props" "navigator") "theming")
+                       :onPress #(.push (aget (:rum/react-component state) "props" "navigator") "select-palette")
                        :title   "App colour scheme" :hasNavArrow true})
                     )
                   )))))

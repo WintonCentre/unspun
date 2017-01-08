@@ -28,6 +28,9 @@
                                              style (test-page-style (get-palette (rum/react palette-index)))}}]
   (let [palette (get-palette (rum/react palette-index))]
     (view {:style style}
+          (status-bar {:key 10
+                       :hidden   false
+                       :barStyle "light-content"})
           (title)
           (svg {:flex 1}
                (rect {:x 50 :y 50 :width 200 :height 200 :fill (:accent palette)})

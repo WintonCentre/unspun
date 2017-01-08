@@ -25,6 +25,9 @@
 
 (defc logo-page < rum/reactive []
   (view {:style (page-style)}
+        (status-bar {:key 10
+                     :hidden   false
+                     :barStyle "light-content"})
         (text {:style (merge {:paddingTop 40 :flex 0.1} (brand-style))}
               (rum/react brand-title))
         (text {:style (merge {:paddingTop 0 :flex 0.1} (brand-style))}
@@ -39,7 +42,7 @@
                                    :transform [{:scale 0.3}]}}))
         (touchable-highlight {:style   {:flex 0.075
                                         :margin          20
-                                        :backgroundColor (:accent (get-palette 0))
+                                        :backgroundColor (:accent (get-palette (rum/react palette-index)))
                                         :borderRadius    30
                                         :shadowColor     "#000"
                                         :shadowOffset    {:width shadow-size :height shadow-size}
@@ -49,4 +52,4 @@
                                         :justifyContent  "center"
                                         }
                               :onPress #(alert "Hello!")}
-                             (text {:style {:color (:text-icons (get-palette 0)) :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))
+                             (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))

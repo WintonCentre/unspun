@@ -7,22 +7,34 @@
             [unspun.screens.number-needed :as number-needed]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
-            [unspun.screens.palette :as palette]
+            [unspun.screens.old-palette :as palette]
             [unspun.screens.settings :as settings]
             [unspun.screens.not-yet :as not-yet]
-            [unspun.screens.native-base :as n-base]
+            [unspun.screens.select-palette :as select-palette]
+            [themes.palettes :refer [get-palette]]
+            [unspun.db :refer [palette-index]]
             ))
 
+(defn wrap-route [cp-class route-options]
+  (aset cp-class "route" (clj->js route-options))
+  cp-class)
+
+(defn wrap [screen]
+  (let [cp-class (:rum/class (meta screen))]
+    #(wrap-route cp-class {:navigationBar {:backgroundColor "black" ;(:dark-primary (get-palette @palette-index))
+                                           }})))
+
+
 (def Router (create-router (fn []
-                             #js {:home          (fn [] (:rum/class (meta test-page)))
-                                  :icon-array    (fn [] (:rum/class (meta number-needed/page)))
-                                  :rum-bars      (fn [] (:rum/class (meta rum-bars/page)))
-                                  :number-needed (fn [] (:rum/class (meta number-needed/page)))
-                                  :startup       (fn [] (:rum/class (meta logo-page)))
-                                  :theming       (fn [] (:rum/class (meta palette/page)))
-                                  :settings      (fn [] (:rum/class (meta settings/page)))
-                                  :not-yet       (fn [] (:rum/class (meta not-yet/page)))
-                                  :native-base   (fn [] (:rum/class (meta n-base/page)))})))
+                             #js {:home           (wrap test-page)
+                                  :icon-array     (wrap number-needed/page)
+                                  :rum-bars       (wrap rum-bars/page)
+                                  :number-needed  (wrap number-needed/page)
+                                  :startup        (wrap logo-page)
+                                  :theming        (wrap palette/page)
+                                  :settings       (wrap settings/page)
+                                  :not-yet        (wrap not-yet/page)
+                                  :select-palette (wrap select-palette/page)})))
 
 (def r-help "May be my question is just how to pass props when we use the Navigator to route my app?
 

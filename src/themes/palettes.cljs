@@ -46,7 +46,23 @@
     :primary-text   "#212121"
     :secondary-text "#757575"
     :divider        "#BDBDBD"
+    :error          "#FF6688"}
+
+   :grey-brown
+   {:dark-primary   "#616161"
+    :primary        "#9E9E9E"
+    :light-primary  "#F5F5F5"
+    :text-icons     "#FEFEFE"
+    :accent         "#795548"
+    :primary-text   "#212121"
+    :secondary-text "#757575"
+    :divider        "#BDBDBD"
     :error          "#FF6688"}})
+
+(def header-background "#616161"
+  )
+(def header-foreground "#FEFEFE")
+
 
 (def palette-keys (vec (keys palettes)))
 (def palette-vals (mapv val palettes))

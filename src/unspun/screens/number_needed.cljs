@@ -12,8 +12,9 @@
         page-style {:flex            1
                     :backgroundColor (:primary palette)}]
     (view {:style {:flex 1}}
-          (:status-bar {:hidden   false
-                        :barStyle "light-content"})
+          (status-bar {:key 10
+                       :hidden   false
+                       :barStyle "light-content"})
 
           (view {:style page-style}
                 (text {:style {:color    (:text-icons palette)

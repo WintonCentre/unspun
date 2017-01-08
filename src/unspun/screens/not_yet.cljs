@@ -5,6 +5,9 @@
             [rum.core :as rum]))
 
 (rum/defc page []
+  (status-bar {:key 10
+               :hidden   false
+               :barStyle "light-content"})
   (text {:style {:color "black"}} "not-yet"))
 
 
