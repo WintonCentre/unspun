@@ -15,8 +15,8 @@
            (n-icon {:name  name
                     :style {:color (:dark-primary (get-palette @palette-index))}})))
 
-(def add-icon
-  (view {:style         {:backgroundColor (:accent (get-palette @palette-index))
+(defn add-icon [palette]
+  (view {:style         {:backgroundColor (:accent palette)
                          :borderRadius    20
                          :paddingLeft     0
                          :width           30
@@ -34,24 +34,24 @@
                          }
                  })))
 
-(def edit-icon
+(defn edit-icon [palette]
   (n-icon {:name  "ios-create"
            :key   2
-           :style {:color (:dark-primary (get-palette @palette-index))}
+           :style {:color (:dark-primary palette)}
            }))
 
-(def nnt-icon
+(defn nnt-icon [palette]
   (n-icon {:name  "md-keypad"
            :key   2
-           :style {:color (:accent (get-palette @palette-index))}
+           :style {:color (:accent palette)}
            }))
 
-(def bars-icon
+(defn bars-icon [palette]
   (n-icon {:name  "ios-stats"
            :key   2
            :style {:width 9
                    ;:paddingRight 5
-                   :color (:accent (get-palette @palette-index))
+                   :color (:accent palette)
                    }}))
 
 (defn select-palette-item! [index]
@@ -73,7 +73,7 @@
                              :flexDirection   "row"
                              :alignItems      "center"
                              }}
-                   add-icon
+                   (add-icon palette)
                    (txt {:style {:flex  4
                                  :marginLeft 34
                                  :color (:secondary-text palette)}}
@@ -115,7 +115,7 @@
                                         :borderColor (:dark-primary palette)
                                         }}
                            "Edit"
-                           edit-icon)
+                           (edit-icon palette))
                    (button {:key       2
                             :bordered  true
                             :small     true
@@ -123,7 +123,7 @@
                             :style     {:borderWidth 2
                                         :borderColor (:accent palette)
                                         }}
-                           nnt-icon
+                           (nnt-icon palette)
                            "Show"
                            )
                    (button {:key       3
@@ -133,7 +133,7 @@
                             :style     {:borderWidth 2
                                         :borderColor (:accent palette)
                                         }}
-                           bars-icon
+                           (bars-icon palette)
                            "Show"
                            )
                    )))
