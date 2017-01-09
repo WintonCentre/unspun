@@ -4,7 +4,8 @@
             [clojure.string :as str]
             [hawk.core :as hawk]
             [clojure.tools.reader.edn :as edn]
-            [clojure.set :as set]))
+            [clojure.set :as set]
+            [themes :refer [copy-native-themes]]))
 ;; This namespace is loaded automatically by nREPL
 
 ;; read project.clj to get build configs
@@ -199,5 +200,8 @@
 
     "--rebuild-modules"
     (rebuild-modules)
+
+    "--themes"
+    (copy-native-themes)
 
     (prn "You can run lein figwheel or lein rebuild-modules.")))
