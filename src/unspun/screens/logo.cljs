@@ -23,7 +23,7 @@
    :textAlign  "center"
    :color      (:light-primary (get-palette (rum/react palette-index)))})
 
-(defc logo-page < rum/reactive []
+(defcs logo-page < rum/reactive [state]
   (view {:style (page-style)}
         (status-bar {:key 10
                      :hidden   false
@@ -40,16 +40,17 @@
                       :resizeMode "contain"
                       :style      {:marginTop -170
                                    :transform [{:scale 0.3}]}}))
-        (touchable-highlight {:style   {:flex 0.075
-                                        :margin          20
-                                        :backgroundColor (:accent (get-palette (rum/react palette-index)))
-                                        :borderRadius    30
-                                        :shadowColor     "#000"
-                                        :shadowOffset    {:width shadow-size :height shadow-size}
-                                        :shadowRadius    shadow-size
-                                        :shadowOpacity   0.5
-                                        :alignItems      "center"
-                                        :justifyContent  "center"
-                                        }
-                              :onPress #(alert "Hello!")}
+        (touchable-highlight {:style {:flex            0.075
+                                      :margin          20
+                                      :backgroundColor (:accent (get-palette (rum/react palette-index)))
+                                      :borderRadius    30
+                                      :shadowColor     "#000"
+                                      :shadowOffset    {:width shadow-size :height shadow-size}
+                                      :shadowRadius    shadow-size
+                                      :shadowOpacity   0.5
+                                      :alignItems      "center"
+                                      :justifyContent  "center"
+                                      }
+                              :onPress   #(.push (aget (:rum/react-component state) "props" "navigator") "stories")                   ;#(alert "Hello!")
+                              }
                              (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))
