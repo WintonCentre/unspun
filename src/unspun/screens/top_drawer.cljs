@@ -147,11 +147,12 @@
            :defaultRouteConfig (defaultRouteConfig "Share")
            :initialRoute       (.getRoute Router "not-yet")}))
 
-      (drawer-navigation-item
+      ;; Using this and the navigation via stories corrupts the route stack somehow.
+      #_(drawer-navigation-item
         {:id            "tabs"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-share-outline" palette %)
-         :renderTitle   (fn [isSelected] (title palette "Tabs" isSelected))}
+         :renderTitle   (fn [isSelected] (title palette "Show Story" isSelected))}
         (stack-navigation
           {:id                 "tabs-stack"
            :defaultRouteConfig (defaultRouteConfig "Tabs")

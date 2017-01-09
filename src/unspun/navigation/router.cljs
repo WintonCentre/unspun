@@ -44,7 +44,7 @@
                                   :not-yet        (wrap not-yet/page)
                                   :select-palette (wrap select-palette/page)
                                   :stories        (wrap story-list/page)
-                                  :tabs           (wrap-tabs tabs/page)
+                                  :tabs           (wrap tabs/page)
                                   })))
 
 (def r-help "May be my question is just how to pass props when we use the Navigator to route my app?
