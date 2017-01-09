@@ -4,7 +4,7 @@
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button]]
             [unspun.db :refer [app-state palette-index stories story-index story-icon story]]
             [themes.palettes :refer [palettes get-palette]]
-            [clojure.string :refer [capitalize]]
+            [clojure.string :refer [capitalize replace]]
             ))
 
 (def palette-titles
@@ -77,10 +77,13 @@
                    (txt {:style {:flex  4
                                  :marginLeft 34
                                  :color (:secondary-text palette)}}
-                        (capitalize "Pull down to update, or add your own story")))
+                        "Pull down to update, or add your own story"))
         )
 
   )
+
+(defn caps-tidy [s]
+  (replace (capitalize s)  #"Us" "US"))
 
 (defn story-card! [palette index]
   (card {:key   index
@@ -96,7 +99,7 @@
                    (icon-example (story-icon (@stories index)))
                    (txt {:style {:flex  4
                                  :color (:secondary-text palette)}}
-                        (capitalize (story (@stories index)))))
+                        (caps-tidy (story (@stories index)))))
         (card-item {:cardBody true
                     :key      3
                     :style    {:backgroundColor (:text-icons palette)

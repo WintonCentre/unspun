@@ -65,7 +65,7 @@
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           }
                 :wdoc    {:icon            "ios-contacts"
-                          :subjects        ["person" "people over 65 admitted to hospital under US Medicare"]
+                          :subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
                           :risk            "their risk"
                           :exposure        "being seen by a female doctor"
                           :baseline-risk   0.115
