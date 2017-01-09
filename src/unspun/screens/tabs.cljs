@@ -5,7 +5,8 @@
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar] :as rn]
             [shared.ui :refer [sliding-tab-navigation sliding-tab-navigation-item ionicon]]
             [unspun.screens.rum-bars :as bars]
-            [unspun.screens.number-needed :as nn]))
+            [unspun.screens.number-needed :as nn]
+            [clojure.string :refer [upper-case]]))
 
 
 (defn get-color [is-selected]
@@ -15,17 +16,9 @@
   (text {:style {:color (get-color is-selected)}}
         title))
 
-(defn render-icon [name is-selected]
-  (ionicon {:name  name
-            :size  30
-            :color (if is-selected "blue" "orange")}))
-
-(defn get-style [is-selected]
-  {:backgroundColor (if is-selected "#0084FF" "#888")})
-
-(rum/defcs page [state]
-  (let [navigator (aget (:rum/react-component state) "props" "navigator")]
-    (prn navigator)
+(rum/defcs page < rum/reactive [state]
+  (let [navigator (aget (:rum/react-component state) "props" "navigator")
+        palette (get-palette (rum/react palette-index))]
     (view {:style {
                    :flex            1
                    :backgroundColor "#CCF"
@@ -33,22 +26,19 @@
           (sliding-tab-navigation
             {:id                 "tab-navigation"
              :navigatorUID       "tab-navigation"
-             :barBackgroundColor "black"
-             :indicatorStyle     {:backgroundColor "red"}
-             :initialTab         "bars"}
+             :barBackgroundColor (:dark-primary palette)
+             :indicatorStyle     {:backgroundColor (:accent palette)}
+             :initialTab         "bars"
+             }
             (sliding-tab-navigation-item
-              {:id            "icons"
-               :title         "Number Needed"
-               :renderTitle   render-title
-               :render-icon   (partial render-icon "md-keypad")
-               :selectedStyle (:backgroundColor "#0084FF")}
+              {:id          "icons"
+               :title       "Number Needed"
+               :renderTitle render-title}
               (nn/page)
               )
             (sliding-tab-navigation-item
-              {:id            "bars"
-               :title         "Compare With and without"
-               :renderTitle   render-title
-               :render-icon   (partial render-icon "ios-stats")
-               :selectedStyle (:backgroundColor "#0084FF")
+              {:id          "bars"
+               :title       "Comparing\nWith and without"
+               :renderTitle render-title
                }
               (bars/page))))))
