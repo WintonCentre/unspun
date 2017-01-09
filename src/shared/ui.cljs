@@ -12,6 +12,10 @@
 (def drawer-navigation-layout (partial element (aget ex-navigation "DrawerNavigationLayout")))
 (def drawer-navigation (partial element (aget ex-navigation "DrawerNavigation")))
 (def drawer-navigation-item (partial element (aget ex-navigation "DrawerNavigationItem")))
+(def tab-navigation (partial element (aget ex-navigation "TabNavigation")))
+(def tab-navigation-item (partial element (aget ex-navigation "TabNavigationItem")))
+(def sliding-tab-navigation (partial element (aget ex-navigation "SlidingTabNavigation")))
+(def sliding-tab-navigation-item (partial element (aget ex-navigation "SlidingTabNavigationItem")))
 
 ;; vector-icons
 (def vector-icons (js/require "@exponent/vector-icons"))

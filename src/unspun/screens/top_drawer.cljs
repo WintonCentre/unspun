@@ -147,4 +147,14 @@
            :defaultRouteConfig (defaultRouteConfig "Share")
            :initialRoute       (.getRoute Router "not-yet")}))
 
+      (drawer-navigation-item
+        {:id            "tabs"
+         :selectedStyle (aget st "selectedItemStyle")
+         :renderIcon    #(menu-icon "ios-share-outline" palette %)
+         :renderTitle   (fn [isSelected] (title palette "Tabs" isSelected))}
+        (stack-navigation
+          {:id                 "tabs-stack"
+           :defaultRouteConfig (defaultRouteConfig "Tabs")
+           :initialRoute       (.getRoute Router "tabs")}))
+
       )))

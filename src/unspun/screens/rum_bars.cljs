@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index scenario scenarios text-generator compare1 to-pc clamp]]
+            [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]
             ))
 
@@ -128,7 +128,7 @@
         ))
 
 (defc page < rum/reactive []
-  (let [scenar ((rum/react scenario) scenarios)
+  (let [scenar ((rum/react stories) (rum/react story-index))
         db (rum/react app-state)
         br (:baseline-risk scenar)
         rr (:relative-risk scenar)
@@ -148,15 +148,11 @@
                            :justifyContent  "center"
                            :alignItems      "center"
                            :backgroundColor (:dark-primary palette)}}
-
                   (text {:style {:color      (:light-primary palette)
                                  :fontWeight "400"
                                  :padding    20
-                                 ;:paddingTop 40
                                  :fontSize   24}}
-                        (text-generator compare1 scenar)
-
-                        ))
+                        (text-generator compare1 scenar)))
             (view {:style {:flex          0.6
                            :flexDirection "row"}}
                   (view {:style {:flex           0.3

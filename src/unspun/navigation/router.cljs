@@ -12,6 +12,7 @@
             [unspun.screens.not-yet :as not-yet]
             [unspun.screens.story-list :as story-list]
             [unspun.screens.select-palette :as select-palette]
+            [unspun.screens.tabs :as tabs]
             [themes.palettes :refer [get-palette header-background]]
             [unspun.db :refer [palette-index]]
             ))
@@ -26,6 +27,11 @@
                                            ;:translucent true
                                            }})))
 
+(defn wrap-tabs [screen]
+  (let [cp-class (:rum/class (meta screen))]
+    #(wrap-route cp-class {:navigationBar {:backgroundColor header-background
+                                           :title "Show Story"
+                                           }})))
 
 (def Router (create-router (fn []
                              #js {:svg-test       (wrap test-page)
@@ -38,6 +44,7 @@
                                   :not-yet        (wrap not-yet/page)
                                   :select-palette (wrap select-palette/page)
                                   :stories        (wrap story-list/page)
+                                  :tabs           (wrap-tabs tabs/page)
                                   })))
 
 (def r-help "May be my question is just how to pass props when we use the Navigator to route my app?

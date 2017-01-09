@@ -46,6 +46,12 @@
            :style {:color (:accent palette)}
            }))
 
+(defn show-icon [palette]
+  (n-icon {:name  "ios-arrow-forward"
+           :key   2
+           :style {:color (:accent palette)}
+           }))
+
 (defn bars-icon [palette]
   (n-icon {:name  "ios-stats"
            :key   2
@@ -83,9 +89,11 @@
   )
 
 (defn caps-tidy [s]
-  (replace (capitalize s)  #"Us" "US"))
+  (replace
+    (replace (capitalize s) #"Us" "US")
+    #"hrt" "HRT"))
 
-(defn story-card! [palette index]
+(defn story-card! [navigator palette index]
   (card {:key   index
          :style {:flex   1
                  :margin 20}}
@@ -109,7 +117,6 @@
                                :paddingBottom   10
                                :paddingTop      0
                                }}
-
                    (button {:key       1
                             :bordered  true
                             :small     true
@@ -124,21 +131,13 @@
                             :small     true
                             :textStyle {:color (:accent palette)}
                             :style     {:borderWidth 2
-                                        :borderColor (:accent palette)
-                                        }}
-                           (nnt-icon palette)
-                           "Show"
+                                        :borderColor (:accent palette)}
+                            :onPress   #(do (reset! story-index index)
+                                            (.push navigator "tabs"))}
+                           (show-icon palette)
+                           "Select & Show"
                            )
-                   (button {:key       3
-                            :bordered  true
-                            :small     true
-                            :textStyle {:color (:accent palette)}
-                            :style     {:borderWidth 2
-                                        :borderColor (:accent palette)
-                                        }}
-                           (bars-icon palette)
-                           "Show"
-                           )
+
                    )))
 
 (rum/defcs page < rum/reactive
@@ -162,30 +161,6 @@
                (concat [{:key   1
                          :style {:flex 1}}]
                        [(add-card! palette)]
-                       [(map (partial story-card! palette) (range story-count))]))
+                       [(map (partial story-card! (aget (:rum/react-component state) "props" "navigator") palette) (range story-count))]))
         )
-      #_(card {:key 2
-               ; :style {:flex    1
-               }
-              (card-item {:header true
-                          :key    1
-                          :style  {:backgroundColor "red"}
-                          }
-                         (txt {:style {:color "white"}} "Card Header"))
-              (card-item {:header false
-                          :key    2
-                          :style  {;:flex          1
-                                   ;:flexDirection "row"
-                                   ;:alignItems    "center"
-                                   }}
-                         (icon-example)
-                         #_(ionicon (clj->js {:name  "ios-home"
-                                              :style {:color        "red"
-                                                      :fontSize     20
-                                                      :paddingRight 16}}))
-                         (txt {:style {:color "black"}} "My text here"))
-
-              (card-item {:header true
-                          :key    3}
-                         (text {:style {:color "blue"}} "Footer"))
-              ))))
+      )))
