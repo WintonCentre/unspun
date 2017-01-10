@@ -40,5 +40,5 @@
                                                          :externs       ["js/externs.js"]
                                                          :parallel-build     true
                                                          :optimize-constants true
-                                                         :optimizations :advanced
+                                                         :optimizations :whitespace
                                                          :closure-defines {"goog.DEBUG" false}}}]}}})

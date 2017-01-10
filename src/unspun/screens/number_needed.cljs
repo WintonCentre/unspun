@@ -2,7 +2,7 @@
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [n-icon]]
-            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index story-icon text-generator nn1]]
+            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index story-icon text-generator nn1 nn2]]
             [rum.core :as rum]))
 
 
@@ -39,7 +39,7 @@
                                      :fontWeight "400"
                                      :padding    20
                                      :fontSize   (:fontSize scenar)}}
-                            (text-generator nn1 scenar)))
+                            (text-generator nn2 scenar)))
                 (view {:key   2
                        :style {:flex            0.7
                                :padding         20
