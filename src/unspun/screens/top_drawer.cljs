@@ -100,13 +100,13 @@
         {:id            "native-base"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-share-outline" palette %)
-         :renderTitle   (fn [isSelected] (title palette "Stories" isSelected))}
+         :renderTitle   (fn [isSelected] (title palette "Scenarios" isSelected))}
         (stack-navigation
           {:id                 "n-base-stack"
-           :defaultRouteConfig (defaultRouteConfig "Stories")
+           :defaultRouteConfig (defaultRouteConfig "Scenarios")
            :initialRoute       (.getRoute Router "stories")}))
 
-      (drawer-navigation-item
+      #_(drawer-navigation-item
         {:id            "icon-array"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-body" palette %)
@@ -116,7 +116,7 @@
            :defaultRouteConfig (defaultRouteConfig "Number Needed")
            :initialRoute       (.getRoute Router "number-needed")}))
 
-      (drawer-navigation-item
+      #_(drawer-navigation-item
         {:id            "rum-bars"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-podium" palette %)

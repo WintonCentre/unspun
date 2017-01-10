@@ -1,6 +1,8 @@
 (ns unspun.db
   (:require [rum.core :as rum]
-            [clojure.pprint :refer [cl-format]]))
+            [clojure.pprint :refer [cl-format]]
+            [clojure.string :refer [capitalize replace]]
+            ))
 
 (def max-nn 1000)                                           ; maximum number needed to treat
 
@@ -45,6 +47,9 @@
                           :relative-risk   1.18
                           :outcome         "a heart attack or stroke"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          :fontSize        20
+                          :with            "Bacon every day"
+                          :without         "Normal"
                           }
                 :hrt5    {:icon            "ios-woman"
                           :subjects        ["woman" "women in their 50s"]
@@ -54,6 +59,9 @@
                           :relative-risk   1.05
                           :outcome         "breast cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          :fontSize        20
+                          :with            "Taking HRT"
+                          :without         "No HRT"
                           }
                 :wine    {:icon            "ios-wine"
                           :subjects        ["woman" "women"]
@@ -63,8 +71,11 @@
                           :relative-risk   1.30
                           :outcome         "breast cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          :fontSize        20
+                          :with            "Half a bottle a day"
+                          :without         "Not drinking"
                           }
-                :wdoc    {:icon            "ios-contacts"
+                :wdoc    {:icon            "ios-person"
                           :subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
                           :risk            "their risk"
                           :exposure        "being seen by a female doctor"
@@ -72,15 +83,21 @@
                           :relative-risk   0.96
                           :outcome         "death within 30 days of admission"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          :fontSize        20
+                          :with            "Female doctor"
+                          :without         "Male doctor"
                           }
                 :statins {:icon            "ios-contact"
                           :subjects        ["person" "people"]
                           :risk            "their risk"
                           :exposure        "taking statins"
                           :baseline-risk   0.1
-                          :relative-risk   0.09
+                          :relative-risk   0.9
                           :outcome         "heart attack or stroke in 10 years"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          :fontSize        20
+                          :with            "Taking statins"
+                          :without         "No statins"
                           }})
 
 (defn initial-stories []
@@ -163,6 +180,13 @@ Relative risk: 0.96
 Baseline risk 11.5%
 ")
 
+(defn caps-tidy [s]
+  (-> s
+      (capitalize)
+      (replace #"Us " "US ")
+      (replace #" us " " US ")
+      (replace #"hrt" "HRT")))
+
 (def format (partial cl-format nil))
 
 (defn increase? [a b] (if (> a b) "decrease" "increase"))
@@ -181,22 +205,21 @@ Baseline risk 11.5%
 (defn nn2 [subjects]
   (str "On average, for one ~a " (singular-form subjects) " to experience ~a, ~d more ~:*" (n-plural-form subjects) " would need to be ~a."))
 
-
 (defn text-generator [presentation {:keys [subjects risk exposure baseline-risk relative-risk outcome]}]
   (let [brpc (to-pc baseline-risk)
         erpc (to-pc (* baseline-risk relative-risk))]
-    (cond
-      (= presentation compare1)
-      (format (compare1 subjects) (second subjects) exposure (increase? brpc erpc) risk outcome brpc erpc)
+    (caps-tidy (cond
+                 (= presentation compare1)
+                 (format (compare1 subjects) (second subjects) exposure (increase? brpc erpc) risk outcome brpc erpc)
 
-      (= presentation nn1)
-      (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure (extra baseline-risk relative-risk) outcome)
+                 (= presentation nn1)
+                 (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure (extra baseline-risk relative-risk) outcome)
 
-      (= presentation nn2)
-      (format (nn2 subjects) (extra baseline-risk relative-risk) outcome (number-needed relative-risk baseline-risk) exposure)
+                 (= presentation nn2)
+                 (format (nn2 subjects) (extra baseline-risk relative-risk) outcome (number-needed relative-risk baseline-risk) exposure)
 
-      :else
-      nil)))
+                 :else
+                 nil))))
 
 ;; todo: Cache these, or just generate as needed?
 

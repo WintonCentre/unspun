@@ -4,15 +4,16 @@
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 to-pc clamp]]
-            [graphics.svg :refer [svg circle rect]]
+            [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             ))
+
+
 
 ;; vector-icons
 (def vector-icons (js/require "@exponent/vector-icons"))
 (def Ionicons (aget vector-icons "Ionicons"))
 
 (defn ionicon [attrs] (.createElement js/React Ionicons attrs))
-
 (def ac-unit (ionicon (clj->js {:name  "md-checkmark-circle"
                                 :size  30
                                 :style {:transform [{:rotate "90deg"} {:scale 0.8}]}
@@ -101,10 +102,10 @@
                                            :on-edge     :top
                                            :formatter   percentage}))
 (defc top-bar < rum/static
-                 "The top and bottom bars split the vertical flex space in the ratio (1-value) : value.
-                 Both are animated views which animate height as a function of value.
-                 Here we only allow 2 bars and so we can label them inside if there is space, or above if not.
-                 The top bar colours are chosen to be the same as the background"
+                "The top and bottom bars split the vertical flex space in the ratio (1-value) : value.
+                Both are animated views which animate height as a function of value.
+                Here we only allow 2 bars and so we can label them inside if there is space, or above if not.
+                The top bar colours are chosen to be the same as the background"
   [palette value]
   (view {:style {:flex            (- 1 value)
                  :backgroundColor (:primary palette)}}
@@ -144,16 +145,18 @@
                    :barStyle "light-content"})
 
       (view {:style page-style}
-            (view {:style {:flex            0.3
+            (view {:key   1
+                   :style {:flex            0.3
                            :justifyContent  "center"
                            :alignItems      "center"
                            :backgroundColor (:dark-primary palette)}}
                   (text {:style {:color      (:light-primary palette)
                                  :fontWeight "400"
                                  :padding    20
-                                 :fontSize   24}}
+                                 :fontSize   (:fontSize scenar)}}
                         (text-generator compare1 scenar)))
-            (view {:style {:flex          0.6
+            (view {:key   2
+                   :style {:flex          0.7
                            :flexDirection "row"}}
                   (view {:style {:flex           0.3
                                  :justifyContent "center"}}
@@ -161,7 +164,7 @@
                                        :fontSize     24
                                        :textAlign    "right"
                                        :paddingRight 10}}
-                              "Without"))
+                              (:without scenar)))
                   (view {:style {:flex 0.2}} (labelled-vertical-bar palette br))
                   (view {:style {:flex 0.04}})
                   (view {:style {:flex 0.2}} (labelled-vertical-bar palette er))
@@ -171,6 +174,6 @@
                                        :fontSize  24
                                        :padding   10
                                        :textAlign "left"}}
-                              "With")))
-            (view {:style {:flex            0.1
-                           :backgroundColor (:dark-primary palette)}})))))
+                              (:with scenar))))
+
+            ))))

@@ -2,9 +2,8 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button]]
-            [unspun.db :refer [app-state palette-index stories story-index story-icon story]]
+            [unspun.db :refer [app-state palette-index stories story-index story-icon story caps-tidy]]
             [themes.palettes :refer [palettes get-palette]]
-            [clojure.string :refer [capitalize replace]]
             ))
 
 (def palette-titles
@@ -83,15 +82,10 @@
                    (txt {:style {:flex  4
                                  :marginLeft 34
                                  :color (:secondary-text palette)}}
-                        "Pull down to update, or add your own story"))
+                        "Pull down to update, or add your own scenario"))
         )
 
   )
-
-(defn caps-tidy [s]
-  (replace
-    (replace (capitalize s) #"Us" "US")
-    #"hrt" "HRT"))
 
 (defn story-card! [navigator palette index]
   (card {:key   index
@@ -135,9 +129,7 @@
                             :onPress   #(do (reset! story-index index)
                                             (.push navigator "tabs"))}
                            (show-icon palette)
-                           "Select & Show"
-                           )
-
+                           "Select & Show")
                    )))
 
 (rum/defcs page < rum/reactive

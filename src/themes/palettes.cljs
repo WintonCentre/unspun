@@ -4,7 +4,29 @@
 ; See https://www.materialpalette.com/blue/orange
 ;;;
 (def palettes
-  {:blue-orange
+  {:blue-grey-pink
+   {:dark-primary   "#455A64"
+    :primary        "#607D8B"
+    :light-primary  "#CFD8DC"
+    :text-icons     "#FFFFFF"
+    :accent         "#FF4081"
+    :primary-text   "#212121"
+    :secondary-text "#757575"
+    :divider        "#BDBDBD"
+    :error          "#FF6688"}
+
+   :blue-grey-teal
+   {:dark-primary   "#455A64"
+    :primary        "#607D8B"
+    :light-primary  "#CFD8DC"
+    :text-icons     "#FFFFFF"
+    :accent         "#009688"
+    :primary-text   "#212121"
+    :secondary-text "#757575"
+    :divider        "#BDBDBD"
+    :error          "#FF6688"}
+
+   :blue-orange
    {:dark-primary   "#1875D1"
     :primary        "#2095F2"
     :light-primary  "#BBDEFB"
@@ -47,17 +69,7 @@
     :secondary-text "#757575"
     :divider        "#BDBDBD"
     :error          "#FF6688"}
-
-   :grey-brown
-   {:dark-primary   "#616161"
-    :primary        "#9E9E9E"
-    :light-primary  "#F5F5F5"
-    :text-icons     "#FEFEFE"
-    :accent         "#795548"
-    :primary-text   "#212121"
-    :secondary-text "#757575"
-    :divider        "#BDBDBD"
-    :error          "#FF6688"}})
+   })
 
 (def header-background "#616161"
   )
