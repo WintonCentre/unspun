@@ -22,3 +22,4 @@ yarn.lock
 .exponent/
 assets/.DS_Store
 sources/
+/js/externs.js

@@ -90,7 +90,9 @@
         {:id            "startup"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-arrow-up-outline" palette %)
-         :renderTitle   (fn [isSelected] (title palette "Startup" isSelected))}
+         :renderTitle   (fn [isSelected] (do
+                                           (.log js/console "Startup")
+                                           (title palette "Startup" isSelected)))}
         (stack-navigation
           {:id                 "startup-stack"
            :defaultRouteConfig (defaultRouteConfig "Startup")
@@ -100,7 +102,9 @@
         {:id            "native-base"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-share-outline" palette %)
-         :renderTitle   (fn [isSelected] (title palette "Scenarios" isSelected))}
+         :renderTitle   (fn [isSelected] (do
+                                           (.log js/console "Scenarios")
+                                           (title palette "Scenarios" isSelected)))}
         (stack-navigation
           {:id                 "n-base-stack"
            :defaultRouteConfig (defaultRouteConfig "Scenarios")
@@ -130,7 +134,9 @@
         {:id            "settings"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-settings" palette %)
-         :renderTitle   (fn [isSelected] (title palette "Settings" isSelected))}
+         :renderTitle   (fn [isSelected] (do
+                                           (.log js/console "Settings")
+                                           (title palette "Settings" isSelected)))}
         (stack-navigation
           {:id                 "settings-stack"
            :defaultRouteConfig (defaultRouteConfig "Settings")
