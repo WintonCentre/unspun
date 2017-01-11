@@ -8,11 +8,23 @@
 
 (defn draw-icon [scenar color scale]
   (n-icon {:name  (story-icon scenar)
-           :style {:color         color
+           :style {:color     color
                    :transform [{:scale scale}]}}))
 
 (defn icon-square-size [nn]
   (Math.ceil (Math.sqrt nn)))
+
+(defn col-blocks [nn]
+  (* (quot (icon-square-size nn) 5)))
+
+(defn cols-rows-blocked [nn]
+  (let [cols (* 5 (col-blocks nn))
+        rows (Math.ceil (/ nn cols))
+        cblocks (Math.ceil (/ cols 5))
+        rblocks (Math.ceil (/ rows 5))]
+    [cols rows cblocks rblocks]
+    ))
+
 
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
@@ -21,6 +33,9 @@
         nn (number-needed rr br)
         grid-size (icon-square-size nn)
         grid-factor (/ 1 grid-size)
+        [cols rows cblocks rblocks] (cols-rows-blocked nn)
+
+
         palette (get-palette (rum/react palette-index))
         page-style {:flex            1
                     :backgroundColor (:primary palette)}]
@@ -44,26 +59,52 @@
                        :style {:flex            0.7
                                :padding         20
                                :backgroundColor (:primary palette)}}
-                      (map (fn [m] (view {:key   m
-                                          :style {:flex          grid-factor
-                                                  :flexDirection "row"
-                                                  :alignItems "center"
-                                                  :justifyContent "center"}}
-                                         (map (fn [n] (view {:key   n
-                                                             :style {:flex grid-factor
-                                                                     :alignItems "center"
-                                                                     :justifyContent "center"}}
-                                                            (let [k (+ n (* m grid-size))]
-                                                              (cond
-                                                                (< k (dec nn)) (draw-icon scenar (:light-primary palette) 0.75)
-                                                                (= k (dec nn)) (draw-icon scenar (:text-icons palette) 1.2)
-                                                                :else nil))
-                                                            )
-                                                ) (range grid-size))
-                                         )) (range grid-size))
+                      ;;
+                      ;; start of better blocking code
+                      ;;
+                      #_(map
+                        (fn [rb]
+                          (view {:key   rb
+                                 :style {:flex           (/ 1 rblocks)
+                                         :flexDirection  "row"
+                                         :alignItems     "center"
+                                         :justifyContent "center"
+                                         :marginBottom   (if (= rb (dec rblocks)) 0 10)}}
+                                (map
+                                  (fn [cb]
+                                    (view {:key   cb
+                                           :style {:flex           (/ 1 cblocks)
+                                                   :alignItems     "center"
+                                                   :justifyContent "center"
+                                                   :marginRight    (if (= cb (dec cblocks)) 0 10)}}
+                                          (view {:style {
+                                                         :width       20
+                                                         :height      20
+                                                         :borderWidth 1
+                                                         :borderColor "white"}}
+                                                ))) (range cblocks)
+                                  ))) (range rblocks))
 
-                      #_(map #(draw-icon scenar (:text-icons palette)) (range (number-needed rr br)))
-                      )
-                ))))
+                      (map (fn [m] (view {:key   m
+                                            :style {:flex           grid-factor
+                                                    :flexDirection  "row"
+                                                    :alignItems     "center"
+                                                    :justifyContent "center"
+                                                    :marginBottom   (if (zero? (mod (inc m) 5)) 10 0)}}
+                                           (map (fn [n] (view {:key   n
+                                                               :style {:flex           grid-factor
+                                                                       :alignItems     "center"
+                                                                       :justifyContent "center"
+                                                                       :marginRight    (if (zero? (mod (inc n) 5)) 10 0)}}
+                                                              (let [k (+ n (* m cols))]
+                                                                (cond
+                                                                  (and (> k 0) (< k nn)) (draw-icon scenar (:light-primary palette) 0.66)
+                                                                  (= k 0) (draw-icon scenar (:text-icons palette) 1.2)
+                                                                  :else nil)
+                                                                )
+                                                              )
+                                                  ) (range cols))
+                                           )) (range rows))
+                      )))))
 
 

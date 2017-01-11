@@ -47,7 +47,7 @@
                           :relative-risk   1.18
                           :outcome         "a heart attack or stroke"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :fontSize        20
+                          :fontSize        18
                           :with            "Bacon every day"
                           :without         "Normal"
                           }
@@ -59,7 +59,7 @@
                           :relative-risk   1.05
                           :outcome         "breast cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :fontSize        20
+                          :fontSize        18
                           :with            "Taking HRT"
                           :without         "No HRT"
                           }
@@ -71,7 +71,7 @@
                           :relative-risk   1.30
                           :outcome         "breast cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :fontSize        20
+                          :fontSize        18
                           :with            "Half a bottle a day"
                           :without         "Not drinking"
                           }
@@ -83,7 +83,7 @@
                           :relative-risk   0.96
                           :outcome         "death within 30 days of admission"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :fontSize        20
+                          :fontSize        16
                           :with            "Female doctor"
                           :without         "Male doctor"
                           }
@@ -95,7 +95,7 @@
                           :relative-risk   0.9
                           :outcome         "heart attack or stroke in 10 years"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :fontSize        20
+                          :fontSize        18
                           :with            "Taking statins"
                           :without         "No statins"
                           }})
