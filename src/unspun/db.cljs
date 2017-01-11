@@ -78,7 +78,7 @@
                 :wdoc    {:icon            "ios-person"
                           :subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
                           :risk            "their risk"
-                          :exposure        "being seen by a female doctor"
+                          :exposure        "seen by a female doctor"
                           :baseline-risk   0.115
                           :relative-risk   0.96
                           :outcome         "death within 30 days of admission"
