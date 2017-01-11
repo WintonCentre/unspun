@@ -61,3 +61,6 @@ Since Figwheel already does those.
 ``` shell
 lein prod-build
 ```
+
+### Development notes
+* DO NOT USE `:optimizations :whitespace` in project.clj as this does not make sense when running in Node, and errors will result.

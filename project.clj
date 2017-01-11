@@ -15,7 +15,8 @@
   :aliases {"figwheel" ["run" "-m" "user" "--figwheel"]
             "themes" ["run" "-m" "themes"]
             "externs" ["do" "clean"
-                       ["run" "-m" "externs"]]
+                       ["run" "-m" "externs"]
+                       ["run" "-m" "themes"]]
             "rebuild-modules" ["run" "-m" "user" "--rebuild-modules"]
             "prod-build" ^{:doc "Recompile code with prod profile."}
             ["externs"
@@ -38,7 +39,7 @@
                                                          :output-dir    "target"
                                                          :static-fns    true
                                                          :externs       ["js/externs.js"]
-                                                         :parallel-build     true
-                                                         :optimize-constants true
-                                                         :optimizations :whitespace
+                                                         :parallel-build     false
+                                                         :optimize-constants false
+                                                         :optimizations :advanced
                                                          :closure-defines {"goog.DEBUG" false}}}]}}})

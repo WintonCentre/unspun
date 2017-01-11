@@ -191,7 +191,7 @@ Baseline risk 11.5%
 
 (defn increase? [a b] (if (> a b) "decrease" "increase"))
 
-(defn extra [a b] (if (< a b) "extra" "fewer"))
+(defn extra [rr] (if (> rr 1) "extra" "fewer"))
 
 (defn singular-form [[singular _]] singular)
 
@@ -213,10 +213,10 @@ Baseline risk 11.5%
                  (format (compare1 subjects) (second subjects) exposure (increase? brpc erpc) risk outcome brpc erpc)
 
                  (= presentation nn1)
-                 (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure (extra baseline-risk relative-risk) outcome)
+                 (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure (extra relative-risk) outcome)
 
                  (= presentation nn2)
-                 (format (nn2 subjects) (extra baseline-risk relative-risk) outcome (number-needed relative-risk baseline-risk) exposure)
+                 (format (nn2 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure)
 
                  :else
                  nil))))
