@@ -1,5 +1,5 @@
 (ns unspun.screens.number-needed
-  (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar] :as rn]
+  (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [n-icon]]
             [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index story-icon text-generator nn1 nn2]]
@@ -9,13 +9,14 @@
 (defn draw-icon [scenar color scale]
   (n-icon {:name  (story-icon scenar)
            :style {:color     color
+                   :backgroundColor "rgba(0,0,0,0)"
                    :transform [{:scale scale}]}}))
 
 (defn icon-square-size [nn]
   (Math.ceil (Math.sqrt nn)))
 
 (defn col-blocks [nn]
-  (* (quot (icon-square-size nn) 5)))
+  (min 3 (* (quot (icon-square-size nn) 5))))
 
 (defn cols-rows-blocked [nn]
   (let [cols (* 5 (col-blocks nn))
@@ -32,8 +33,6 @@
         rr (:relative-risk scenar)
         nn (number-needed rr br)
         [cols rows cblocks rblocks] (cols-rows-blocked nn)
-
-
         palette (get-palette (rum/react palette-index))
         page-style {:flex            1
                     :backgroundColor (:primary palette)}]
@@ -44,23 +43,23 @@
                 (view {:key   r
                        :style {:flex           1
                                :flexDirection  "row"
-                               :alignItems     "flex-start"
-                               :justifyContent "flex-start"
-                               :maxHeight      32
+                               :alignItems     "center"
+                               :justifyContent "space-between"
+                               :maxHeight      24
                                }}
                       (for [c (range 5)
                             :let [k (+ c (* r 5))]
                             ]
                         (view {:key   c
                                :style {:flex           1
-                                       :maxWidth       32
+                                       :maxWidth       24
                                        :alignItems     "center"
-                                       :justifyContent "center"
+                                       :justifyContent "space-between"
                                        }}
                               (if (< k count)
                                 (if (and (zero? k) (zero? block))
-                                  (draw-icon scenar (:text-icons palette) 1)
-                                  (draw-icon scenar (:light-primary palette) 0.66))
+                                  (draw-icon scenar (:text-icons palette) 0.8)
+                                  (draw-icon scenar (:light-primary palette) 0.5))
                                 (view {:style {:width 30}}))
 
                               )))))]
@@ -85,23 +84,53 @@
                          :style {:flex            0.7
                                  :padding         20
                                  :backgroundColor (:primary palette)}}
-                        ;;
-                        ;; start of better blocking code
-                        ;;
-                        (for [rb (range rblocks)]
-                          (view {:key   rb
-                                 :style {:flex           (/ 1 rblocks)
-                                         :flexDirection  "row"
-                                         :alignItems     "center"
-                                         :justifyContent "center"
-                                         :marginBottom   (if (= rb (dec rblocks)) 0 10)}}
-                                (for [cb (range cblocks)]
-                                  (view {:key   cb
-                                         :style {:flex           (/ 1 cblocks)
-                                                 :alignItems     "center"
-                                                 :justifyContent "center"
-                                                 :marginRight    (if (= cb (dec cblocks)) 0 10)}}
-                                        (let [k (+ cb (* rb cblocks))]
-                                          (draw-block k (- nn (* 25 k))))))))))))))
+                        (view {:key   1
+                               :style {:position        "absolute"
+                                       :top             0
+                                       :bottom          0
+                                       :left            0
+                                       :right           0
+                                       :zIndex          1}}
+                              (view {:style {:flex           1
+                                             :flexDirection "column"
+                                             :justifyContent "center"
+                                             :alignItems     "center"}}
+                                    (view {:style {:flex           1
+                                                   :flexDirection  "row"
+                                                   :justifyContent "center"
+                                                   :alignItems     "center"}}
+                                          (text {:style {:fontSize        180
+                                                         :color           (:light-primary palette)
+                                                         :backgroundColor "rgba(0,0,0,0)"
+                                                         :opacity         0.5
+                                                         }
+                                                 }
+                                                (str nn)))))
+                        (view {:key   2
+                               :style {:position "absolute"
+                                       :top      0
+                                       :bottom   0
+                                       :left     0
+                                       :right    0
+                                       :zIndex   0
+                                       ;:height 1000
+                                       :backgroundColor (:primary palette)}}
+
+                              (for [rb (range rblocks)]
+                                (view {:key   rb
+                                       :style {:flex           (/ 1 rblocks)
+                                               :flexDirection  "row"
+                                               :alignItems     "center"
+                                               :justifyContent "center"
+                                               :marginBottom 10
+                                               }}
+                                      (for [cb (range cblocks)]
+                                        (view {:key   cb
+                                               :style {:flex           (/ 1 cblocks)
+                                                       :alignItems     "center"
+                                                       :justifyContent "center"
+                                                       }}
+                                              (let [k (+ cb (* rb cblocks))]
+                                                (draw-block k (- nn (* 25 k)))))))))))))))
 
 
