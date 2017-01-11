@@ -1,6 +1,6 @@
 ## unspun
 
-Exponent starter for a NNE/NNP add for journalists. Needs generalising to web.
+Exponent starter for a NNE/NNP app for journalists and clinicians. A web version is also needed.
 
 ### Usage (for developers)
 
