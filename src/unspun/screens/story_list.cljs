@@ -14,7 +14,7 @@
            (n-icon {:name  name
                     :style {:color (:dark-primary (get-palette @palette-index))}})))
 
-(defn add-icon [palette]
+#_(defn add-icon [palette]
   (view {:style         {:backgroundColor (:accent palette)
                          :borderRadius    20
                          :paddingLeft     0
@@ -46,10 +46,19 @@
            }))
 
 (defn show-icon [palette]
-  (n-icon {:name  "ios-arrow-forward"
+  (n-icon {:name  "ios-arrow-dropright-outline"
            :key   2
-           :style {:color (:accent palette)}
+           :style {:color (:accent palette)
+                   :transform [{:scale 2}]}
            }))
+
+(defn add-icon [palette]
+  (n-icon {:name  "ios-add-circle-outline"
+           :key   2
+           :style {:color (:accent palette)
+                   :transform [{:scale 2}]}
+           }))
+
 
 (defn bars-icon [palette]
   (n-icon {:name  "ios-stats"
@@ -67,7 +76,7 @@
             :selected (= @palette-index index)})
     (txt {:key 2} (palette-titles index))))
 
-(defn add-card! [palette]
+(defn add-card! [navigator palette]
   (card {:key   20
          :style {:flex   1
                  :margin 20}}
@@ -78,11 +87,18 @@
                              :flexDirection   "row"
                              :alignItems      "center"
                              }}
-                   (add-icon palette)
                    (txt {:style {:flex  4
                                  :marginLeft 34
                                  :color (:secondary-text palette)}}
-                        "Pull down to update, or add your own scenario"))
+                        "Add your own scenario")
+                   (button {:key       2
+                            :bordered  true
+                            ;:small     true
+                            :textStyle {:color (:accent palette)}
+                            :style     {:borderWidth 0}
+                            :onPress   #(do (.push navigator "not-yet"))}
+                           (add-icon palette)
+                           ""))
         )
 
   )
@@ -101,43 +117,27 @@
                    (icon-example (story-icon (@stories index)))
                    (txt {:style {:flex  4
                                  :color (:secondary-text palette)}}
-                        (caps-tidy (story (@stories index)))))
-        (card-item {:cardBody true
-                    :key      3
-                    :style    {:backgroundColor (:text-icons palette)
-                               :justifyContent  "space-around"
-                               :flexDirection   "row"
-                               :alignItems      "center"
-                               :paddingBottom   10
-                               :paddingTop      0
-                               }}
-                   (button {:key       1
-                            :bordered  true
-                            :small     true
-                            :textStyle {:color (:dark-primary palette)}
-                            :style     {:borderWidth 2
-                                        :borderColor (:dark-primary palette)
-                                        }}
-                           "Edit"
-                           (edit-icon palette))
+                        (caps-tidy (story (@stories index))))
                    (button {:key       2
                             :bordered  true
-                            :small     true
+                            ;:small     true
                             :textStyle {:color (:accent palette)}
-                            :style     {:borderWidth 2
-                                        :borderColor (:accent palette)}
+                            :style     {:borderWidth 0
+                                        ;:borderColor (:accent palette)
+                                        }
                             :onPress   #(do (reset! story-index index)
                                             (.push navigator "tabs"))}
                            (show-icon palette)
-                           "Select & Show")
-                   )))
+                           ""))
+        ))
 
 (rum/defcs page < rum/reactive
                   (rum/local 0 ::selection) [state]
   (let [palette (get-palette (rum/react palette-index))
         stories (rum/react stories)
         story-count (count stories)
-        palette-count (count palettes)]
+        palette-count (count palettes)
+        navigator (aget (:rum/react-component state) "props" "navigator")]
     (container
       {:style {:flex 1}}
       (content
@@ -152,7 +152,7 @@
         (apply n-list
                (concat [{:key   1
                          :style {:flex 1}}]
-                       [(add-card! palette)]
-                       [(map (partial story-card! (aget (:rum/react-component state) "props" "navigator") palette) (range story-count))]))
+                       [(add-card! navigator palette)]
+                       [(map (partial story-card! navigator palette) (range story-count))]))
         )
       )))

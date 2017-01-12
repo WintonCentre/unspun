@@ -91,7 +91,7 @@
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-arrow-up-outline" palette %)
          :renderTitle   (fn [isSelected] (do
-                                           (.log js/console "Startup")
+                                           ;(.log js/console "Startup")
                                            (title palette "Startup" isSelected)))}
         (stack-navigation
           {:id                 "startup-stack"
@@ -103,7 +103,7 @@
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-share-outline" palette %)
          :renderTitle   (fn [isSelected] (do
-                                           (.log js/console "Scenarios")
+                                           ;(.log js/console "Scenarios")
                                            (title palette "Scenarios" isSelected)))}
         (stack-navigation
           {:id                 "n-base-stack"

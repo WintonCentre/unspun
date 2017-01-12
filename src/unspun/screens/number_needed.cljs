@@ -10,6 +10,7 @@
   (n-icon {:name  (story-icon scenar)
            :style {:color     color
                    :backgroundColor "rgba(0,0,0,0)"
+                   :width  24
                    :transform [{:scale scale}]}}))
 
 (defn icon-square-size [nn]
@@ -45,27 +46,26 @@
                                :flexDirection  "row"
                                :alignItems     "center"
                                :justifyContent "space-between"
-                               :maxHeight      24
+                               :maxHeight      20
                                }}
                       (for [c (range 5)
                             :let [k (+ c (* r 5))]
                             ]
                         (view {:key   c
                                :style {:flex           1
-                                       :maxWidth       24
+                                       :flexDirection "column"
+                                       :maxWidth       20
                                        :alignItems     "center"
                                        :justifyContent "space-between"
                                        }}
                               (if (< k count)
                                 (if (and (zero? k) (zero? block))
-                                  (draw-icon scenar (:text-icons palette) 0.8)
-                                  (draw-icon scenar (:light-primary palette) 0.5))
-                                (view {:style {:width 30}}))
-
-                              )))))]
+                                  (draw-icon scenar (:text-icons palette) 0.7)
+                                  (draw-icon scenar (:light-primary palette) 0.35))
+                                (view {:style {:width 20}})))))))]
 
       (view {:style {:flex 1}}
-            (status-bar {:key      10
+            #_(status-bar {:key      10
                          :hidden   false
                          :barStyle "light-content"})
 
@@ -99,7 +99,7 @@
                                                    :flexDirection  "row"
                                                    :justifyContent "center"
                                                    :alignItems     "center"}}
-                                          (text {:style {:fontSize        180
+                                          (text {:style {:fontSize        160
                                                          :color           (:light-primary palette)
                                                          :backgroundColor "rgba(0,0,0,0)"
                                                          :opacity         0.5
@@ -113,7 +113,6 @@
                                        :left     0
                                        :right    0
                                        :zIndex   0
-                                       ;:height 1000
                                        :backgroundColor (:primary palette)}}
 
                               (for [rb (range rblocks)]
