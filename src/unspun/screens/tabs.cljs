@@ -36,19 +36,19 @@
              }
             (sliding-tab-navigation-item
               {:id          "stats"
-               :title       "Stats"
+               :title       "Numbers"
                :renderTitle render-title}
               (stats/page)
               )
             (sliding-tab-navigation-item
               {:id          "bars"
-               :title       "Comparing risks"
+               :title       "Graph"
                :renderTitle render-title
                }
               (bars/page))
             (sliding-tab-navigation-item
               {:id          "icons"
-               :title       "Number Needed"
+               :title       "Pictures"
                :renderTitle render-title}
               (nn/page)
               ))

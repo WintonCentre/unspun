@@ -141,7 +141,7 @@
                     :backgroundColor (:primary palette)}]
     (view
       {:style {:flex 1}}
-      (status-bar {:hidden   false
+      #_(status-bar {:hidden   false
                    :barStyle "light-content"})
 
       (view {:style page-style}

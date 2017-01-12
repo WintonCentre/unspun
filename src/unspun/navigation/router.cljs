@@ -3,10 +3,12 @@
             [cljs-exponent.components :refer [element]]
             [clojure.string :refer [lower-case]]
             [shared.ui :refer [create-router]]
-            [unspun.screens.svg-test-page :refer [test-page]]
+            [unspun.screens.logo :as logo :refer [logo-page]]
+            [unspun.screens.introduction :as intro]
+    ;[unspun.screens.svg-test-page :refer [test-page]]
             [unspun.screens.number-needed :as number-needed]
             [unspun.screens.rum-bars :as rum-bars]
-            [unspun.screens.logo :as logo :refer [logo-page]]
+
             [unspun.screens.old-palette :as palette]
             [unspun.screens.settings :as settings]
             [unspun.screens.not-yet :as not-yet]
@@ -28,17 +30,20 @@
                                            }})))
 
 (def Router (create-router (fn []
-                             #js {:svg-test       (wrap test-page)
+                             #js {:startup        (wrap logo-page)
+                                  :intro          (wrap intro/page)
                                   :icon-array     (wrap number-needed/page)
                                   :rum-bars       (wrap rum-bars/page)
                                   :number-needed  (wrap number-needed/page)
-                                  :startup        (wrap logo-page)
+
                                   :theming        (wrap palette/page)
                                   :settings       (wrap settings/page)
                                   :not-yet        (wrap not-yet/page)
                                   :select-palette (wrap select-palette/page)
                                   :stories        (wrap story-list/page)
                                   :tabs           (wrap tabs/page)
+
+                                  ;:svg-test       (wrap test-page)
                                   })))
 
 (def r-help "May be my question is just how to pass props when we use the Navigator to route my app?

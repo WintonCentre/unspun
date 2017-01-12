@@ -14,24 +14,6 @@
            (n-icon {:name  name
                     :style {:color (:dark-primary (get-palette @palette-index))}})))
 
-#_(defn add-icon [palette]
-  (view {:style         {:backgroundColor (:accent palette)
-                         :borderRadius    20
-                         :paddingLeft     0
-                         :width           30
-                         :height          30
-                         :alignItems      "center"
-                         :justifyContent  "center"
-                         :shadowColor     "black"
-                         }
-         :shadowOffset  #js [1 1]
-         :shadowOpacity 0.3
-         :shadowRadius  1}
-        (n-icon {:name  "md-add"
-                 :style {:fontSize 20
-                         :color    "white"
-                         }
-                 })))
 
 (defn edit-icon [palette]
   (n-icon {:name  "ios-create"
@@ -120,11 +102,8 @@
                         (caps-tidy (story (@stories index))))
                    (button {:key       2
                             :bordered  true
-                            ;:small     true
                             :textStyle {:color (:accent palette)}
-                            :style     {:borderWidth 0
-                                        ;:borderColor (:accent palette)
-                                        }
+                            :style     {:borderWidth 0}
                             :onPress   #(do (reset! story-index index)
                                             (.push navigator "tabs"))}
                            (show-icon palette)
@@ -152,7 +131,6 @@
         (status-bar {:key      story-count
                      :hidden   false
                      :barStyle "light-content"})
-
         (apply n-list
                (concat [{:key   1
                          :style {:flex 1}}]

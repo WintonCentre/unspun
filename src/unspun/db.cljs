@@ -45,7 +45,7 @@
                           :exposure        "eating bacon sandwiches every day"
                           :baseline-risk   0.06
                           :relative-risk   1.18
-                          :outcome         "a heart attack or stroke"
+                          :outcome         "bowel cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :fontSize        16
                           :with            "Bacon every day"
@@ -78,7 +78,7 @@
                 :wdoc    {:icon            "ios-person"
                           :subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
                           :risk            "their risk"
-                          :exposure        "seen by a female doctor"
+                          :exposure        "being seen by a female doctor"
                           :baseline-risk   0.115
                           :relative-risk   0.96
                           :outcome         "death within 30 days of admission"
@@ -100,14 +100,9 @@
                           :without         "No statins"
                           }})
 
+
 (defn initial-stories []
   (mapv second scenarios))
-
-(defn story [scenario]
-  (str (second (:subjects scenario)) " " (:exposure scenario)))
-
-(defn story-icon [scenario]
-  (:icon scenario))
 
 (def app-state (atom {:palette-index 0
                       :brand-title   "Winton Centre"
@@ -126,6 +121,20 @@
 (def story-index (rum/cursor-in app-state [:story-index]))
 (def stories (rum/cursor-in app-state [:stories]))
 (def notifications (rum/cursor-in app-state [:notifications]))
+
+
+#_(defn story [scenario]
+    (str (second (:subjects scenario)) " " (:exposure scenario)))
+
+(defn story [scenario]
+  (str "How much does " (:exposure scenario) " "
+       (if (> (:relative-risk (@stories @story-index)) 1) "increase" "decrease")
+       " the risk of "
+       (:outcome scenario)
+       "?"))
+
+(defn story-icon [scenario]
+  (:icon scenario))
 
 
 ;;;

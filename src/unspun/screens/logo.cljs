@@ -42,6 +42,25 @@
                                    :transform [{:scale 0.3}]}}))
         (touchable-highlight {:style {:flex            0.075
                                       :margin          20
+                                      ;:backgroundColor (:accent (get-palette (rum/react palette-index)))
+                                      :borderColor "#fff"
+                                      :borderWidth 2
+                                      :borderRadius    30
+                                      ;:shadowColor     "#000"
+                                      ;:shadowOffset    {:width shadow-size :height shadow-size}
+                                      ;:shadowRadius    shadow-size
+                                      ;:shadowOpacity   0.5
+                                      :alignItems      "center"
+                                      :justifyContent  "center"
+                                      }
+                              :onPress #_#(.push
+                                            (aget (:rum/react-component state) "props" "navigator")
+                                            (.getRoute Router "stories")) ;#(alert "Hello!")
+                                     #(.push (aget (:rum/react-component state) "props" "navigator") "intro") ;#(alert "Hello!")
+                              }
+                             (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 200}} "What's this about?"))
+        (touchable-highlight {:style {:flex            0.075
+                                      :margin          20
                                       :backgroundColor (:accent (get-palette (rum/react palette-index)))
                                       :borderRadius    30
                                       :shadowColor     "#000"
