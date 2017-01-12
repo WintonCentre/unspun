@@ -23,19 +23,19 @@
    :textAlign  "center"
    :color      (:light-primary (get-palette (rum/react palette-index)))})
 
-(defcs logo-page < rum/reactive [state]
+(defcs logo-page < rum/reactive [state router]
   (view {:style (page-style)}
-        (status-bar {:key 10
+        (status-bar {:key      10
                      :hidden   false
                      :barStyle "light-content"})
         (text {:style (merge {:paddingTop 40 :flex 0.1} (brand-style))}
               (rum/react brand-title))
         (text {:style (merge {:paddingTop 0 :flex 0.1} (brand-style))}
               (rum/react app-banner))
-        (view {:style {:flex 0.4
+        (view {:style {:flex           0.4
                        ;:backgroundColor "red"
                        :justifyContent "flex-start"
-                       :alignItems "center"}}
+                       :alignItems     "center"}}
               (image {:source     logo-img
                       :resizeMode "contain"
                       :style      {:marginTop -170
@@ -51,6 +51,9 @@
                                       :alignItems      "center"
                                       :justifyContent  "center"
                                       }
-                              :onPress   #(.push (aget (:rum/react-component state) "props" "navigator") "stories")                   ;#(alert "Hello!")
+                              :onPress #_#(.push
+                                            (aget (:rum/react-component state) "props" "navigator")
+                                            (.getRoute Router "stories")) ;#(alert "Hello!")
+                                     #(.push (aget (:rum/react-component state) "props" "navigator") "stories") ;#(alert "Hello!")
                               }
                              (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))

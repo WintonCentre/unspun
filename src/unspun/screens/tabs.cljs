@@ -3,10 +3,11 @@
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 to-pc clamp]]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar] :as rn]
-            [shared.ui :refer [sliding-tab-navigation sliding-tab-navigation-item ionicon]]
+            [shared.ui :refer [sliding-tab-navigation sliding-tab-navigation-item ionicon add-page-title]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             [unspun.screens.rum-bars :as bars]
             [unspun.screens.number-needed :as nn]
+            [unspun.screens.stats :as stats]
             [clojure.string :refer [upper-case]]))
 
 
@@ -17,7 +18,8 @@
   (text {:style {:color (get-color is-selected)}}
         title))
 
-(rum/defcs page < rum/reactive [state]
+(rum/defcs page < rum/reactive
+                  (add-page-title "Show") [state]
   (let [navigator (aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))]
     (view {:style {
@@ -25,7 +27,7 @@
                    :backgroundColor "#CCF"
                    }}
           (sliding-tab-navigation
-            {:flex 0.9
+            {:flex               0.9
              :id                 "tab-navigation"
              :navigatorUID       "tab-navigation"
              :barBackgroundColor (:dark-primary palette)
@@ -33,17 +35,24 @@
              :initialTab         "bars"
              }
             (sliding-tab-navigation-item
-              {:id          "icons"
-               :title       "Number Needed"
+              {:id          "stats"
+               :title       "Stats"
                :renderTitle render-title}
-              (nn/page)
+              (stats/page)
               )
             (sliding-tab-navigation-item
               {:id          "bars"
                :title       "Comparing risks"
                :renderTitle render-title
                }
-              (bars/page)))
-          (view {:style {:flex 0.1
+              (bars/page))
+            (sliding-tab-navigation-item
+              {:id          "icons"
+               :title       "Number Needed"
+               :renderTitle render-title}
+              (nn/page)
+              ))
+
+          (view {:style {:flex            0.1
                          :backgroundColor (:dark-primary palette)}}
                 (bottom-button-bar)))))

@@ -59,3 +59,11 @@
 (def row (partial element (aget native-base "Row")))
 (def button (partial element (aget native-base "Button")))
 
+;;;
+;; mixin to update navbar title
+;;;
+(defn add-page-title [title]
+  {:will-mount (fn [state]
+                 ;(.log js/console (:rum/react-component state))
+                 (aset (:rum/react-component state) "props" "route" "config" "navigationBar" "title" title)
+                 state)})

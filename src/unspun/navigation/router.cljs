@@ -27,12 +27,6 @@
                                            ;:translucent true
                                            }})))
 
-(defn wrap-tabs [screen]
-  (let [cp-class (:rum/class (meta screen))]
-    #(wrap-route cp-class {:navigationBar {:backgroundColor header-background
-                                           :title "Show Story"
-                                           }})))
-
 (def Router (create-router (fn []
                              #js {:svg-test       (wrap test-page)
                                   :icon-array     (wrap number-needed/page)

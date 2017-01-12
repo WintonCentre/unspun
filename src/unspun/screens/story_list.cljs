@@ -1,7 +1,7 @@
 (ns unspun.screens.story-list
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
-            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title]]
             [unspun.db :refer [app-state palette-index stories story-index story-icon story caps-tidy]]
             [themes.palettes :refer [palettes get-palette]]
             ))
@@ -131,8 +131,12 @@
                            ""))
         ))
 
+
+
 (rum/defcs page < rum/reactive
-                  (rum/local 0 ::selection) [state]
+                  (rum/local 0 ::selection)
+                  (add-page-title "Scenarios")
+  [state]
   (let [palette (get-palette (rum/react palette-index))
         stories (rum/react stories)
         story-count (count stories)

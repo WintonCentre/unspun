@@ -4,8 +4,19 @@
 ; See https://www.materialpalette.com/blue/orange
 ;;;
 (def palettes
-  {:blue-grey-pink
+
+  {:blue-grey-pink                                          ;;WebAIM.org contrast checked
    {:dark-primary   "#455A64"
+    :primary        "#607D8B"
+    :light-primary  "#CFD8DC"
+    :text-icons     "#FFFFFF"
+    :accent         "#FF4081"
+    :primary-text   "#212121"
+    :secondary-text "#757575"
+    :divider        "#BDBDBD"
+    :error          "#FF6688"}
+
+   #_{:dark-primary   "#455A64"
     :primary        "#607D8B"
     :light-primary  "#CFD8DC"
     :text-icons     "#FFFFFF"
