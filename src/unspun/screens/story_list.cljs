@@ -36,14 +36,14 @@
   (n-icon {:name  "ios-arrow-dropright-outline"
            :key   2
            :style {:color     (:accent palette)
-                   :transform [{:scale 2}]}
+                   :transform [{:scale 1.67}]}
            }))
 
 (defn add-icon [palette]
   (n-icon {:name  "ios-add-circle-outline"
            :key   2
            :style {:color     (:accent palette)
-                   :transform [{:scale 2}]}
+                   :transform [{:scale 1.67}]}
            }))
 
 
@@ -76,6 +76,7 @@
                              }}
                    (txt {:style {:flex       4
                                  :marginLeft 34
+                                 :fontWeight "normal"
                                  :color      (:secondary-text palette)}}
                         "Add your own scenario")
                    (button {:key       2
@@ -93,7 +94,7 @@
 (defn story-card! [navigator palette index]
   (card {:key   index
          :style {:flex   1
-                 :margin 20}}
+                 :margin 15}}
         (card-item {:header true
                     :key    1
                     :style  {:backgroundColor "white"
@@ -103,10 +104,12 @@
                              }}
                    (story-icon palette (:icon (@stories index)))
                    (txt {:style {:flex  4
+                                 :fontWeight "normal"
                                  :color (:secondary-text palette)}}
                         (caps-tidy (story (@stories index))))
                    (button {:key       2
                             :bordered  true
+                            ;:small true
                             :textStyle {:color (:accent palette)}
                             :style     {:borderWidth 0}
                             :onPress   #(do (reset! story-index index)

@@ -64,12 +64,13 @@
                                   (draw-icon scenar (:light-primary palette) 0.35))
                                 (view {:style {:width 20}})))))))]
 
-      view {:style {:flex 1}}
+      ;view {:style {:flex 1}}
       #_(status-bar {:key      10
                      :hidden   false
                      :barStyle "light-content"})
 
-      (view {:style page-style
+      (view {:style {:flex            1
+                     :backgroundColor (:primary palette)}
              :key   1}
             (view {:style {:flex            0.3
                            :justifyContent  "center"
