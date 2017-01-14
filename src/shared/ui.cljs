@@ -67,3 +67,4 @@
                  ;(.log js/console (:rum/react-component state))
                  (aset (:rum/react-component state) "props" "route" "config" "navigationBar" "title" title)
                  state)})
+

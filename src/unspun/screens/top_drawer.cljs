@@ -79,6 +79,7 @@
 
     (drawer-navigation
       {:drawerPosition "right"
+       :navigatorUID   "top-drawer"
        :renderHeader   #(header)
        :drawerWidth    200
        :drawerStyle    {:backgroundColor (:dark-primary (get-palette (rum/react palette-index)))
@@ -95,53 +96,35 @@
                                            (title palette "Startup" isSelected)))}
         (stack-navigation
           {:id                 "startup-stack"
+           :navigatorUID       "startup"
            :defaultRouteConfig (defaultRouteConfig "Startup")
            :initialRoute       (.getRoute Router "startup")}))
 
       (drawer-navigation-item
-        {:id            "native-base"
+        {:id            "scenarios"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-share-outline" palette %)
          :renderTitle   (fn [isSelected] (do
                                            ;(.log js/console "Scenarios")
                                            (title palette "Scenarios" isSelected)))}
         (stack-navigation
-          {:id                 "n-base-stack"
+          {:id                 "scenarios-stack"
+           :navigatorUID       "scenarios"
            :defaultRouteConfig (defaultRouteConfig "Scenarios")
            :initialRoute       (.getRoute Router "stories")}))
-
-      #_(drawer-navigation-item
-        {:id            "icon-array"
-         :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    #(menu-icon "ios-body" palette %)
-         :renderTitle   (fn [isSelected] (title palette "Number needed" isSelected))}
-        (stack-navigation
-          {:id                 "icons-stack"
-           :defaultRouteConfig (defaultRouteConfig "Number Needed")
-           :initialRoute       (.getRoute Router "number-needed")}))
-
-      #_(drawer-navigation-item
-        {:id            "rum-bars"
-         :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    #(menu-icon "ios-podium" palette %)
-         :renderTitle   (fn [isSelected] (title palette "  Compare" isSelected))}
-        (stack-navigation
-          {:id                 "bars-stack"
-           :defaultRouteConfig (defaultRouteConfig "Compare with and without")
-           :initialRoute       (.getRoute Router "rum-bars")}))
 
       (drawer-navigation-item
         {:id            "settings"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-settings" palette %)
          :renderTitle   (fn [isSelected] (do
-                                           (.log js/console "Settings")
+                                           ;(.log js/console "Settings")
                                            (title palette "Settings" isSelected)))}
         (stack-navigation
           {:id                 "settings-stack"
+           :navigatorUID       "settings"
            :defaultRouteConfig (defaultRouteConfig "Settings")
            :initialRoute       (.getRoute Router "settings")}))
-
 
       (drawer-navigation-item
         {:id            "share"
@@ -150,18 +133,41 @@
          :renderTitle   (fn [isSelected] (title palette "Share" isSelected))}
         (stack-navigation
           {:id                 "share-stack"
+           :navigatorUID       "share"
            :defaultRouteConfig (defaultRouteConfig "Share")
            :initialRoute       (.getRoute Router "not-yet")}))
 
-      ;; Using this and the navigation via stories corrupts the route stack somehow.
-      #_(drawer-navigation-item
-        {:id            "tabs"
-         :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    #(menu-icon "ios-share-outline" palette %)
-         :renderTitle   (fn [isSelected] (title palette "Show Story" isSelected))}
-        (stack-navigation
-          {:id                 "tabs-stack"
-           :defaultRouteConfig (defaultRouteConfig "Tabs")
-           :initialRoute       (.getRoute Router "tabs")}))
-
       )))
+
+
+#_(drawer-navigation-item
+    {:id            "icon-array"
+     :selectedStyle (aget st "selectedItemStyle")
+     :renderIcon    #(menu-icon "ios-body" palette %)
+     :renderTitle   (fn [isSelected] (title palette "Number needed" isSelected))}
+    (stack-navigation
+      {:id                 "icons-stack"
+       :defaultRouteConfig (defaultRouteConfig "Number Needed")
+       :initialRoute       (.getRoute Router "number-needed")}))
+
+#_(drawer-navigation-item
+    {:id            "rum-bars"
+     :selectedStyle (aget st "selectedItemStyle")
+     :renderIcon    #(menu-icon "ios-podium" palette %)
+     :renderTitle   (fn [isSelected] (title palette "  Compare" isSelected))}
+    (stack-navigation
+      {:id                 "bars-stack"
+       :defaultRouteConfig (defaultRouteConfig "Compare with and without")
+       :initialRoute       (.getRoute Router "rum-bars")}))
+
+;; Using this and the navigation via stories corrupts the route stack somehow.
+#_(drawer-navigation-item
+    {:id            "tabs"
+     :selectedStyle (aget st "selectedItemStyle")
+     :renderIcon    #(menu-icon "ios-share-outline" palette %)
+     :renderTitle   (fn [isSelected] (title palette "Show Story" isSelected))}
+    (stack-navigation
+      {:id                 "tabs-stack"
+       :defaultRouteConfig (defaultRouteConfig "Tabs")
+       :initialRoute       (.getRoute Router "tabs")}))
+

@@ -24,55 +24,69 @@
    :color      (:light-primary (get-palette (rum/react palette-index)))})
 
 (defcs logo-page < rum/reactive [state router]
-  (view {:style (page-style)}
-        (status-bar {:key      10
-                     :hidden   false
-                     :barStyle "light-content"})
-        (text {:style (merge {:paddingTop 40 :flex 0.1} (brand-style))}
-              (rum/react brand-title))
-        (text {:style (merge {:paddingTop 0 :flex 0.1} (brand-style))}
-              (rum/react app-banner))
-        (view {:style {:flex           0.4
-                       ;:backgroundColor "red"
-                       :justifyContent "flex-start"
-                       :alignItems     "center"}}
-              (image {:source     logo-img
-                      :resizeMode "contain"
-                      :style      {:marginTop -170
-                                   :transform [{:scale 0.3}]}}))
-        (touchable-highlight {:style {:flex            0.075
-                                      :margin          20
-                                      ;:backgroundColor (:accent (get-palette (rum/react palette-index)))
-                                      :borderColor "#fff"
-                                      :borderWidth 2
-                                      :borderRadius    30
-                                      ;:shadowColor     "#000"
-                                      ;:shadowOffset    {:width shadow-size :height shadow-size}
-                                      ;:shadowRadius    shadow-size
-                                      ;:shadowOpacity   0.5
-                                      :alignItems      "center"
-                                      :justifyContent  "center"
-                                      }
-                              :onPress #_#(.push
-                                            (aget (:rum/react-component state) "props" "navigator")
-                                            (.getRoute Router "stories")) ;#(alert "Hello!")
-                                     #(.push (aget (:rum/react-component state) "props" "navigator") "intro") ;#(alert "Hello!")
-                              }
-                             (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 200}} "What's this about?"))
-        (touchable-highlight {:style {:flex            0.075
-                                      :margin          20
-                                      :backgroundColor (:accent (get-palette (rum/react palette-index)))
-                                      :borderRadius    30
-                                      :shadowColor     "#000"
-                                      :shadowOffset    {:width shadow-size :height shadow-size}
-                                      :shadowRadius    shadow-size
-                                      :shadowOpacity   0.5
-                                      :alignItems      "center"
-                                      :justifyContent  "center"
-                                      }
-                              :onPress #_#(.push
-                                            (aget (:rum/react-component state) "props" "navigator")
-                                            (.getRoute Router "stories")) ;#(alert "Hello!")
-                                     #(.push (aget (:rum/react-component state) "props" "navigator") "stories") ;#(alert "Hello!")
-                              }
-                             (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 55}} "Start"))))
+
+  (letfn [(jumpToDrawer [drawerId route]
+            (let [navigation (aget (:rum/react-component state) "props" "navigation")
+                  router-route (.getRoute (aget navigation "router") route)]
+              (.log js/console "navigation" navigation)
+
+              (.performAction navigation (fn [stateUtils]
+                                           ;(.log js/console "drawer = " drawer)
+                                           (.jumpToItem ((aget stateUtils "drawer") "top-drawer") drawerId)
+                                           (.log js/console router-route)
+                                           ;(.push ((aget stateUtils "stacks") "top-drawer") router-route)
+                                           ))
+              ))]
+    (view {:style (page-style)}
+          (status-bar {:key      10
+                       :hidden   false
+                       :barStyle "light-content"})
+          (text {:style (merge {:paddingTop 40 :flex 0.1} (brand-style))}
+                (rum/react brand-title))
+          (text {:style (merge {:paddingTop 0 :flex 0.1} (brand-style))}
+                (rum/react app-banner))
+          (view {:style {:flex           0.4
+                         ;:backgroundColor "red"
+                         :justifyContent "flex-start"
+                         :alignItems     "center"}}
+                (image {:source     logo-img
+                        :resizeMode "contain"
+                        :style      {:marginTop -170
+                                     :transform [{:scale 0.3}]}}))
+          (touchable-highlight {:style {:flex           0.075
+                                        :margin         20
+                                        ;:backgroundColor (:accent (get-palette (rum/react palette-index)))
+                                        :borderColor    "#fff"
+                                        :borderWidth    2
+                                        :borderRadius   30
+                                        ;:shadowColor     "#000"
+                                        ;:shadowOffset    {:width shadow-size :height shadow-size}
+                                        ;:shadowRadius    shadow-size
+                                        ;:shadowOpacity   0.5
+                                        :alignItems     "center"
+                                        :justifyContent "center"
+                                        }
+                                :onPress #_#(.push
+                                              (aget (:rum/react-component state) "props" "navigator")
+                                              (.getRoute Router "stories")) ;#(alert "Hello!")
+                                       #(.push (aget (:rum/react-component state) "props" "navigator") "intro") ;#(alert "Hello!")
+                                }
+                               (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 200}} "What's this about?"))
+          (touchable-highlight {:style   {:flex            0.075
+                                          :margin          20
+                                          :backgroundColor (:accent (get-palette (rum/react palette-index)))
+                                          :borderRadius    30
+                                          :shadowColor     "#000"
+                                          :shadowOffset    {:width shadow-size :height shadow-size}
+                                          :shadowRadius    shadow-size
+                                          :shadowOpacity   0.5
+                                          :alignItems      "center"
+                                          :justifyContent  "center"
+                                          }
+                                :onPress #(jumpToDrawer "scenarios" "stories")
+                                #_#(.push (aget (:rum/react-component state) "props" "navigator") "stories") ;#(alert "Hello!")
+
+                                }
+                               (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 55}} "Start")))))
+
+

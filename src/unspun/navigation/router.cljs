@@ -25,9 +25,7 @@
 
 (defn wrap [screen]
   (let [cp-class (:rum/class (meta screen))]
-    #(wrap-route cp-class {:navigationBar {:backgroundColor header-background
-                                           ;:translucent true
-                                           }})))
+    #(wrap-route cp-class {:navigationBar {:backgroundColor header-background}})))
 
 (def Router (create-router (fn []
                              #js {:startup        (wrap logo-page)
