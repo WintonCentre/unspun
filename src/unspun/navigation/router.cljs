@@ -5,7 +5,6 @@
             [shared.ui :refer [create-router]]
             [unspun.screens.logo :as logo :refer [logo-page]]
             [unspun.screens.introduction :as intro]
-    ;[unspun.screens.svg-test-page :refer [test-page]]
             [unspun.screens.number-needed :as number-needed]
             [unspun.screens.rum-bars :as rum-bars]
 
@@ -26,6 +25,7 @@
 (defn wrap [screen]
   (let [cp-class (:rum/class (meta screen))]
     #(wrap-route cp-class {:navigationBar {:backgroundColor header-background}})))
+
 
 (def Router (create-router (fn []
                              #js {:startup        (wrap logo-page)

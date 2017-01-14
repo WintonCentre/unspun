@@ -10,14 +10,6 @@
             [unspun.screens.stats :as stats]
             [clojure.string :refer [upper-case]]))
 
-
-(defn get-color [is-selected]
-  (if is-selected "red" "green"))
-
-(defn render-title [is-selected title]
-  (text {:style {:color (get-color is-selected)}}
-        title))
-
 (rum/defcs page < rum/reactive
                   (add-page-title "Show") [state]
   (let [navigator (aget (:rum/react-component state) "props" "navigator")
@@ -35,21 +27,17 @@
              :initialTab         "bars"
              }
             (sliding-tab-navigation-item
-              {:id          "stats"
-               :title       "Numbers"
-               :renderTitle render-title}
+              {:id    "stats"
+               :title "Numbers"}
               (stats/page)
               )
             (sliding-tab-navigation-item
               {:id          "bars"
-               :title       "Graph"
-               :renderTitle render-title
-               }
+               :title       "Graph"}
               (bars/page))
             (sliding-tab-navigation-item
-              {:id          "icons"
-               :title       "Pictures"
-               :renderTitle render-title}
+              {:id    "icons"
+               :title "Pictures"}
               (nn/page)
               ))
 

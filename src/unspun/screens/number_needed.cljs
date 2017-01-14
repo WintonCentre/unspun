@@ -2,12 +2,12 @@
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [n-icon]]
-            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index story-icon text-generator nn1 nn2]]
+            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index text-generator nn1 nn2]]
             [rum.core :as rum]))
 
 
 (defn draw-icon [scenar color scale]
-  (n-icon {:name  (story-icon scenar)
+  (n-icon {:name  (:icon scenar)
            :style {:color     color
                    :backgroundColor "rgba(0,0,0,0)"
                    :width  24
@@ -64,72 +64,73 @@
                                   (draw-icon scenar (:light-primary palette) 0.35))
                                 (view {:style {:width 20}})))))))]
 
-      (view {:style {:flex 1}}
-            #_(status-bar {:key      10
-                         :hidden   false
-                         :barStyle "light-content"})
+      ;view {:style {:flex 1}}
+      #_(status-bar {:key      10
+                     :hidden   false
+                     :barStyle "light-content"})
 
-            (view {:style page-style
-                   :key   1}
-                  (view {:style {:flex            0.3
-                                 :justifyContent  "center"
-                                 :alignItems      "center"
-                                 :backgroundColor (:dark-primary palette)}}
-                        (text {:style {:color      (:light-primary palette)
-                                       :fontWeight "400"
-                                       :padding    20
-                                       :fontSize   (:fontSize scenar)}}
-                              (text-generator nn2 scenar)))
-                  (view {:key   2
-                         :style {:flex            0.7
-                                 :padding         20
-                                 :backgroundColor (:primary palette)}}
-                        (view {:key   1
-                               :style {:position        "absolute"
-                                       :top             0
-                                       :bottom          0
-                                       :left            0
-                                       :right           0
-                                       :zIndex          1}}
+      (view {:style {:flex            1
+                     :backgroundColor (:primary palette)}
+             :key   1}
+            (view {:style {:flex            0.3
+                           :justifyContent  "center"
+                           :alignItems      "center"
+                           :backgroundColor (:dark-primary palette)}}
+                  (text {:style {:color      (:light-primary palette)
+                                 :fontWeight "400"
+                                 :padding    20
+                                 :fontSize   (:fontSize scenar)}}
+                        (text-generator nn2 scenar)))
+            (view {:key   2
+                   :style {:flex            0.7
+                           :padding         20
+                           :backgroundColor (:primary palette)}}
+                  (view {:key   1
+                         :style {:position "absolute"
+                                 :top      0
+                                 :bottom   0
+                                 :left     0
+                                 :right    0
+                                 :zIndex   1}}
+                        (view {:style {:flex           1
+                                       :flexDirection  "column"
+                                       :justifyContent "center"
+                                       :alignItems     "center"}}
                               (view {:style {:flex           1
-                                             :flexDirection "column"
+                                             :flexDirection  "row"
                                              :justifyContent "center"
                                              :alignItems     "center"}}
-                                    (view {:style {:flex           1
-                                                   :flexDirection  "row"
-                                                   :justifyContent "center"
-                                                   :alignItems     "center"}}
-                                          (text {:style {:fontSize        160
-                                                         :color           (:light-primary palette)
-                                                         :backgroundColor "rgba(0,0,0,0)"
-                                                         :opacity         0.5
-                                                         }
-                                                 }
-                                                (str nn)))))
-                        (view {:key   2
-                               :style {:position "absolute"
-                                       :top      0
-                                       :bottom   0
-                                       :left     0
-                                       :right    0
-                                       :zIndex   0
-                                       :backgroundColor (:primary palette)}}
+                                    (text {:style {:fontSize        160
+                                                   :color           (:light-primary palette)
+                                                   :backgroundColor "rgba(0,0,0,0)"
+                                                   :opacity         0.5
+                                                   }
+                                           }
+                                          (str nn)))))
+                  (view {:key   2
+                         :style {:position        "absolute"
+                                 :top             0
+                                 :bottom          0
+                                 :left            0
+                                 :right           0
+                                 :zIndex          0
+                                 :backgroundColor (:primary palette)}}
 
-                              (for [rb (range rblocks)]
-                                (view {:key   rb
-                                       :style {:flex           (/ 1 rblocks)
-                                               :flexDirection  "row"
-                                               :alignItems     "center"
-                                               :justifyContent "center"
-                                               :marginBottom 10
-                                               }}
-                                      (for [cb (range cblocks)]
-                                        (view {:key   cb
-                                               :style {:flex           (/ 1 cblocks)
-                                                       :alignItems     "center"
-                                                       :justifyContent "center"
-                                                       }}
-                                              (let [k (+ cb (* rb cblocks))]
-                                                (draw-block k (- nn (* 25 k)))))))))))))))
+                        (for [rb (range rblocks)]
+                          (view {:key   rb
+                                 :style {:flex           (/ 1 rblocks)
+                                         :flexDirection  "row"
+                                         :alignItems     "center"
+                                         :justifyContent "center"
+                                         :marginBottom   10
+                                         }}
+                                (for [cb (range cblocks)]
+                                  (view {:key   cb
+                                         :style {:flex           (/ 1 cblocks)
+                                                 :alignItems     "center"
+                                                 :justifyContent "center"
+                                                 }}
+                                        (let [k (+ cb (* rb cblocks))]
+                                          (draw-block k (- nn (* 25 k))))))))))))))
 
 

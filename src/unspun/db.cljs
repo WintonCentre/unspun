@@ -133,10 +133,6 @@
        (:outcome scenario)
        "?"))
 
-(defn story-icon [scenario]
-  (:icon scenario))
-
-
 ;;;
 ;; DERIVED STATE
 ;;;
