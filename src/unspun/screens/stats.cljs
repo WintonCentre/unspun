@@ -33,7 +33,7 @@
         brpc (to-pc br)
         rrpc (to-pc rr)
         er (* br rr)
-        erpc (to-pc (clamp 0 1 er))
+        erpc (to-pc (clamp [0 1] er))
         palette (get-palette (rum/react palette-index))
         page-style {:flex            1
                     :backgroundColor (:primary palette)}]

@@ -1,0 +1,37 @@
+For context see:
+https://exponentjs.slack.com/archives/general/p1484510709012617
+
+  static route = {
+    navigationBar: {
+      title: 'Comments',
+      backgroundColor: Colors.mainPurple,
+      titleStyle: {
+        fontFamily: montserrat,
+        fontSize: fontSize.twenty
+      },
+      tintColor: 'white',
+      renderRight: (route) => {
+          const { config: { eventEmitter } } = route;
+          const { id } = route.params.posts.author;
+          const { currentUser } = firebase.auth();
+          if (currentUser.uid !== id) {
+              return <FlagButton />;
+          }
+          return <GoEditButton onPress={() => eventEmitter.emit('edit')} />;
+      }
+    },
+  }
+  componentWillMount() {
+    const { uid } = this.props.route.params.posts;
+    this.props.getSinglePost(uid);
+    this._editPost = this.props.route.getEventEmitter().addListener('edit', this.editPost);
+  }
+  componentWillUnMount() {
+    this._editPost.remove();
+  }
+  editPost = () => {
+      this.props.startEdit(this.props.route.params.posts);
+      this.props.navigation
+       .getNavigator('root')
+       .push(Router.getRoute('editPost'));
+  }

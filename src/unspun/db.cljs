@@ -148,7 +148,7 @@
 
 (defn clamp
   "clamp v to the range [a,b]"
-  [a b v]
+  [[a b] v]
   (if (<= a b)
     (Math.max a (Math.min b v))
     a))
