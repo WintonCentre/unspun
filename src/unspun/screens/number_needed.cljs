@@ -60,8 +60,8 @@
                                        }}
                               (if (< k count)
                                 (if (and (zero? k) (zero? block))
-                                  (draw-icon scenar (:text-icons palette) 0.7)
-                                  (draw-icon scenar (:light-primary palette) 0.35))
+                                  (draw-icon scenar (:text-icons palette) 0.9)
+                                  (draw-icon scenar (:light-primary palette) 0.5))
                                 (view {:style {:width 20}})))))))]
 
       ;view {:style {:flex 1}}
@@ -100,7 +100,7 @@
                                              :flexDirection  "row"
                                              :justifyContent "center"
                                              :alignItems     "center"}}
-                                    (text {:style {:fontSize        160
+                                    (text {:style {:fontSize        120
                                                    :color           (:light-primary palette)
                                                    :backgroundColor "rgba(0,0,0,0)"
                                                    :opacity         0.5
@@ -121,14 +121,14 @@
                                  :style {:flex           (/ 1 rblocks)
                                          :flexDirection  "row"
                                          :alignItems     "center"
-                                         :justifyContent "center"
-                                         :marginBottom   10
+                                         :justifyContent "space-around"
                                          }}
                                 (for [cb (range cblocks)]
                                   (view {:key   cb
                                          :style {:flex           (/ 1 cblocks)
+                                                 :flexDirection  "column"
                                                  :alignItems     "center"
-                                                 :justifyContent "center"
+                                                 :justifyContent "space-around"
                                                  }}
                                         (let [k (+ cb (* rb cblocks))]
                                           (draw-block k (- nn (* 25 k))))))))))))))

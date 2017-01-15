@@ -66,7 +66,7 @@
 (defn add-card! [navigator palette]
   (card {:key   20
          :style {:flex   1
-                 :margin 20}}
+                 :margin 15}}
         (card-item {:header true
                     :key    1
                     :style  {:backgroundColor "white"

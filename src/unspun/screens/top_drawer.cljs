@@ -101,6 +101,19 @@
            :initialRoute       (.getRoute Router "startup")}))
 
       (drawer-navigation-item
+        {:id            "intro"
+         :selectedStyle (aget st "selectedItemStyle")
+         :renderIcon    #(menu-icon "ios-return-right" palette %)
+         :renderTitle   (fn [isSelected] (do
+                                           ;(.log js/console "Startup")
+                                           (title palette "Introduction" isSelected)))}
+        (stack-navigation
+          {:id                 "intro-stack"
+           :navigatorUID       "intro"
+           :defaultRouteConfig (defaultRouteConfig "Introduction")
+           :initialRoute       (.getRoute Router "intro")}))
+
+      (drawer-navigation-item
         {:id            "scenarios"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-share-outline" palette %)

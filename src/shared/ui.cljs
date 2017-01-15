@@ -59,6 +59,10 @@
 (def row (partial element (aget native-base "Row")))
 (def button (partial element (aget native-base "Button")))
 
+;; Screen size dependencies
+(def PixelRatio (aget react-native "PixelRatio"))
+(def pixel-ratio (.get PixelRatio))
+(def font-scale (.getFontScale PixelRatio))
 ;;;
 ;; mixin to update navbar title
 ;;;
