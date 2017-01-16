@@ -37,7 +37,9 @@
       step)))
 
 (defn numeric-format-specifier [scale]
-  "Provide a default format specifier for numeric scales"
+  "Provide a default format specifier for numeric scales.
+  Note that values larger than 1 must be rounded to integers for these
+  formats to work sensibly."
   (let [abs-in (map Math.abs (:in scale))
         abs-step (Math.abs (apply tick-step (conj (:in scale) (:tick-count scale))))]
     (cond

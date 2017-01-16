@@ -83,7 +83,7 @@
                         (text-generator nn2 scenar)))
             (view {:key   2
                    :style {:flex            0.7
-                           :padding         20
+                           ;:padding         20
                            :backgroundColor (:primary palette)}}
                   (view {:key   1
                          :style {:position "absolute"

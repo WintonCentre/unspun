@@ -153,10 +153,10 @@
 
         ;scale 1.9
         ub (/ 100 (rum/react (::scale state)))
-        axis-scale (->Linear [0 ub] [0 0.9] 4)
+        axis-scale (->Linear [0 ub] [0 1] 4)
         ticks (bounded-ticks axis-scale)
         ]
-    (prn "ub:"ub "flex:" (map (i->o axis-scale) ticks) "ticks" ticks)
+    (prn "ub:" ub "flex:" (map (i->o axis-scale) ticks) "ticks" ticks)
     (view
       {:style {:flex 1}}
       #_(status-bar {:hidden   false
@@ -178,17 +178,19 @@
                   ;;;
                   ;; top and bottom buttons
                   ;;;
-                  (view {:key   1
-                         :style {:position       "absolute"
-                                 :top            0
-                                 :bottom         0
-                                 :left           0
-                                 :right          0
-                                 :zIndex         2
-                                 :flex           0.9
-                                 :alignItems     "center"
-                                 :justifyContent "space-between"
-                                 }                          ;
+                  (view {:key                       1
+                         :style                     {:position       "absolute"
+                                                     :top            0
+                                                     :bottom         0
+                                                     :left           0
+                                                     :right          0
+                                                     :zIndex         2
+                                                     :flex           1
+                                                     :alignItems     "center"
+                                                     :justifyContent "space-between"
+                                                     }
+                         :onStartShouldSetResponder #(.log js/console "start responder? " (.-nativeEvent %))
+                         :onMoveShouldSetResponder  #(.log js/console "move responder? " (.-nativeEvent %))
                          }
                         (touchable-highlight
                           {:onPress #(swap! (::scale state) (fn [s] (max 1 (* s 1.1))))}
@@ -216,37 +218,58 @@
                                  :bottom         0
                                  :left           0
                                  :right          0
-                                 :zIndex         1
                                  :flex           0.9
-                                 :alignItems     "center"
+                                 :alignItems     "stretch"
                                  :justifyContent "space-between"
+                                 :zIndex         1
                                  }                          ;
                          }
-                        (view {:key   1
-                               :style {:flex 0.05}})
+                        #_(view {:key   1
+                                 :style {:flex 0.05}})
                         (view {:key   2
-                               :style {:flex 0.9}}
+                               :style {:flex 1}}
                               (for [[y1 y0] (partition 2 1 (reverse (map (i->o axis-scale) ticks)))]
                                 (do
-                                  (prn [y1 y0])
+                                  ;(prn [y1 y0])
                                   (view {:key   (rand-int 100000)
                                          :style {:flex           (- y1 y0)
                                                  ;:position "absolute"
-                                                 :width 25
-                                                 :alignItems     "stretch"
-                                                 :borderTopColor "black"
-                                                 :borderTopWidth 1}}
-                                        (text {:style {:position "absolute"
-                                                       :bottom   0
-                                                       :color    "black" ; (:text-icons palette)
+                                                 ;:left 0
+                                                 ;:right 0
+                                                 ;:width 30
+                                                 :marginLeft     (* 10 font-scale)
+                                                 :marginRight     (* 10 font-scale)
+                                                 :flexDirection  "column"
+                                                 :alignItems     "center"
+                                                 :borderTopColor (:light-primary palette)
+                                                 :borderTopWidth 1
+                                                 }}
+                                        (text {:key   1
+                                               :style {:position        "absolute"
+                                                       :left            (* -9 font-scale)
+                                                       :top             (* -2 font-scale)
+                                                       :color           (:light-primary palette)
                                                        :backgroundColor "rgba(0,0,0,0)"
-                                                       :fontSize 10}}
+                                                       :fontSize        10
+                                                       :textAlign       "center"}}
                                               (str (cl-format nil (tick-format-specifier axis-scale)
-                                                              (let [y ((o->i axis-scale) y0)]
+                                                              (let [y ((o->i axis-scale) y1)]
+                                                                (if (> y 1) (Math.round y) y))
+                                                              ) "%"))
+                                        (text {:key   2
+                                               :style {:position        "absolute"
+                                                       :right            (* -9 font-scale)
+                                                       :top             (* -2 font-scale)
+                                                       :color           (:light-primary palette)
+                                                       :backgroundColor "rgba(0,0,0,0)"
+                                                       :fontSize        10
+                                                       :textAlign       "center"}}
+                                              (str (cl-format nil (tick-format-specifier axis-scale)
+                                                              (let [y ((o->i axis-scale) y1)]
                                                                 (if (> y 1) (Math.round y) y))
                                                               ) "%"))))))
-                        (view {:key   3
-                               :style {:flex 0.05}}))
+                        #_(view {:key   3
+                                 :style {:flex 0.05}}))
                   ;;;
                   ;; bars
                   ;;;
@@ -256,23 +279,21 @@
                                  :bottom   0
                                  :left     0
                                  :right    0
-                                 :zIndex   0
                                  :flex     1
+                                 :zIndex   0
                                  }}
-                        (view {:key   1
-                               :style {:flex 0.05}})
+                        #_(view {:key   1
+                                 :style {:flex 0.05}})
                         (view {:key   2
-                               :style {:flex          0.9
-                                       :flexDirection "row"
+                               :style {:flex              1
+                                       :flexDirection     "row"
                                        :borderBottomWidth 1
                                        :borderTopWidth    1
                                        :borderBottomColor (:light-primary palette)
                                        :borderTopColor    (:light-primary palette)
                                        }
-                               ;:onStartShouldSetResponder #(.log js/console "start responder? " (.-nativeEvent %))
-                               ;:onMoveShouldSetResponder  #(.log js/console "move responder? " (.-nativeEvent %))
                                }
-                              (view {:key 1
+                              (view {:key   1
                                      :style {:flex           0.3
                                              :justifyContent "center"}}
                                     (text {:style {:color        (:text-icons palette)
@@ -280,15 +301,15 @@
                                                    :textAlign    "right"
                                                    :paddingRight 10}}
                                           (:without scenar)))
-                              (view {:key 2
+                              (view {:key   2
                                      :style {:flex 0.2}}
                                     (labelled-vertical-bar palette br (rum/react (::scale state))))
-                              (view {:key 3
-                                     :style {:flex 0.04}})
-                              (view {:key 4
+                              (view {:key   3
+                                     :style {:flex 0.1}})
+                              (view {:key   4
                                      :style {:flex 0.2}}
                                     (labelled-vertical-bar palette er (rum/react (::scale state))))
-                              (view {:key 5
+                              (view {:key   5
                                      :style {:flex           0.3
                                              :justifyContent "center"}}
                                     (text {:style {:color     (:text-icons palette)
@@ -296,5 +317,5 @@
                                                    :padding   10
                                                    :textAlign "left"}}
                                           (:with scenar))))
-                        (view {:key   3
-                               :style {:flex 0.05}})))))))
+                        #_(view {:key   3
+                                 :style {:flex 0.05}})))))))
