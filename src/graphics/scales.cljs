@@ -2,6 +2,10 @@
   (:require [cljs.pprint :refer [cl-format]]))
 
 (defprotocol IScale
+  "A protocol to support graphic scales which convert (input) model units to (output) visual units like pixels.
+  i->o and o->i make the conversion.
+  in and out return the input and output bounds in 2 element vectors.
+  ticks returns a vector of ticks to decorate the input scale."
   (i->o [_])
   (o->i [_])
   (in [_])
@@ -69,7 +73,7 @@
 (defn- linear [[x1 x2] [y1 y2]] (fn [x] (+ y1 (* (/ (- x x1) (- x2 x1)) (- y2 y1)))))
 
 (defn- linear-nice [[start stop :as input] & [p-count]]
-  "Return a nice domain given an "
+  "Return a nice domain given an input range and optionally a tick count"
   (let [n (if (nil? p-count) 10 p-count)
         step (tick-step start stop n)]
     (if (not (or (js/isNaN step) (nil? step)))
@@ -98,8 +102,14 @@
   (->Linear (linear-nice in tick-count) out tick-count))
 
 (defn internal-ticks [scale]
-  (let [[high low] (in scale)]
-    (filter #(and (<= % low) (>= % high)) (ticks scale))))
+  (let [[low high] (in scale)]
+    (filter #(and (> % low) (< % high)) (ticks scale))))
+
+(defn bounded-ticks [scale]
+  "Maybe this should be the usual ticks of a bounded or clipped scale?"
+  (let [[in0 in1] (in scale)
+        comparator (if (< in0 in1) < >)]
+    (vec (into (apply sorted-set-by comparator (internal-ticks scale)) (in scale)))))
 
 (defn- format-ticks [specifier ticks]
   (map #(cl-format nil specifier %) ticks))

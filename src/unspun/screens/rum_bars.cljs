@@ -7,7 +7,8 @@
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
-            [graphics.scales :refer [nice-linear internal-ticks formatted-internal-ticks i->o o->i]]
+            [graphics.scales :refer [->Linear nice-linear bounded-ticks tick-format-specifier i->o o->i]]
+            [cljs.pprint :refer [cl-format]]
             ))
 
 ;; vector-icons
@@ -138,11 +139,6 @@
   )
 
 
-
-
-
-
-
 (defcs page < rum/reactive < (rum/local 1 ::scale) [state]
   (let [scenar ((rum/react stories) (rum/react story-index))
         db (rum/react app-state)
@@ -157,10 +153,10 @@
 
         ;scale 1.9
         ub (/ 100 (rum/react (::scale state)))
-        axis-scale (nice-linear [0 ub] [0 0.9] 4)
-        ticks (internal-ticks axis-scale)
-        tick-labels (formatted-internal-ticks axis-scale)]
-    (prn (map (i->o axis-scale) ticks) ticks tick-labels)
+        axis-scale (->Linear [0 ub] [0 0.9] 4)
+        ticks (bounded-ticks axis-scale)
+        ]
+    (prn "ub:"ub "flex:" (map (i->o axis-scale) ticks) "ticks" ticks)
     (view
       {:style {:flex 1}}
       #_(status-bar {:hidden   false
@@ -179,7 +175,10 @@
                         (text-generator compare1 scenar)))
             (view {:key   2
                    :style {:flex 0.7}}
-                  #_(view {:key   "2.0"
+                  ;;;
+                  ;; top and bottom buttons
+                  ;;;
+                  (view {:key   1
                          :style {:position       "absolute"
                                  :top            0
                                  :bottom         0
@@ -192,7 +191,7 @@
                                  }                          ;
                          }
                         (touchable-highlight
-                          {:onPress #(swap! (::scale state) (fn [s] (* s 1.1)))}
+                          {:onPress #(swap! (::scale state) (fn [s] (max 1 (* s 1.1))))}
                           (text {:style {:color           (:accent palette)
                                          :backgroundColor "rgba(0,0,0,0)"
                                          :fontWeight      "400"
@@ -201,15 +200,17 @@
                                          }}
                                 "ZOOM IN"))
                         (touchable-highlight
-                          {:onPress #(swap! (::scale state) (fn [s] (/ s 1.1)))}
+                          {:onPress #(swap! (::scale state) (fn [s] (max 1 (/ s 1.1))))}
                           (text {:style {:color           (:accent palette)
                                          :backgroundColor "rgba(0,0,0,0)"
                                          :fontWeight      "400"
                                          :padding         0
                                          :fontSize        (:fontSize scenar)}}
                                 "ZOOM OUT")))
-
-                  #_(view {:key   "2.05"
+                  ;;;
+                  ;; ticks
+                  ;;;
+                  (view {:key   2
                          :style {:position       "absolute"
                                  :top            0
                                  :bottom         0
@@ -233,19 +234,23 @@
                                                  ;:position "absolute"
                                                  :width 25
                                                  :alignItems     "stretch"
-                                                 :borderTopColor "white"
+                                                 :borderTopColor "black"
                                                  :borderTopWidth 1}}
                                         (text {:style {:position "absolute"
                                                        :bottom   0
-                                                       :color    (:text-icons palette)
+                                                       :color    "black" ; (:text-icons palette)
                                                        :backgroundColor "rgba(0,0,0,0)"
                                                        :fontSize 10}}
-                                              (str ((o->i axis-scale) y0) "%"))))))
+                                              (str (cl-format nil (tick-format-specifier axis-scale)
+                                                              (let [y ((o->i axis-scale) y0)]
+                                                                (if (> y 1) (Math.round y) y))
+                                                              ) "%"))))))
                         (view {:key   3
-                               :style {:flex 0.05}})
-                        )
-
-                  (view {:key   "2.1"
+                               :style {:flex 0.05}}))
+                  ;;;
+                  ;; bars
+                  ;;;
+                  (view {:key   3
                          :style {:position "absolute"
                                  :top      0
                                  :bottom   0
@@ -264,21 +269,27 @@
                                        :borderBottomColor (:light-primary palette)
                                        :borderTopColor    (:light-primary palette)
                                        }
-
                                ;:onStartShouldSetResponder #(.log js/console "start responder? " (.-nativeEvent %))
                                ;:onMoveShouldSetResponder  #(.log js/console "move responder? " (.-nativeEvent %))
                                }
-                              (view {:style {:flex           0.3
+                              (view {:key 1
+                                     :style {:flex           0.3
                                              :justifyContent "center"}}
                                     (text {:style {:color        (:text-icons palette)
                                                    :fontSize     20
                                                    :textAlign    "right"
                                                    :paddingRight 10}}
                                           (:without scenar)))
-                              (view {:style {:flex 0.2}} (labelled-vertical-bar palette br (rum/react (::scale state))))
-                              (view {:style {:flex 0.04}})
-                              (view {:style {:flex 0.2}} (labelled-vertical-bar palette er (rum/react (::scale state))))
-                              (view {:style {:flex           0.3
+                              (view {:key 2
+                                     :style {:flex 0.2}}
+                                    (labelled-vertical-bar palette br (rum/react (::scale state))))
+                              (view {:key 3
+                                     :style {:flex 0.04}})
+                              (view {:key 4
+                                     :style {:flex 0.2}}
+                                    (labelled-vertical-bar palette er (rum/react (::scale state))))
+                              (view {:key 5
+                                     :style {:flex           0.3
                                              :justifyContent "center"}}
                                     (text {:style {:color     (:text-icons palette)
                                                    :fontSize  20
