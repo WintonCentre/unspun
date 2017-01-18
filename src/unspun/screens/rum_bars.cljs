@@ -237,17 +237,17 @@
                                                  ;:left 0
                                                  ;:right 0
                                                  ;:width 30
-                                                 :marginLeft     (* 10 font-scale)
-                                                 :marginRight     (* 10 font-scale)
+                                                 :marginLeft     (* 14 font-scale)
+                                                 :marginRight    (* 14 font-scale)
                                                  :flexDirection  "column"
                                                  :alignItems     "center"
-                                                 :borderTopColor (:light-primary palette)
+                                                 :borderTopColor "red" ; (:light-primary palette)
                                                  :borderTopWidth 1
                                                  }}
                                         (text {:key   1
                                                :style {:position        "absolute"
-                                                       :left            (* -9 font-scale)
-                                                       :top             (* -2 font-scale)
+                                                       :left            (* -12 font-scale)
+                                                       :top             (* -4 font-scale)
                                                        :color           (:light-primary palette)
                                                        :backgroundColor "rgba(0,0,0,0)"
                                                        :fontSize        10
@@ -258,8 +258,8 @@
                                                               ) "%"))
                                         (text {:key   2
                                                :style {:position        "absolute"
-                                                       :right            (* -9 font-scale)
-                                                       :top             (* -2 font-scale)
+                                                       :right           (* -12 font-scale)
+                                                       :top             (* -4 font-scale)
                                                        :color           (:light-primary palette)
                                                        :backgroundColor "rgba(0,0,0,0)"
                                                        :fontSize        10
