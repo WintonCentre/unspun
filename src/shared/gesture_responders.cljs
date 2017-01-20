@@ -1,26 +1,35 @@
 (ns shared.gesture-responders
-  (:require [shared.ui :refer [pan-responder]]))
+  (:require [shared.ui :refer [pan-responder]]
+            [unspun.db :refer [clamp]]))
 
 (defn g-prop [g-state name]
   (str name "=" (aget g-state name))
   )
 
 (defn pan-logger [name]
-  (fn [evt gestureState]
-    #_(when gestureState
-      (doseq [prop ["moveX" "moveY" "x0" "y0" "dx" "dy" "vx" "vy" "numberActiveTouches"]]
-        (.log js/console (g-prop gestureState prop)))
-      (.log js/console name)
-      )
+  (fn [evt gesture-state]
+    #_(when gesture-state
+        (doseq [prop ["moveX" "moveY" "x0" "y0" "dx" "dy" "vx" "vy" "numberActiveTouches"]]
+          (.log js/console (g-prop gesture-state prop)))
+        (.log js/console name)
+        )
     true))
 
+(defn grant-handler [state]
+  (fn [evt gesture-state]
+    (reset! (:scale0 state) @(:scale state))
 
-(defn move-y-handler [state]
-  (fn
-    [evt gestureState]
-    (let [y0 (aget gestureState "y0")
-          dy (aget gestureState "dy")]
-      (swap! (:scale state) #(* % (/ (- y0 dy) y0))))))
+    ))
+
+
+
+(defn move-handler [state]
+  (fn [evt gesture-state]
+    (let [y0 (aget gesture-state "y0")
+          y1 (aget gesture-state "moveY")
+          ]
+      (prn "y0 = " y0 " y1 = " y1 " factor = " (inc (/ (- y0 y1) (- y0 400))))
+      (reset! (:scale state) (* @(:scale0 state) (clamp [1 10] (inc (* 30 (/ (- y0 y1) (- y0 400))))))))))
 
 ;;;
 ;; The pan responder mixin is a Rum mixin based on https://facebook.github.io/react-native/docs/panresponder.html.
@@ -33,8 +42,8 @@
                         :onStartShouldSetPanResponderCapture (pan-logger "onStartShouldSetCapture")
                         :onMoveShouldSetPanResponder         (pan-logger "onMoveShouldSet")
                         :onMoveShouldSetPanResponderCapture  (pan-logger "onStartShouldSetCapture")
-                        :onPanResponderGrant                 (pan-logger "onGrant")
-                        :onPanResponderMove                  (move-y-handler state)
+                        :onPanResponderGrant                 (grant-handler state)
+                        :onPanResponderMove                  (move-handler state)
                         :onPanResponderTerminationRequest    (pan-logger "onTerminationRequest")
                         :onPanResponderRelease               (pan-logger "onRelease")
                         :onPanResponderTerminate             (pan-logger "onTerminate")

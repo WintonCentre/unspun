@@ -142,6 +142,7 @@
 
 (defcs page < rum/reactive
               (rum/local 1 :scale)
+              (rum/local 1 :scale0)
               (pan-responder-mixin ::zoomer)
 
   ([state]
