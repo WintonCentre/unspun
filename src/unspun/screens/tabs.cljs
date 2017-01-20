@@ -10,8 +10,7 @@
             [unspun.screens.stats :as stats]
             [clojure.string :refer [upper-case]]))
 
-(rum/defcs page < rum/reactive
-                  (add-page-title "Show") [state]
+(rum/defcs page < rum/reactive (add-page-title "Show") [state]
   (let [navigator (aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))]
     (view {:style {

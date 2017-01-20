@@ -63,12 +63,19 @@
 (def PixelRatio (aget react-native "PixelRatio"))
 (def pixel-ratio (.get PixelRatio))
 (def font-scale (.getFontScale PixelRatio))
+
+;; Gesture Responders
+(def pan-responder (aget react-native "PanResponder"))
+
 ;;;
-;; mixin to update navbar title
+;; mixin to update navbar title --- probably not needed any more????
 ;;;
 (defn add-page-title [title]
   {:will-mount (fn [state]
                  ;(.log js/console (:rum/react-component state))
                  (aset (:rum/react-component state) "props" "route" "config" "navigationBar" "title" title)
                  state)})
+
+
+
 

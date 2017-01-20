@@ -121,8 +121,7 @@
 
 
 (rum/defcs page < rum/reactive
-                  (rum/local 0 ::selection)
-                  (add-page-title "Scenarios")
+                  (rum/local 0 ::selection) (add-page-title "Scenarios")
   [state]
   (let [palette (get-palette (rum/react palette-index))
         stories (rum/react stories)
