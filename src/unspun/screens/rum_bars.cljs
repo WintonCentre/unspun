@@ -231,8 +231,6 @@
                                   :zIndex         1
                                   }                         ;
                           }
-                         #_(view {:key   1
-                                  :style {:flex 0.05}})
                          (view {:key   2
                                 :style {:flex 1}}
                                (for [[y1 y0] (partition 2 1 (reverse (map (i->o axis-scale) ticks)))]
@@ -274,9 +272,7 @@
                                                (str (cl-format nil (tick-format-specifier axis-scale)
                                                                (let [y ((o->i axis-scale) y1)]
                                                                  (if (> y 1) (Math.round y) y))
-                                                               ) "%"))))))
-                         #_(view {:key   3
-                                  :style {:flex 0.05}}))
+                                                               ) "%")))))))
                    ;;;
                    ;; bars
                    ;;;
@@ -289,8 +285,6 @@
                                   :flex     1
                                   :zIndex   0
                                   }}
-                         #_(view {:key   1
-                                  :style {:flex 0.05}})
                          (view {:key   2
                                 :style {:flex              1
                                         :flexDirection     "row"
@@ -323,6 +317,4 @@
                                                     :fontSize  20
                                                     :padding   10
                                                     :textAlign "left"}}
-                                           (:with scenar))))
-                         #_(view {:key   3
-                                  :style {:flex 0.05}}))))))))
+                                           (:with scenar)))))))))))
