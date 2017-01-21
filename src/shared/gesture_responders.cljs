@@ -26,8 +26,8 @@
     (let [y0 (aget gesture-state "y0")
           y1 (aget gesture-state "moveY")
           ]
-      ;(prn "y0 = " y0 " y1 = " y1 " factor = " (clamp [1 10] (inc (/ (- y0 y1) (- y0 400)))) " scale = " @(:scale state))
-      (reset! (:scale state) (clamp [1 10] (* @(:scale0 state) (inc (/ (- y0 y1) (- y0 400)))))))))
+      ;(prn "y0 = " y0 " y1 = " y1 " factor = " (clamp [1 10] (inc (/ (- y0 y1) (- y0 700)))) " scale = " @(:scale state))
+      (reset! (:scale state) (clamp [1 10] (* @(:scale0 state) (inc (/ (- y0 y1) (- 700 y0)))))))))
 
 ;;;
 ;; The pan responder mixin is a Rum mixin based on https://facebook.github.io/react-native/docs/panresponder.html.
