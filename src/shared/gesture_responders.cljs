@@ -8,18 +8,31 @@
 
 (defn pan-logger [name]
   (fn [evt gesture-state]
-    #_(when gesture-state
-        (doseq [prop ["moveX" "moveY" "x0" "y0" "dx" "dy" "vx" "vy" "numberActiveTouches"]]
-          (.log js/console (g-prop gesture-state prop)))
-        (.log js/console name)
-        )
-    true))
+    (when gesture-state
+      #_(doseq [prop ["moveX" "moveY" "x0" "y0" "dx" "dy" "vx" "vy" "numberActiveTouches"]]
+        (.log js/console (g-prop gesture-state prop)))
+      (.log js/console name)
+      )
+    (if (= name "onTerminationRequest") false true)
+    ;true
+    ))
+
+(defn onTerminationRequest []
+  "Deny termination requests to avoid clash with sideways swipe"
+  (fn [_ _] false))
+
+(defn on-release [state]
+  (fn [_ _]
+    (.log js/console "release")
+    (reset! (:zooming state) false)))
 
 (defn grant-handler [state]
-  (fn [evt gesture-state]
-    (reset! (:scale0 state) @(:scale state))))
-
-
+  (fn [_ _]
+    (.log js/console "grant")
+    (reset! (:scale0 state) @(:scale state))
+    (reset! (:zooming state) true)
+    (.log js/console @(:zooming state))
+    true))
 
 (defn move-handler [state]
   (fn [evt gesture-state]
@@ -42,8 +55,8 @@
                         :onMoveShouldSetPanResponderCapture  (pan-logger "onStartShouldSetCapture")
                         :onPanResponderGrant                 (grant-handler state)
                         :onPanResponderMove                  (move-handler state)
-                        :onPanResponderTerminationRequest    (pan-logger "onTerminationRequest")
-                        :onPanResponderRelease               (pan-logger "onRelease")
+                        :onPanResponderTerminationRequest    (onTerminationRequest)
+                        :onPanResponderRelease               (on-release state)
                         :onPanResponderTerminate             (pan-logger "onTerminate")
                         :onShouldBlockNativeResponder        (pan-logger "onShouldBlock")
                         }]

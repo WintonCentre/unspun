@@ -143,6 +143,7 @@
 (defcs page < rum/reactive
               (rum/local 1 :scale)
               (rum/local 1 :scale0)
+              (rum/local false :zooming)
               (pan-responder-mixin ::zoomer)
 
   ([state]
@@ -159,6 +160,7 @@
 
          ;scale 1.9
          ub (/ 100 (rum/react (:scale state)))
+         zooming (rum/react (:zooming state))
          axis-scale (->Linear [0 ub] [0 1] 4)
          ticks (bounded-ticks axis-scale)
          ]
@@ -199,23 +201,23 @@
                                  ;:onMoveShouldSetResponder  #(.log js/console "move responder? " (.-nativeEvent %))
                                  }
                                 (js->clj (.-panHandlers (::zoomer state))))
-                         (touchable-highlight
-                           {:onPress #(swap! (:scale state) (fn [s] (max 1 (* s 1.1))))}
-                           (text {:style {:color           (:accent palette)
-                                          :backgroundColor "rgba(0,0,0,0)"
-                                          :fontWeight      "400"
-                                          :padding         0
-                                          :fontSize        (:fontSize scenar)
-                                          }}
-                                 "ZOOM IN"))
-                         (touchable-highlight
-                           {:onPress #(swap! (:scale state) (fn [s] (max 1 (/ s 1.1))))}
-                           (text {:style {:color           (:accent palette)
-                                          :backgroundColor "rgba(0,0,0,0)"
-                                          :fontWeight      "400"
-                                          :padding         0
-                                          :fontSize        (:fontSize scenar)}}
-                                 "ZOOM OUT")))
+                         #_(touchable-highlight
+                             {:onPress #(swap! (:scale state) (fn [s] (max 1 (* s 1.1))))}
+                             (text {:style {:color           (:accent palette)
+                                            :backgroundColor "rgba(0,0,0,0)"
+                                            :fontWeight      "400"
+                                            :padding         0
+                                            :fontSize        (:fontSize scenar)
+                                            }}
+                                   "ZOOM IN"))
+                         #_(touchable-highlight
+                             {:onPress #(swap! (:scale state) (fn [s] (max 1 (/ s 1.1))))}
+                             (text {:style {:color           (:accent palette)
+                                            :backgroundColor "rgba(0,0,0,0)"
+                                            :fontWeight      "400"
+                                            :padding         0
+                                            :fontSize        (:fontSize scenar)}}
+                                   "ZOOM OUT")))
                    ;;;
                    ;; ticks
                    ;;;
@@ -229,7 +231,7 @@
                                   :alignItems     "stretch"
                                   :justifyContent "space-between"
                                   :zIndex         1
-                                  }                         ;
+                                  }
                           }
                          (view {:key   2
                                 :style {:flex 1}}
@@ -237,22 +239,12 @@
                                  (do
                                    ;(prn [y1 y0])
                                    (view {:key   (rand-int 100000)
-                                          :style {:flex           (- y1 y0)
-                                                  ;:position "absolute"
-                                                  ;:left 0
-                                                  ;:right 0
-                                                  ;:width 30
-                                                  :marginLeft     (* 14 font-scale)
-                                                  :marginRight    (* 14 font-scale)
-                                                  :flexDirection  "column"
-                                                  :alignItems     "center"
-                                                  :borderTopColor (:light-primary palette)
-                                                  :borderTopWidth 1
+                                          :style {:flex          (- y1 y0)
+                                                  :flexDirection "row"
+                                                  :alignItems    "flex-start"
                                                   }}
                                          (text {:key   1
-                                                :style {:position        "absolute"
-                                                        :left            (* -10 font-scale) ; 7plus
-                                                        :top             (* -2 font-scale) ;
+                                                :style {:flex            0.1
                                                         :color           (:light-primary palette)
                                                         :backgroundColor "rgba(0,0,0,0)"
                                                         :fontSize        10
@@ -261,10 +253,14 @@
                                                                (let [y ((o->i axis-scale) y1)]
                                                                  (if (> y 1) (Math.round y) y))
                                                                ) "%"))
+                                         (view {:key   1.5
+                                                :style {:flex           0.8
+                                                        :height         1
+                                                        :alignItems     "flex-start"
+                                                        :borderTopColor (:light-primary palette)
+                                                        :borderTopWidth 1}})
                                          (text {:key   2
-                                                :style {:position        "absolute"
-                                                        :right           (* -10 font-scale)
-                                                        :top             (* -2 font-scale)
+                                                :style {:flex            0.1
                                                         :color           (:light-primary palette)
                                                         :backgroundColor "rgba(0,0,0,0)"
                                                         :fontSize        10
@@ -317,4 +313,24 @@
                                                     :fontSize  20
                                                     :padding   10
                                                     :textAlign "left"}}
-                                           (:with scenar)))))))))))
+                                           (:with scenar)))))
+
+                   (view {:key   4
+                          :style {:position "absolute"
+                                  :top      0
+                                  :bottom   0
+                                  :left     0
+                                  :right    0
+                                  :flex     1
+                                  :zIndex   1
+                                  :opacity  (if zooming 1 0)
+                                  }}
+                         (view {:style {:flex           1
+                                        :flexDirection  "column"
+                                        :justifyContent "center"
+                                        :alignItems     "center"}}
+                               (ionicon (clj->js {:name  "ios-resize"
+                                                  :size  80
+                                                  :style {:transform       [{:rotate "-45deg"}]
+                                                          :backgroundColor "rgba(0,0,0,0)"
+                                                          :color           (:accent palette)}}))))))))))
