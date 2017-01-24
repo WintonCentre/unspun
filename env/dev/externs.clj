@@ -87,7 +87,12 @@
   "Return the ClojureScript AST for the contents of filename. Tends to
   be large and to contain cycles -- be careful printing at the REPL."
   [filename]
-  (binding [ana/*cljs-ns* 'cljs.user ;; default namespace
+  (binding [ana/*unchecked-if* false
+            #_*err* #_(if bind-err
+                    (cond-> *out*
+                            (not (instance? PrintWriter *out*)) (PrintWriter.))
+                    *err*)
+            ana/*cljs-ns* 'cljs.user ;; default namespace
             ana/*cljs-file* filename]
     (mapv
      (fn [form]
