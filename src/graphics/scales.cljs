@@ -1,19 +1,6 @@
 (ns graphics.scales
   (:require [cljs.pprint :refer [cl-format]]))
 
-(defprotocol IScale
-  "A protocol to support graphic scales which convert (input) model units to (output) visual units like pixels.
-  i->o and o->i make the conversion.
-  in and out return the input and output bounds in 2 element vectors.
-  ticks returns a vector of ticks to decorate the input scale."
-  (i->o [_])
-  (o->i [_])
-  (in [_])
-  (out [_])
-  (ticks [_])
-  (tick-format-specifier [_])
-  )
-
 (def e10 (Math.sqrt 50))
 (def e5 (Math.sqrt 10))
 (def e2 (Math.sqrt 2))
@@ -63,15 +50,6 @@
 (defn- scale-ticks [a-scale tick-count]
   (apply preferred-ticks (conj (:in a-scale) tick-count)))
 
-(defrecord Identity [in tick-count]
-  IScale
-  (i->o [this] identity)
-  (o->i [this] identity)
-  (in [this] (:in this))
-  (out [this] (:in this))
-  (ticks [this] (scale-ticks this tick-count))
-  (tick-format-specifier [this] (numeric-format-specifier this)))
-
 (defn- linear [[x1 x2] [y1 y2]] (fn [x] (+ y1 (* (/ (- x x1) (- x2 x1)) (- y2 y1)))))
 
 (defn- linear-nice [[start stop :as input] & [p-count]]
@@ -88,30 +66,29 @@
 
       input)))
 
-(defn nice-identity [in tick-count]
-  (->Identity (linear-nice in tick-count) tick-count))
+(defn create-linear-scale [in out tick-count]
+  {:in                    in
+   :out                   out
+   :i->o                  (fn [scale] (linear (:in scale) (:out scale)))
+   :o->i                  (fn [scale] (linear (:out scale) (:in scale)))
+   :ticks                 (fn [scale] (scale-ticks scale tick-count))
+   :tick-format-specifier (fn [scale] (numeric-format-specifier scale))
+   })
 
-(defrecord Linear [in out tick-count]
-  IScale
-  (i->o [this] (linear (:in this) (:out this)))
-  (o->i [this] (linear (:out this) (:in this)))
-  (in [this] (:in this))
-  (out [this] (:out this))
-  (ticks [this] (scale-ticks this tick-count))
-  (tick-format-specifier [this] (numeric-format-specifier this)))
-
-(defn nice-linear [in out tick-count]
-  (->Linear (linear-nice in tick-count) out tick-count))
+(defn i->o [scale] ((:i->o scale) scale))
+(defn o->i [scale] ((:o->i scale) scale))
+(defn ticks [scale] ((:ticks scale) scale))
+(defn tick-format-specifier [scale] ((:tick-format-specifier scale) scale))
 
 (defn internal-ticks [scale]
-  (let [[low high] (in scale)]
+  (let [[low high] (:in scale)]
     (filter #(and (> % low) (< % high)) (ticks scale))))
 
 (defn bounded-ticks [scale]
   "Maybe this should be the usual ticks of a bounded or clipped scale?"
-  (let [[in0 in1] (in scale)
+  (let [[in0 in1] (:in scale)
         comparator (if (< in0 in1) < >)]
-    (vec (into (apply sorted-set-by comparator (internal-ticks scale)) (in scale)))))
+    (vec (into (apply sorted-set-by comparator (internal-ticks scale)) (:in scale)))))
 
 (defn- format-ticks [specifier ticks]
   (map #(cl-format nil specifier %) ticks))

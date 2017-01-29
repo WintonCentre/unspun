@@ -6,7 +6,7 @@
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
-            [graphics.scales :refer [->Linear nice-linear bounded-ticks tick-format-specifier i->o o->i]]
+            [graphics.scales :refer [create-linear-scale bounded-ticks i->o o->i tick-format-specifier]]
             [shared.gesture-responders :refer [pan-responder-mixin pan-logger]]
             [cljs.pprint :refer [cl-format]]
             ))
@@ -130,16 +130,6 @@
         (bottom-bar palette value scale)
         ))
 
-
-
-(comment
-  (ticks (nice-linear [0 4.8] [0 1] 3))
-  (formatted-ticks (nice-linear [0 4.8] [0 1] 3))
-  (flex-ticks (nice-linear [0 4.8] [0 1] 3))
-  )
-
-
-
 (defcs page < rum/reactive
               (rum/local 1 :scale)
               (rum/local 1 :scale0)
@@ -161,7 +151,7 @@
          ;scale 1.9
          ub (/ 100 (rum/react (:scale state)))
          zooming (rum/react (:zooming state))
-         axis-scale (->Linear [0 ub] [0 1] 4)
+         axis-scale (create-linear-scale [0 ub] [0 1] 4)
          ticks (bounded-ticks axis-scale)
          ]
 
