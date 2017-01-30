@@ -126,12 +126,13 @@
 #_(defn story [scenario]
     (str (second (:subjects scenario)) " " (:exposure scenario)))
 
-(defn story [scenario]
-  (str "How much does " (:exposure scenario) " "
-       (if (> (:relative-risk (@stories @story-index)) 1) "increase" "decrease")
-       " the risk of "
-       (:outcome scenario)
-       "?"))
+(defn story [index]
+  (let [scenario (@stories index)]
+    (str "How much does " (:exposure scenario) " "
+         (if (> (:relative-risk scenario) 1) "increase" "decrease")
+         " the risk of "
+         (:outcome scenario)
+         "?")))
 
 ;;;
 ;; DERIVED STATE
@@ -205,6 +206,9 @@ Baseline risk 11.5%
 
 (defn compare1 [subjects]
   "~@(~a~) ~a ~a ~a of ~b from ~d% to ~d%")
+
+
+
 (defn nn1 [subjects]
   (str "On average, ~d more ~:*" (n-plural-form subjects) " ~a would mean one ~a " (singular-form subjects) " experiences ~a."))
 (defn nn2 [subjects]

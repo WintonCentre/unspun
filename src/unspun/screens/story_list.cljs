@@ -106,7 +106,7 @@
                    (txt {:style {:flex  4
                                  :fontWeight "normal"
                                  :color (:secondary-text palette)}}
-                        (caps-tidy (story (@stories index))))
+                        (caps-tidy (story index)))
                    (button {:key       2
                             :bordered  true
                             ;:small true

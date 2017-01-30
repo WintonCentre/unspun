@@ -8,14 +8,12 @@
 
 (defn pan-logger [name]
   (fn [evt gesture-state]
-    (when gesture-state
+    #_(when gesture-state
       #_(doseq [prop ["moveX" "moveY" "x0" "y0" "dx" "dy" "vx" "vy" "numberActiveTouches"]]
         (.log js/console (g-prop gesture-state prop)))
       (.log js/console name)
       )
-    (if (= name "onTerminationRequest") false true)
-    ;true
-    ))
+    (if (= name "onTerminationRequest") false true)))
 
 (defn onTerminationRequest []
   "Deny termination requests to avoid clash with sideways swipe"
@@ -23,15 +21,15 @@
 
 (defn on-release [state]
   (fn [_ _]
-    (.log js/console "release")
+    #_(.log js/console "release")
     (reset! (:zooming state) false)))
 
 (defn grant-handler [state]
   (fn [_ _]
-    (.log js/console "grant")
+    #_(.log js/console "grant")
+    #_(.log js/console @(:zooming state))
     (reset! (:scale0 state) @(:scale state))
     (reset! (:zooming state) true)
-    (.log js/console @(:zooming state))
     true))
 
 (defn move-handler [state]
