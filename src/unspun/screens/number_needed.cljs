@@ -28,22 +28,18 @@
     ))
 
 (defn picked-before? [a-set a-choice]
-  (a-choice a-set))
+  (a-set a-choice))
 
-(defn pick-one [nn picked n]
-  (loop [picked-set picked]
-    [selection (inc (rand-int (dec nn)))]
-    (if (picked-before? picked-set selection)
-      (recur )
-      )))
-
-(defn highlighted
-  "Pick `anyway-count -1` icons at random from nn to highlight"
-  ([scenar nn]
-   (let [anyway-count (anyway (:relative-risk scenar) (:baseline-risk scenar))]
-     (reduce (partial pick-one nn) #{} (range 0 anyway-count))
-     anyway-count)))
-
+(defn pick-n-in-nn [nn n]
+  (loop [picked-set #{}
+         n-left n]
+    (if (zero? n-left)
+      picked-set
+      (let
+        [selection (inc (rand-int (dec nn)))]
+        (if (picked-before? picked-set selection)
+          (recur picked-set n-left)
+          (recur (conj picked-set selection) (dec n-left)))))))
 
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
