@@ -8,10 +8,10 @@
 
 (defn draw-icon [scenar color scale]
   (n-icon {:name  (:icon scenar)
-           :style {:color     color
+           :style {:color           color
                    :backgroundColor "rgba(0,0,0,0)"
-                   :width  24
-                   :transform [{:scale scale}]}}))
+                   :width           24
+                   :transform       [{:scale scale}]}}))
 
 (defn icon-square-size [nn]
   (Math.ceil (Math.sqrt nn)))
@@ -30,16 +30,18 @@
 (defn picked-before? [a-set a-choice]
   (a-set a-choice))
 
-(defn pick-n-in-nn [nn n]
-  (loop [picked-set #{}
-         n-left n]
-    (if (zero? n-left)
-      picked-set
-      (let
-        [selection (inc (rand-int (dec nn)))]
-        (if (picked-before? picked-set selection)
-          (recur picked-set n-left)
-          (recur (conj picked-set selection) (dec n-left)))))))
+(defn pick-n-in-nn
+  "we can assume n << nn"
+  ([nn n]
+   (loop [picked-set (sorted-set)
+          n-left n]
+     (if (zero? n-left)
+       picked-set
+       (let
+         [selection (inc (rand-int (dec nn)))]
+         (if (picked-before? picked-set selection)
+           (recur picked-set n-left)
+           (recur (conj picked-set selection) (dec n-left))))))))
 
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
@@ -49,11 +51,15 @@
         [cols rows cblocks rblocks] (cols-rows-blocked nn)
         palette (get-palette (rum/react palette-index))
         page-style {:flex            1
-                    :backgroundColor (:primary palette)}]
+                    :backgroundColor (:primary palette)}
+        block-width 5
+        block-height 5
+        highlight (pick-n-in-nn nn (max 0 ((if (> rr 1) identity dec) (anyway rr br))))
+        ]
 
     (letfn [(draw-block [block count]
-              #_(draw-icon scenar (:light-primary palette) 0.66)
-              (for [r (range 5)]
+
+              (for [r (range block-height)]
                 (view {:key   r
                        :style {:flex           1
                                :flexDirection  "row"
@@ -61,20 +67,23 @@
                                :justifyContent "space-between"
                                :maxHeight      20
                                }}
-                      (for [c (range 5)
+                      (for [c (range block-width)
                             :let [k (+ c (* r 5))]
                             ]
                         (view {:key   c
                                :style {:flex           1
-                                       :flexDirection "column"
+                                       :flexDirection  "column"
                                        :maxWidth       20
                                        :alignItems     "center"
                                        :justifyContent "space-between"
                                        }}
                               (if (< k count)
-                                (if (and (zero? k) (zero? block))
-                                  (draw-icon scenar (:text-icons palette) 0.9)
-                                  (draw-icon scenar (:light-primary palette) 0.5))
+                                (do
+                                    (if (and (zero? k) (zero? block))
+                                      (draw-icon scenar ((if (> rr 1) :accent :text-icons) palette) 0.9)
+                                      (if (highlight (+ k (* block-width block-height block)))
+                                        (draw-icon scenar (:accent palette) 0.5)
+                                        (draw-icon scenar (:light-primary palette) 0.5))))
                                 (view {:style {:width 20}})))))))]
 
       ;view {:style {:flex 1}}
