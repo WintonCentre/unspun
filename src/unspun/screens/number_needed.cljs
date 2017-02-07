@@ -2,7 +2,7 @@
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [n-icon]]
-            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index text-generator nn1 nn2]]
+            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index text-generator nn2 anyway]]
             [rum.core :as rum]))
 
 
@@ -26,6 +26,23 @@
         rblocks (Math.ceil (/ rows 5))]
     [cols rows cblocks rblocks]
     ))
+
+(defn picked-before? [a-set a-choice]
+  (a-choice a-set))
+
+(defn pick-one [nn picked n]
+  (loop [picked-set picked]
+    [selection (inc (rand-int (dec nn)))]
+    (if (picked-before? picked-set selection)
+      (recur )
+      )))
+
+(defn highlighted
+  "Pick `anyway-count -1` icons at random from nn to highlight"
+  ([scenar nn]
+   (let [anyway-count (anyway (:relative-risk scenar) (:baseline-risk scenar))]
+     (reduce (partial pick-one nn) #{} (range 0 anyway-count))
+     anyway-count)))
 
 
 (rum/defc page < rum/reactive []

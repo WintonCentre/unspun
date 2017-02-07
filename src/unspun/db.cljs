@@ -6,78 +6,47 @@
 
 (def max-nn 1000)                                           ; maximum number needed to treat
 
-
-
-(def presets {:icon-moods    #{:ok
-                               :happy
-                               :sad
-                               :dead
-                               }
-
-              :people-styles #{:neurath
-                               :head
-                               :front
-                               :side
-                               :style1
-                               :style2}
-
-              :people-kinds  #{:women
-                               :men
-                               :adults
-                               :girls
-                               :boys
-                               :children
-                               :babies
-                               :anybody}
-
-              :icon-types    #{:people
-                               :emoji
-                               :geometric}
-
-              })
-
 ;;;
 ;; APP-STATE
 ;;;
 (def scenarios {:bacon   {:icon            "ios-man"
                           :subjects        ["person" "people"]
-                          :risk            "their risk"
-                          :exposure        "eating bacon sandwiches every day"
+                          :exposure        "eating a bacon sandwich every day"
                           :baseline-risk   0.06
                           :relative-risk   1.18
-                          :outcome         "bowel cancer"
+                          :outcome         "bowel cancer"   ; " during their lifetime"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :fontSize        16
                           :with            "Bacon every day"
                           :without         "Normal"
+                          :causative       false
                           }
                 :hrt5    {:icon            "ios-woman"
                           :subjects        ["woman" "women in their 50s"]
-                          :risk            "their lifetime risk"
                           :exposure        "taking HRT for 5 years"
                           :baseline-risk   0.1
                           :relative-risk   1.05
-                          :outcome         "breast cancer"
+                          :outcome         "breast cancer"  ; " during their lifetime"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :fontSize        16
                           :with            "Taking HRT"
                           :without         "No HRT"
+                          :causative       false
                           }
                 :wine    {:icon            "ios-wine"
                           :subjects        ["woman" "women"]
-                          :risk            "their lifetime risk"
                           :exposure        "drinking half a bottle of wine a day"
                           :baseline-risk   0.12
                           :relative-risk   1.30
-                          :outcome         "breast cancer"
+                          :outcome         "breast cancer"  ; " during their lifetime"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :fontSize        16
                           :with            "Half a bottle a day"
                           :without         "Not drinking"
+                          :causative       false
                           }
                 :wdoc    {:icon            "ios-person"
                           :subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
-                          :risk            "their risk"
                           :exposure        "being seen by a female doctor"
                           :baseline-risk   0.115
                           :relative-risk   0.96
@@ -86,18 +55,19 @@
                           :fontSize        14
                           :with            "Female doctor"
                           :without         "Male doctor"
+                          :causative       false
                           }
                 :statins {:icon            "ios-contact"
-                          :subjects        ["person" "people"]
-                          :risk            "their risk"
-                          :exposure        "taking statins"
+                          :subjects        ["person" "people just within NICE guidelines for prescribing statins"]
+                          :exposure        "taking statins each day"
                           :baseline-risk   0.1
-                          :relative-risk   0.9
-                          :outcome         "heart attack or stroke in 10 years"
+                          :relative-risk   0.7
+                          :outcome         "heart attack or stroke within 10 years"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :fontSize        16
                           :with            "Taking statins"
                           :without         "No statins"
+                          :causative       true
                           }})
 
 
@@ -123,9 +93,6 @@
 (def notifications (rum/cursor-in app-state [:notifications]))
 
 
-#_(defn story [scenario]
-    (str (second (:subjects scenario)) " " (:exposure scenario)))
-
 (defn story [index]
   (let [scenario (@stories index)]
     (str "How much does " (:exposure scenario) " "
@@ -137,7 +104,7 @@
 ;;;
 ;; DERIVED STATE
 ;;;
-(defn number-needed [rr br]
+(defn number-needed* [rr br]
   (let [effect (- (* rr br) br)]
     (if (zero? effect)
       max-nn
@@ -145,7 +112,13 @@
         (cond
           (> nn-val max-nn) max-nn
           (< nn-val 0) 0
-          :else (Math.round nn-val))))))
+          :else nn-val)))))
+
+(defn number-needed [rr br]
+  (Math.round (number-needed* rr br)))
+
+(defn anyway [rr br]
+  (Math.round (* br (number-needed* rr br))))
 
 (defn clamp
   "clamp v to the range [a,b]"
@@ -160,42 +133,17 @@
   (Math.round (* 100 x)))
 
 
-;;;;;
-
-
-
-
-
-
-
-
-#_(def women-doctors "Hormone Replacement Therapy
-People: women in their 50s
-
-Exposure: take HRT for 5 years
-
-Event: breast cancer in their lifetime
-
-relative risk: 1.05
-baseline risk : 10%
-
-People: US over-65s admitted to hospital under Medicare
-Exposure: being seen by a female doctor
-Event: Die within 30 days of admission
-Relative risk: 0.96
-Baseline risk 11.5%
-")
-
 (defn caps-tidy [s]
   (-> s
       (capitalize)
       (replace #"Us " "US ")
       (replace #" us " " US ")
-      (replace #"hrt" "HRT")))
+      (replace #"hrt" "HRT")
+      (replace #"nice" "NICE")))
 
 (def format (partial cl-format nil))
 
-(defn increase? [a b] (if (> a b) "decrease" "increase"))
+(defn increased? [a b] (if (> a b) "decreased" "increased"))
 
 (defn extra [rr] (if (> rr 1) "extra" "fewer"))
 
@@ -205,52 +153,64 @@ Baseline risk 11.5%
   (str "~[" singular "~;" plural "~:;" plural "~]"))
 
 (defn compare1 [subjects]
-  "~@(~a~) ~a ~a ~a of ~b from ~d% to ~d%")
+  "The risk of ~a for ~a is ~d%. ")
+(def compare2 "The risk for those ~a is ~a to ~d%.")
 
 
 
 (defn nn1 [subjects]
-  (str "On average, ~d more ~:*" (n-plural-form subjects) " ~a would mean one ~a " (singular-form subjects) " experiences ~a."))
-(defn nn2 [subjects]
-  (str "On average, for one ~a " (singular-form subjects) " to experience ~a, ~d more ~:*" (n-plural-form subjects) " would need to be ~a."))
+  (str "On average, for one ~a " (singular-form subjects) " to experience ~a, ~d more ~:*" (n-plural-form subjects) " would need to be ~a. " ))
+(def nn1-2 "Of these ~d would experience ~a anyway.")
 
-(defn text-generator [presentation {:keys [subjects risk exposure baseline-risk relative-risk outcome]}]
+(defn nn2 [subjects]
+  (str "On average, to find one ~a " (singular-form subjects) " to experience ~a, we would need to take a group of ~d more ~:*" (n-plural-form subjects) " ~a. "))
+
+(defn text-generator [presentation {:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
   (let [brpc (to-pc baseline-risk)
         erpc (to-pc (* baseline-risk relative-risk))]
-    (caps-tidy (cond
-                 (= presentation compare1)
-                 (format (compare1 subjects) (second subjects) exposure (increase? brpc erpc) risk outcome brpc erpc)
+    (cond
+      (= presentation compare1)
+      (str
+        (caps-tidy (format (compare1 subjects) outcome (second subjects) brpc))
+        (caps-tidy (format compare2 exposure (increased? brpc erpc) erpc))
+        )
 
-                 (= presentation nn1)
-                 (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure (extra relative-risk) outcome)
+      #_(= presentation nn1)
+      #_(caps-tidy (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure (extra relative-risk) outcome))
 
-                 (= presentation nn2)
-                 (format (nn2 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure)
+      (= presentation nn2)
+      (if causative
+        (str (caps-tidy (format (nn1 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure))
+             (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome)))
 
-                 :else
-                 nil))))
+        (str (caps-tidy (format (nn2 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure))
+             (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome))))
+
+      :else
+      nil)))
 
 ;; todo: Cache these, or just generate as needed?
 
 (comment
-  (text-generator nn1 (:hrt5 scenarios))
+
   (text-generator nn2 (:hrt5 scenarios))
   (text-generator compare1 (:hrt5 scenarios))
 
-  (text-generator nn1 (:bacon scenarios))
+
   (text-generator nn2 (:bacon scenarios))
   (text-generator compare1 (:bacon scenarios))
 
-  (text-generator nn1 (:wine scenarios))
+
   (text-generator nn2 (:wine scenarios))
   (text-generator compare1 (:wine scenarios))
 
-  (text-generator nn1 (:wdoc scenarios))
+
   (text-generator nn2 (:wdoc scenarios))
   (text-generator compare1 (:wdoc scenarios))
 
-  (text-generator nn1 (:statins scenarios))
+
   (text-generator nn2 (:statins scenarios))
-  (text-generator compare1 (:statins scenarios)))
+  (text-generator compare1 (:statins scenarios))
+  )
 
 

@@ -4,7 +4,7 @@
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar list-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio]]
-            [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 nn1 nn2 to-pc clamp]]
+            [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 nn2 to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             ))
 
