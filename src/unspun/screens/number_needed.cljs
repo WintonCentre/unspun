@@ -78,12 +78,11 @@
                                        :justifyContent "space-between"
                                        }}
                               (if (< k count)
-                                (do
-                                    (if (and (zero? k) (zero? block))
-                                      (draw-icon scenar ((if (> rr 1) :accent :text-icons) palette) 0.9)
-                                      (if (highlight (+ k (* block-width block-height block)))
-                                        (draw-icon scenar (:accent palette) 0.5)
-                                        (draw-icon scenar (:light-primary palette) 0.5))))
+                                (if (and (zero? k) (zero? block))
+                                  (draw-icon scenar ((if (> rr 1) :accent :text-icons) palette) 0.9)
+                                  (draw-icon scenar (if (highlight (+ k (* block-width block-height block)))
+                                                      (:accent palette)
+                                                      (:light-primary palette)) 0.5))
                                 (view {:style {:width 20}})))))))]
 
       ;view {:style {:flex 1}}
@@ -98,10 +97,12 @@
                            :justifyContent  "center"
                            :alignItems      "center"
                            :backgroundColor (:dark-primary palette)}}
-                  (text {:style {:color      (:light-primary palette)
+                  (text {;:adjustsFontSizeToFit true ;; IOS only and buggy :(
+                         :style {:color      (:light-primary palette)
                                  :fontWeight "400"
                                  :padding    20
-                                 :fontSize   (:fontSize scenar)}}
+                                 :fontSize   (:fontSize scenar)
+                                 }}
                         (text-generator nn2 scenar)))
             (view {:key   2
                    :style {:flex            0.7

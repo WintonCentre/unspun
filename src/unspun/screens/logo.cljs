@@ -6,7 +6,8 @@
             [unspun.db :refer [app-state palette-index brand-title app-banner to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]))
 
-(def logo-img (js/require "./assets/images/logo.png"))
+;(def logo-img (js/require "./assets/images/logo.png"))
+(def brand (js/require "./assets/images/brand.png"))
 
 (def shadow-size 2)
 
@@ -15,13 +16,17 @@
 
 (defn page-style []
   {:flex            1
+   :flexDirection   "column"
+   :justifyContent  "space-around"
    :backgroundColor (:primary (get-palette @palette-index))})
 
 (defn brand-style []
-  {:fontSize   30
-   :fontWeight "400"
-   :textAlign  "center"
-   :color      (:light-primary (get-palette (rum/react palette-index)))})
+  {:fontSize          30
+   :lineHeight        60
+   :textAlignVertical "center"
+   :fontWeight        "normal"
+   :textAlign         "center"
+   :color             (:light-primary (get-palette @palette-index))})
 
 (defcs logo-page < rum/reactive [state router]
 
@@ -32,44 +37,46 @@
               ))]
 
     (view {:style (page-style)}
+
           (status-bar {:key      10
                        :hidden   false
                        :barStyle "light-content"})
-          (text {:style (merge {:paddingTop 40 :flex 0.1} (brand-style))}
+
+          (text {:style (brand-style)}
                 (rum/react brand-title))
-          (text {:style (merge {:paddingTop 0 :flex 0.1} (brand-style))}
+
+          (text {:style (brand-style)}
                 (rum/react app-banner))
-          (view {:style {:flex           0.4
-                         ;:backgroundColor "red"
+
+          (view {:style {:flexDirection  "column"
                          :justifyContent "flex-start"
-                         :alignItems     "center"}}
-                (image {:source     logo-img
-                        :resizeMode "contain"
-                        :style      {:marginTop -170
-                                     :transform [{:scale 0.3}]}}))
-          (touchable-highlight {:style   {:flex           0.075
-                                          :margin         20
-                                          ;:backgroundColor (:accent (get-palette (rum/react palette-index)))
+                         :alignItems     "center"
+                         }}
+                (image {:source          brand
+                        :resizeMode      "contain"
+                        :style           {:width  250
+                                          :height 250}}))
+
+          (touchable-highlight {:style   {;:flex           0.1
+                                          :marginLeft     20
+                                          :marginRight    20
+                                          :height         50
                                           :borderColor    "#fff"
                                           :borderWidth    2
                                           :borderRadius   30
-                                          ;:shadowColor     "#000"
-                                          ;:shadowOffset    {:width shadow-size :height shadow-size}
-                                          ;:shadowRadius    shadow-size
-                                          ;:shadowOpacity   0.5
                                           :alignItems     "center"
                                           :justifyContent "center"
                                           }
-                                :onPress #(jumpToDrawer "intro" "intro")
-                                ;:onPress
-                                #_#(.push
-                                     (aget (:rum/react-component state) "props" "navigator")
-                                     (.getRoute Router "stories")) ;#(alert "Hello!")
-                                ;#(.push (aget (:rum/react-component state) "props" "navigator") "intro") ;#(alert "Hello!")
-                                }
-                               (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 200}} "What's this about?"))
-          (touchable-highlight {:style   {:flex            0.075
-                                          :margin          20
+                                :onPress #(jumpToDrawer "intro" "intro")}
+                               (text {:style {:color      (:text-icons (get-palette (rum/react palette-index)))
+                                              :textAlign  "center"
+                                              :fontWeight "bold"}}
+                                     "What's this about?"))
+
+          (touchable-highlight {:style   {;:flex            0.1
+                                          :marginLeft      20
+                                          :marginRight     20
+                                          :height          50
                                           :backgroundColor (:accent (get-palette (rum/react palette-index)))
                                           :borderRadius    30
                                           :shadowColor     "#000"
@@ -79,9 +86,11 @@
                                           :alignItems      "center"
                                           :justifyContent  "center"
                                           }
-                                :onPress #(jumpToDrawer "scenarios" "stories")
+                                :onPress #(jumpToDrawer "scenarios" "stories")}
 
-                                }
-                               (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 55}} "Start")))))
+                               (text {:style {:color           (:text-icons (get-palette (rum/react palette-index)))
+                                              :textAlign       "center"
+                                              :fontWeight      "bold"}}
+                                     "Start")))))
 
 
