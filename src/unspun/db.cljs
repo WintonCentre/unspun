@@ -159,11 +159,11 @@
 
 
 (defn nn1 [subjects]
-  (str "On average, for one ~a " (singular-form subjects) " to experience ~a, ~d more ~:*" (n-plural-form subjects) " would need to be ~a. " ))
-(def nn1-2 "Of these ~d would experience ~a anyway.")
+  (str "On average, for one <mark-one>~a " (singular-form subjects) "</mark-one> to experience ~a, ~d more ~:*" (n-plural-form subjects) " would need to be ~a. " ))
+(def nn1-2 "Of these, <mark-anyway>~d</mark-anyway> would experience ~a anyway.")
 
 (defn nn2 [subjects]
-  (str "On average, to find one ~a " (singular-form subjects) " to experience ~a, we would need to take a group of ~d more ~:*" (n-plural-form subjects) " ~a. "))
+  (str "On average, to find <mark-one>one ~a</mark-one> " (singular-form subjects) " to experience ~a, we would need to take a group of ~d more ~:*" (n-plural-form subjects) " ~a. "))
 
 (defn text-generator [presentation {:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
   (let [brpc (to-pc baseline-risk)

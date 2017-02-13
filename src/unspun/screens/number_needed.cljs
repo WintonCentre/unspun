@@ -55,6 +55,12 @@
         block-width 5
         block-height 5
         highlight (pick-n-in-nn nn (max 0 ((if (> rr 1) identity dec) (anyway rr br))))
+        ptext (fn [colour-key] (partial text {:style {:color      (colour-key palette)
+                                                      :fontWeight (if (= colour-key :light-primary) "normal" "bold")
+                                                      :padding    20
+                                                      :fontSize   (:fontSize scenar)
+                                                      }}))
+        [s1 s2 s3 s4 s5] (rest (re-find #"(.*)<mark-one>(.*)</mark-one>(.*)<mark-anyway>(.*)</mark-anyway>(.*)" (text-generator nn2 scenar)))
         ]
 
     (letfn [(draw-block [block count]
@@ -97,13 +103,18 @@
                            :justifyContent  "center"
                            :alignItems      "center"
                            :backgroundColor (:dark-primary palette)}}
-                  (text {;:adjustsFontSizeToFit true ;; IOS only and buggy :(
-                         :style {:color      (:light-primary palette)
+                  (text {:style {:color      (:light-primary palette)
                                  :fontWeight "400"
                                  :padding    20
                                  :fontSize   (:fontSize scenar)
                                  }}
-                        (text-generator nn2 scenar)))
+                        ((ptext :light-primary) s1)
+                        ((ptext (if (> rr 1) :accent :text-icons)) s2)
+                        ((ptext :light-primary) s3)
+                        ((ptext :accent) s4)
+                        ((ptext :light-primary) s5)
+                        ;(map (ptext :light-accent) nn-split)
+                        ))
             (view {:key   2
                    :style {:flex            0.7
                            ;:padding         20
