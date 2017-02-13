@@ -1,4 +1,4 @@
-(ns shared.gesture-responders
+(ns unspun.gesture-responders
   (:require [shared.ui :refer [pan-responder]]
             [unspun.db :refer [clamp]]))
 
@@ -22,23 +22,29 @@
 (defn on-release [state]
   (fn [_ _]
     #_(.log js/console "release")
-    (reset! (:zooming state) false)))
+    (reset! (:zooming state) false)
+    ))
 
 (defn grant-handler [state]
   (fn [_ _]
-    #_(.log js/console "grant")
-    #_(.log js/console @(:zooming state))
-    (reset! (:scale0 state) @(:scale state))
-    (reset! (:zooming state) true)
+    (let [scale0 @(:scale state)]
+      (reset! (:scale0 state) scale0)
+      (reset! (:rescaler state) scale0)
+      (reset! (:zooming state) true))
     true))
+
+(def threshold 0.03)
+(defn different [a b] (> (Math.abs (- a b)) threshold))
 
 (defn move-handler [state]
   (fn [evt gesture-state]
     (let [y0 (aget gesture-state "y0")
-          y1 (aget gesture-state "moveY")
-          ]
+          y1 (aget gesture-state "moveY")]
       ;(prn "y0 = " y0 " y1 = " y1 " factor = " (clamp [1 10] (inc (/ (- y0 y1) (- y0 700)))) " scale = " @(:scale state))
-      (reset! (:scale state) (clamp [1 10] (* @(:scale0 state) (inc (/ (- y0 y1) (- 700 y0)))))))))
+      (when-not @(:rescaler state) (reset! (:rescaler state) y0))
+      (let [rescale (clamp [1 10] (* @(:scale0 state) (inc (/ (- y0 y1) (- 700 y0)))))]
+        (if (different rescale @(:scale state))
+          (reset! (:scale state) rescale))))))
 
 ;;;
 ;; The pan responder mixin is a Rum mixin based on https://facebook.github.io/react-native/docs/panresponder.html.

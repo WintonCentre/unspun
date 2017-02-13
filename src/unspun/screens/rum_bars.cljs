@@ -7,7 +7,7 @@
             [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             [graphics.scales :refer [create-linear-scale bounded-ticks i->o o->i tick-format-specifier]]
-            [shared.gesture-responders :refer [pan-responder-mixin pan-logger]]
+            [unspun.gesture-responders :refer [pan-responder-mixin pan-logger]]
             [cljs.pprint :refer [cl-format]]
             ))
 
@@ -134,6 +134,7 @@
               (rum/local 1 :scale)
               (rum/local 1 :scale0)
               (rum/local false :zooming)
+              (rum/local nil :rescaler)
               (pan-responder-mixin ::zoomer)
 
   ([state]
@@ -185,29 +186,8 @@
                                          :zIndex         2
                                          :flex           1
                                          :alignItems     "center"
-                                         :justifyContent "space-between"
-                                         }
-                                 ;:onStartShouldSetResponder #(.log js/console "start responder? " (.-nativeEvent %))
-                                 ;:onMoveShouldSetResponder  #(.log js/console "move responder? " (.-nativeEvent %))
-                                 }
-                                (js->clj (.-panHandlers (::zoomer state))))
-                         #_(touchable-highlight
-                             {:onPress #(swap! (:scale state) (fn [s] (max 1 (* s 1.1))))}
-                             (text {:style {:color           (:accent palette)
-                                            :backgroundColor "rgba(0,0,0,0)"
-                                            :fontWeight      "400"
-                                            :padding         0
-                                            :fontSize        (:fontSize scenar)
-                                            }}
-                                   "ZOOM IN"))
-                         #_(touchable-highlight
-                             {:onPress #(swap! (:scale state) (fn [s] (max 1 (/ s 1.1))))}
-                             (text {:style {:color           (:accent palette)
-                                            :backgroundColor "rgba(0,0,0,0)"
-                                            :fontWeight      "400"
-                                            :padding         0
-                                            :fontSize        (:fontSize scenar)}}
-                                   "ZOOM OUT")))
+                                         :justifyContent "space-between"}}
+                                (js->clj (.-panHandlers (::zoomer state)))))
                    ;;;
                    ;; ticks
                    ;;;
@@ -257,8 +237,7 @@
                                                         :textAlign       "center"}}
                                                (str (cl-format nil (tick-format-specifier axis-scale)
                                                                (let [y ((o->i axis-scale) y1)]
-                                                                 (if (> y 1) (Math.round y) y))
-                                                               ) "%")))))))
+                                                                 (if (> y 1) (Math.round y) y))) "%")))))))
                    ;;;
                    ;; bars
                    ;;;
