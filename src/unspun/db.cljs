@@ -132,8 +132,8 @@
   [x]
   (Math.round (* 100 x)))
 
-
-(defn caps-tidy [s]
+(def caps-tidy capitalize)
+#_(defn caps-tidy [s]
   (-> s
       (capitalize)
       (replace #"Us " "US ")
@@ -152,29 +152,39 @@
 (defn n-plural-form [[singular plural]]
   (str "~[" singular "~;" plural "~:;" plural "~]"))
 
-(defn compare1 [subjects]
+(def compare1
   "The risk of ~a for ~a is ~d%. ")
 (def compare2 "The risk for those ~a is ~a to ~d%.")
 
-(defn compare-text-vector
-  "Generate text for compare screens"
+(defn compare-text-vector-old
+  "Generate a vector of texts for compare screens. We return a vector rather than a single string to make
+  it easy to apply different formatting to each element."
   ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
    (let [brpc (to-pc baseline-risk)
          erpc (to-pc (* baseline-risk relative-risk))]
      (str
-       (caps-tidy (format (compare1 subjects) outcome (second subjects) brpc))
-       (caps-tidy (format compare2 exposure (increased? brpc erpc) erpc))))))
+       (str "The risk of " outcome " for " (second subjects) " is " brpc "%. ")
+       (str "The risk for those " exposure " is " (increased? brpc erpc) " to " erpc "%.")))))
 
+(defn compare-text-vector
+  "Generate a vector of texts for compare screens. We return a vector rather than a single string to make
+  it easy to apply different formatting to each element."
+  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
+   (let [brpc (to-pc baseline-risk)
+         erpc (to-pc (* baseline-risk relative-risk))]
+     (str
+       (str "The risk of " outcome " for " (second subjects) " is " brpc "%. ")
+       (str "The risk for those " exposure " is " (increased? brpc erpc) " to " erpc "%.")))))
 
-(defn nn1 [subjects]
+#_(defn nn1 [subjects]
   (str "On average, for one <mark-one>~a " (singular-form subjects) "</mark-one> to experience ~a, <mark-group>~d more</mark-group> ~:*" (n-plural-form subjects) " would need to be ~a. "))
-(def nn1-2 "Of these, <mark-anyway>~d</mark-anyway> would experience ~a anyway.")
+#_(def nn1-2 "Of these, <mark-anyway>~d</mark-anyway> would experience ~a anyway.")
 
-(defn nn2 [subjects]
+#_(defn nn2 [subjects]
   (str "On average, to find <mark-one>one ~a</mark-one> " (singular-form subjects) " to experience ~a, we would need to take <mark-group>a group of ~d</mark-group> more ~:*" (n-plural-form subjects) " ~a. "))
 
 
-(defn nn-text-vector-old
+#_(defn nn-text-vector-old
   "Generate text for number needed screens"
   ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
    (let [brpc (to-pc baseline-risk)
@@ -187,7 +197,8 @@
             (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome)))))))
 
 (defn nn-text-vector
-  "Generate text for number needed screens"
+  "Generate a vector of texts for number needed screens. We return a vector rather than a single string to make
+  it easy to apply different formatting to each element."
   ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
    (let [brpc (to-pc baseline-risk)
          erpc (to-pc (* baseline-risk relative-risk))
