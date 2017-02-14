@@ -2,7 +2,7 @@
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [n-icon]]
-            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index text-generator nn2]]
+            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index]]
             [rum.core :as rum]))
 
 (def shadow-size 1)

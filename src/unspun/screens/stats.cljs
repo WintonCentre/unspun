@@ -4,7 +4,7 @@
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar list-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio]]
-            [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 nn2 to-pc clamp]]
+            [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             ))
 
@@ -63,11 +63,11 @@
             (n-list-item
               {:key 10}
               (txt {:key 1}
-                   (text-generator compare1 scenar)))
+                   (compare-text-vector scenar)))
             (n-list-item
               {:key 11}
               (txt {:key 1}
-                   (text-generator nn2 scenar))))
+                   (reduce str (nn-text-vector scenar)))))  ; Note that the reduce is not necessary here for some reason
           )
 
         ))))

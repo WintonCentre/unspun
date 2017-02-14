@@ -2,7 +2,7 @@
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [n-icon]]
-            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index text-generator nn2 anyway]]
+            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
             [rum.core :as rum]))
 
 
@@ -55,12 +55,16 @@
         block-width 5
         block-height 5
         highlight (pick-n-in-nn nn (max 0 ((if (> rr 1) identity dec) (anyway rr br))))
-        ptext (fn [colour-key] (partial text {:style {:color      (colour-key palette)
-                                                      :fontWeight (if (= colour-key :light-primary) "normal" "bold")
-                                                      :padding    20
-                                                      :fontSize   (:fontSize scenar)
-                                                      }}))
-        [s1 s2 s3 s4 s5] (rest (re-find #"(.*)<mark-one>(.*)</mark-one>(.*)<mark-anyway>(.*)</mark-anyway>(.*)" (text-generator nn2 scenar)))
+        ptext (fn [colour-key & bold] (partial text {:style {:color      (colour-key palette)
+                                                             :fontWeight (if (= colour-key :light-primary)
+                                                                           (if bold "bold" "normal")
+                                                                           "bold")
+                                                             :padding    20
+                                                             :fontSize   (:fontSize scenar)
+                                                             }}))
+        [nn-head nn-one nn-one-to-group nn-group nn-group-to-anyway nn-anyway nn-tail] (nn-text-vector scenar)
+        ;(rest (re-matches #"(.*)<mark-one>(.*)</mark-one>(.*)<mark-group>(.*)</mark-group>(.*)<mark-anyway>(.*)</mark-anyway>(.*)" (nn-text-vector scenar)))
+
         ]
 
     (letfn [(draw-block [block count]
@@ -103,17 +107,15 @@
                            :justifyContent  "center"
                            :alignItems      "center"
                            :backgroundColor (:dark-primary palette)}}
-                  (text {:style {:color      (:light-primary palette)
-                                 :fontWeight "400"
-                                 :padding    20
-                                 :fontSize   (:fontSize scenar)
-                                 }}
-                        ((ptext :light-primary) s1)
-                        ((ptext (if (> rr 1) :accent :text-icons)) s2)
-                        ((ptext :light-primary) s3)
-                        ((ptext :accent) s4)
-                        ((ptext :light-primary) s5)
-                        ;(map (ptext :light-accent) nn-split)
+                  (text {:style {:padding    20
+                                 :fontSize   (:fontSize scenar)}}
+                        ((ptext :light-primary) nn-head)
+                        ((ptext (if (> rr 1) :accent :text-icons)) nn-one)
+                        ((ptext :light-primary) nn-one-to-group)
+                        ((ptext :light-primary :bold) nn-group)
+                        ((ptext :light-primary) nn-group-to-anyway)
+                        ((ptext :accent) nn-anyway)
+                        ((ptext :light-primary) nn-tail)
                         ))
             (view {:key   2
                    :style {:flex            0.7

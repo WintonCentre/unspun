@@ -4,7 +4,7 @@
             [shared.ui :refer [font-scale pixel-ratio]]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 to-pc clamp]]
+            [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             [graphics.scales :refer [create-linear-scale bounded-ticks i->o o->i tick-format-specifier]]
             [unspun.gesture-responders :refer [pan-responder-mixin pan-logger]]
@@ -171,7 +171,7 @@
                                   :fontWeight "400"
                                   :padding    20
                                   :fontSize   (:fontSize scenar)}}
-                         (text-generator compare1 scenar)))
+                         (compare-text-vector scenar)))
              (view {:key   2
                     :style {:flex 0.7}}
                    ;;;

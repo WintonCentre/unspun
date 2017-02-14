@@ -1,7 +1,7 @@
 (ns unspun.screens.tabs
   (:require [rum.core :as rum]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index stories story-index text-generator compare1 to-pc clamp]]
+            [unspun.db :refer [app-state palette-index stories story-index to-pc clamp]]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar] :as rn]
             [shared.ui :refer [sliding-tab-navigation sliding-tab-navigation-item ionicon add-page-title]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]

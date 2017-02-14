@@ -156,61 +156,84 @@
   "The risk of ~a for ~a is ~d%. ")
 (def compare2 "The risk for those ~a is ~a to ~d%.")
 
+(defn compare-text-vector
+  "Generate text for compare screens"
+  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
+   (let [brpc (to-pc baseline-risk)
+         erpc (to-pc (* baseline-risk relative-risk))]
+     (str
+       (caps-tidy (format (compare1 subjects) outcome (second subjects) brpc))
+       (caps-tidy (format compare2 exposure (increased? brpc erpc) erpc))))))
 
 
 (defn nn1 [subjects]
-  (str "On average, for one <mark-one>~a " (singular-form subjects) "</mark-one> to experience ~a, ~d more ~:*" (n-plural-form subjects) " would need to be ~a. " ))
+  (str "On average, for one <mark-one>~a " (singular-form subjects) "</mark-one> to experience ~a, <mark-group>~d more</mark-group> ~:*" (n-plural-form subjects) " would need to be ~a. "))
 (def nn1-2 "Of these, <mark-anyway>~d</mark-anyway> would experience ~a anyway.")
 
 (defn nn2 [subjects]
-  (str "On average, to find <mark-one>one ~a</mark-one> " (singular-form subjects) " to experience ~a, we would need to take a group of ~d more ~:*" (n-plural-form subjects) " ~a. "))
+  (str "On average, to find <mark-one>one ~a</mark-one> " (singular-form subjects) " to experience ~a, we would need to take <mark-group>a group of ~d</mark-group> more ~:*" (n-plural-form subjects) " ~a. "))
 
-(defn text-generator [presentation {:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
-  (let [brpc (to-pc baseline-risk)
-        erpc (to-pc (* baseline-risk relative-risk))]
-    (cond
-      (= presentation compare1)
-      (str
-        (caps-tidy (format (compare1 subjects) outcome (second subjects) brpc))
-        (caps-tidy (format compare2 exposure (increased? brpc erpc) erpc))
-        )
 
-      #_(= presentation nn1)
-      #_(caps-tidy (format (nn1 subjects) (number-needed relative-risk baseline-risk) exposure (extra relative-risk) outcome))
+(defn nn-text-vector-old
+  "Generate text for number needed screens"
+  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
+   (let [brpc (to-pc baseline-risk)
+         erpc (to-pc (* baseline-risk relative-risk))]
+     (if causative
+       (str (caps-tidy (format (nn1 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure))
+            (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome)))
 
-      (= presentation nn2)
-      (if causative
-        (str (caps-tidy (format (nn1 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure))
-             (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome)))
+       (str (caps-tidy (format (nn2 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure))
+            (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome)))))))
 
-        (str (caps-tidy (format (nn2 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure))
-             (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome))))
+(defn nn-text-vector
+  "Generate text for number needed screens"
+  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
+   (let [brpc (to-pc baseline-risk)
+         erpc (to-pc (* baseline-risk relative-risk))
+         nn (number-needed relative-risk baseline-risk)]
+     (if causative
+       ["On average, to find "                          ; head
+        (str "one " (extra relative-risk) " " (singular-form subjects) " ") ; mark-one
+        (format "to experience ~a, " outcome)               ; one-to-group
+        (format "~d more " nn)                              ; group
+        (format (str (n-plural-form subjects) " would need to be ~a. Of these, ") nn exposure) ; group-to-anyway
+        (format "~d " (anyway relative-risk baseline-risk)) ;anyway
+        (str "would experience " outcome " anyway. ")       ; tail
+        ]
+       ["On average, for "                              ; head
+        (str "one " (extra relative-risk) " " (singular-form subjects) " ") ; mark-one
+        (format "to experience ~a, we would need to take " outcome) ; one-to-group
+        (format "a group of ~d more " nn)                   ; group
+        (format (str (n-plural-form subjects) " ~a. Of these, ") nn exposure) ; group-to-anyway
+        (format "~d " (anyway relative-risk baseline-risk)) ;anyway
+        (str "would experience " outcome " anyway. ")       ; tail
+        ]))))
 
-      :else
-      nil)))
+
 
 ;; todo: Cache these, or just generate as needed?
 
 (comment
 
-  (text-generator nn2 (:hrt5 scenarios))
-  (text-generator compare1 (:hrt5 scenarios))
+  (nn-text-vector (:hrt5 scenarios))
+  (compare-text-vector (:hrt5 scenarios))
 
 
-  (text-generator nn2 (:bacon scenarios))
-  (text-generator compare1 (:bacon scenarios))
+  (nn-text-vector (:bacon scenarios))
+  (compare-text-vector (:bacon scenarios))
 
 
-  (text-generator nn2 (:wine scenarios))
-  (text-generator compare1 (:wine scenarios))
+  (nn-text-vector (:wine scenarios))
+  (compare-text-vector (:wine scenarios))
 
 
-  (text-generator nn2 (:wdoc scenarios))
-  (text-generator compare1 (:wdoc scenarios))
+  (nn-text-vector (:wdoc scenarios))
+  (compare-text-vector (:wdoc scenarios))
 
 
-  (text-generator nn2 (:statins scenarios))
-  (text-generator compare1 (:statins scenarios))
+  (nn-text-vector (:statins scenarios))
+  (compare-text-vector (:statins scenarios))
   )
 
 
