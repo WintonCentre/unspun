@@ -172,9 +172,10 @@
   ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
    (let [brpc (to-pc baseline-risk)
          erpc (to-pc (* baseline-risk relative-risk))]
-     (str
-       (str "The risk of " outcome " for " (second subjects) " is " brpc "%. ")
-       (str "The risk for those " exposure " is " (increased? brpc erpc) " to " erpc "%.")))))
+     [(str "The risk of " outcome " for " (second subjects) " is ")
+      (str brpc "%. ")
+      (str "The risk for those " exposure " is " (increased? brpc erpc) " to ")
+      (str erpc "%.")])))
 
 #_(defn nn1 [subjects]
   (str "On average, for one <mark-one>~a " (singular-form subjects) "</mark-one> to experience ~a, <mark-group>~d more</mark-group> ~:*" (n-plural-form subjects) " would need to be ~a. "))
@@ -182,7 +183,6 @@
 
 #_(defn nn2 [subjects]
   (str "On average, to find <mark-one>one ~a</mark-one> " (singular-form subjects) " to experience ~a, we would need to take <mark-group>a group of ~d</mark-group> more ~:*" (n-plural-form subjects) " ~a. "))
-
 
 #_(defn nn-text-vector-old
   "Generate text for number needed screens"

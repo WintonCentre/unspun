@@ -154,6 +154,7 @@
          zooming (rum/react (:zooming state))
          axis-scale (create-linear-scale [0 ub] [0 1] 4)
          ticks (bounded-ticks axis-scale)
+         [cmp-head cmp-brpc cmp-brpc-to-erpc cmp-erpc] (compare-text-vector scenar)
          ]
 
 
@@ -171,7 +172,20 @@
                                   :fontWeight "400"
                                   :padding    20
                                   :fontSize   (:fontSize scenar)}}
-                         (compare-text-vector scenar)))
+                         (text {:style {:color      (:light-primary palette)
+                                        :fontWeight "normal"
+                                        :fontSize   (:fontSize scenar)}} cmp-head)
+                         (text {:style {:color      (:text-icons palette)
+                                        :fontWeight "bold"
+                                        :fontSize   (:fontSize scenar)
+                                        }} cmp-brpc)
+                         (text {:style {:color      (:light-primary palette)
+                                        :fontWeight "normal"
+                                        :fontSize   (:fontSize scenar)}} cmp-brpc-to-erpc)
+                         (text {:style {:color      (:text-icons palette)
+                                        :fontWeight "bold"
+                                        :fontSize   (:fontSize scenar)}} cmp-erpc)
+                         ))
              (view {:key   2
                     :style {:flex 0.7}}
                    ;;;
