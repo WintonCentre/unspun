@@ -15,3 +15,4 @@
 (defn android?
   []
   (= "android" (get-platform)))
+

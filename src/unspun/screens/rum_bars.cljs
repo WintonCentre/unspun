@@ -154,7 +154,12 @@
          zooming (rum/react (:zooming state))
          axis-scale (create-linear-scale [0 ub] [0 1] 4)
          ticks (bounded-ticks axis-scale)
-         [cmp-head cmp-brpc cmp-brpc-to-erpc cmp-erpc] (compare-text-vector scenar)
+         [cmp-head cmp-brpc cmp-brpc-to-change cmp-change cmp-change-to-erpc cmp-erpc] (compare-text-vector scenar)
+         text-field (fn [palette-key weight content]
+                      (text {:key   (gensym "text-field")
+                             :style {:color      (palette-key palette)
+                                     :fontWeight weight
+                                     }} content))
          ]
 
 
@@ -169,23 +174,15 @@
                             :alignItems      "center"
                             :backgroundColor (:dark-primary palette)}}
                    (text {:style {:color      (:light-primary palette)
-                                  :fontWeight "400"
+                                  :fontWeight "normal"
                                   :padding    20
                                   :fontSize   (:fontSize scenar)}}
-                         (text {:style {:color      (:light-primary palette)
-                                        :fontWeight "normal"
-                                        :fontSize   (:fontSize scenar)}} cmp-head)
-                         (text {:style {:color      (:text-icons palette)
-                                        :fontWeight "bold"
-                                        :fontSize   (:fontSize scenar)
-                                        }} cmp-brpc)
-                         (text {:style {:color      (:light-primary palette)
-                                        :fontWeight "normal"
-                                        :fontSize   (:fontSize scenar)}} cmp-brpc-to-erpc)
-                         (text {:style {:color      (:text-icons palette)
-                                        :fontWeight "bold"
-                                        :fontSize   (:fontSize scenar)}} cmp-erpc)
-                         ))
+                         (text-field :light-primary "normal" cmp-head)
+                         (text-field :text-icons "bold" cmp-brpc)
+                         (text-field :light-primary "normal" cmp-brpc-to-change)
+                         (text-field :light-primary "bold" cmp-change)
+                         (text-field :light-primary "normal" cmp-change-to-erpc)
+                         (text-field :text-icons "bold" cmp-erpc)))
              (view {:key   2
                     :style {:flex 0.7}}
                    ;;;

@@ -59,7 +59,6 @@
                                                              :fontWeight (if (= colour-key :light-primary)
                                                                            (if bold "bold" "normal")
                                                                            "bold")
-                                                             :padding    20
                                                              :fontSize   (:fontSize scenar)
                                                              }}))
         [nn-head nn-one nn-one-to-group nn-group nn-group-to-anyway nn-anyway nn-tail] (nn-text-vector scenar)

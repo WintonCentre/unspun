@@ -174,7 +174,9 @@
          erpc (to-pc (* baseline-risk relative-risk))]
      [(str "The risk of " outcome " for " (second subjects) " is ")
       (str brpc "%. ")
-      (str "The risk for those " exposure " is " (increased? brpc erpc) " to ")
+      (str "The risk for those " exposure " is ")
+      (str (increased? brpc erpc))
+      " to "
       (str erpc "%.")])))
 
 #_(defn nn1 [subjects]
@@ -220,7 +222,6 @@
         (format "~d " (anyway relative-risk baseline-risk)) ;anyway
         (str "would experience " outcome " anyway. ")       ; tail
         ]))))
-
 
 
 ;; todo: Cache these, or just generate as needed?
