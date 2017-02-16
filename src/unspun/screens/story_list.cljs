@@ -9,7 +9,7 @@
 (def palette-titles
   (mapv name (keys palettes)))
 
-(rum/defc icon-example [name]
+#_(rum/defc icon-example [name]
   (content {:theme (aget my-theme "default")}
            (n-icon {:name  name
                     :style {:color (:dark-primary (get-palette @palette-index))}})))
@@ -26,7 +26,7 @@
            :style {:color (:dark-primary palette)}
            }))
 
-(defn nnt-icon [palette]
+#_(defn nnt-icon [palette]
   (n-icon {:name  "md-keypad"
            :key   (gensym "nnt")
            :style {:color (:accent palette)}
@@ -34,7 +34,7 @@
 
 (defn show-icon [palette]
   (n-icon {:name  "ios-arrow-dropright-outline"
-           :key   (gensym "icon")
+           :key   (gensym "icon-foo")
            :style {:color     (:accent palette)
                    :transform [{:scale 1.67}]}
            }))
@@ -43,17 +43,15 @@
   (n-icon {:name  "ios-add-circle-outline"
            :key   (gensym "add")
            :style {:color     (:accent palette)
-                   :transform [{:scale 1.67}]}
-           }))
+                   :transform [{:scale 1.67}]}}))
 
 
-(defn bars-icon [palette]
+#_(defn bars-icon [palette]
   (n-icon {:name  "ios-stats"
            :key   (gensym "bars")
            :style {:width 9
                    ;:paddingRight 5
-                   :color (:accent palette)
-                   }}))
+                   :color (:accent palette)}}))
 
 (defn select-palette-item! [index]
   (n-list-item
@@ -63,17 +61,24 @@
             :selected (= @palette-index index)})
     (txt {:key 2} (palette-titles index))))
 
+(def card-style {:flex         1
+                 :marginLeft   15
+                 :marginRight  15
+                 :marginTop    5
+                 :marginBottom 0})
+
+(def card-item-style {:backgroundColor "white"
+                      :justifyContent  "flex-start"
+                      :flexDirection   "row"
+                      :alignItems      "center"
+                      :padding         10})
+
 (defn add-card! [navigator palette]
-  (card {:key   20
-         :style {:flex   1
-                 :margin 15}}
+  (card {:key   (gensym "add-card")
+         :style card-style}
         (card-item {:header true
                     :key    1
-                    :style  {:backgroundColor "white"
-                             :justifyContent  "flex-start"
-                             :flexDirection   "row"
-                             :alignItems      "center"
-                             }}
+                    :style  card-item-style}
                    (txt {:key   1
                          :style {:flex       4
                                  :marginLeft 34
@@ -82,28 +87,17 @@
                         "Add your own scenario")
                    (button {:key       2
                             :bordered  true
-                            ;:small     true
                             :textStyle {:color (:accent palette)}
                             :style     {:borderWidth 0}
-                            :onPress   #(do (.push navigator "not-yet"))}
-                           (add-icon palette)
-                           ;(txt "")
-                           ))
-        )
-
-  )
+                            :onPress   #(.push navigator "not-yet")}
+                           (add-icon palette)))))
 
 (defn story-card! [navigator palette index]
   (card {:key   (gensym "story-card")
-         :style {:flex   1
-                 :margin 15}}
+         :style card-style}
         (card-item {:header true
                     :key    1
-                    :style  {:backgroundColor "white"
-                             :justifyContent  "flex-start"
-                             :flexDirection   "row"
-                             :alignItems      "center"
-                             }}
+                    :style  card-item-style}
                    (story-icon palette (:icon (@stories index)))
                    (txt {:key   1
                          :style {:flex       4
@@ -112,17 +106,11 @@
                         (caps-tidy (story index)))
                    (button {:key       2
                             :bordered  true
-                            ;:small true
                             :textStyle {:color (:accent palette)}
                             :style     {:borderWidth 0}
                             :onPress   #(do (reset! story-index index)
                                             (.push navigator "tabs"))}
-                           (show-icon palette)
-                           ;(txt "")
-                           ))
-        ))
-
-
+                           (show-icon palette)))))
 
 (rum/defcs page < rum/reactive
                   (rum/local 0 ::selection) (add-page-title "Scenarios")
@@ -146,6 +134,5 @@
                (concat [{:key   1
                          :style {:flex 1}}]
                        [(add-card! navigator palette)]
-                       [(map (partial story-card! navigator palette) (range story-count))]))
-        )
-      )))
+                       ;[(story-card! navigator palette 0)]
+                       [(map (partial story-card! navigator palette) (range story-count))]))))))
