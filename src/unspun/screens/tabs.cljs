@@ -19,27 +19,32 @@
                    }}
           (sliding-tab-navigation
             {:flex               0.9
+             :key                "tabs"
              :id                 "tab-navigation"
              :navigatorUID       "tab-navigation"
              :barBackgroundColor (:dark-primary palette)
              :indicatorStyle     {:backgroundColor (:accent palette)}
-             :initialTab         "bars"
+             :initialTab         "stats"
              }
             (sliding-tab-navigation-item
               {:id    "stats"
+               :key   "stats"
                :title "Numbers"}
               (stats/page)
               )
             (sliding-tab-navigation-item
-              {:id          "bars"
-               :title       "Graph"}
+              {:id    "bars"
+               :key   "bars"
+               :title "Graph"}
               (bars/page))
             (sliding-tab-navigation-item
               {:id    "icons"
+               :key   "icons"
                :title "Pictures"}
               (nn/page)
               ))
 
-          (view {:style {:flex            0.1
+          (view {:key   "bottom-bar"
+                 :style {:flex            0.1
                          :backgroundColor (:dark-primary palette)}}
                 (bottom-button-bar)))))

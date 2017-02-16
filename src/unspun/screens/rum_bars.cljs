@@ -159,8 +159,7 @@
                       (text {:key   (gensym "text-field")
                              :style {:color      (palette-key palette)
                                      :fontWeight weight
-                                     }} content))
-         ]
+                                     }} content))]
 
 
      #_(prn "ub:" ub "flex:" (map (i->o axis-scale) ticks) "ticks" ticks)
@@ -173,9 +172,7 @@
                             :justifyContent  "center"
                             :alignItems      "center"
                             :backgroundColor (:dark-primary palette)}}
-                   (text {:style {:color      (:light-primary palette)
-                                  :fontWeight "normal"
-                                  :padding    20
+                   (text {:style {:padding    20
                                   :fontSize   (:fontSize scenar)}}
                          (text-field :light-primary "normal" cmp-head)
                          (text-field :text-icons "bold" cmp-brpc)

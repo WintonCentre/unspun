@@ -16,32 +16,32 @@
 
 (defn story-icon [palette name]
   (n-icon {:name  name
-           :key   2
+           :key   (gensym "story")
            :style {:color (:dark-primary palette)}
            }))
 
 (defn edit-icon [palette]
   (n-icon {:name  "ios-create"
-           :key   2
+           :key   (gensym "edit")
            :style {:color (:dark-primary palette)}
            }))
 
 (defn nnt-icon [palette]
   (n-icon {:name  "md-keypad"
-           :key   2
+           :key   (gensym "nnt")
            :style {:color (:accent palette)}
            }))
 
 (defn show-icon [palette]
   (n-icon {:name  "ios-arrow-dropright-outline"
-           :key   2
+           :key   (gensym "icon")
            :style {:color     (:accent palette)
                    :transform [{:scale 1.67}]}
            }))
 
 (defn add-icon [palette]
   (n-icon {:name  "ios-add-circle-outline"
-           :key   2
+           :key   (gensym "add")
            :style {:color     (:accent palette)
                    :transform [{:scale 1.67}]}
            }))
@@ -49,7 +49,7 @@
 
 (defn bars-icon [palette]
   (n-icon {:name  "ios-stats"
-           :key   2
+           :key   (gensym "bars")
            :style {:width 9
                    ;:paddingRight 5
                    :color (:accent palette)
@@ -74,7 +74,8 @@
                              :flexDirection   "row"
                              :alignItems      "center"
                              }}
-                   (txt {:style {:flex       4
+                   (txt {:key   1
+                         :style {:flex       4
                                  :marginLeft 34
                                  :fontWeight "normal"
                                  :color      (:secondary-text palette)}}
@@ -86,13 +87,14 @@
                             :style     {:borderWidth 0}
                             :onPress   #(do (.push navigator "not-yet"))}
                            (add-icon palette)
-                           ""))
+                           ;(txt "")
+                           ))
         )
 
   )
 
 (defn story-card! [navigator palette index]
-  (card {:key   index
+  (card {:key   (gensym "story-card")
          :style {:flex   1
                  :margin 15}}
         (card-item {:header true
@@ -103,9 +105,10 @@
                              :alignItems      "center"
                              }}
                    (story-icon palette (:icon (@stories index)))
-                   (txt {:style {:flex  4
+                   (txt {:key   1
+                         :style {:flex       4
                                  :fontWeight "normal"
-                                 :color (:secondary-text palette)}}
+                                 :color      (:secondary-text palette)}}
                         (caps-tidy (story index)))
                    (button {:key       2
                             :bordered  true
@@ -115,7 +118,8 @@
                             :onPress   #(do (reset! story-index index)
                                             (.push navigator "tabs"))}
                            (show-icon palette)
-                           ""))
+                           ;(txt "")
+                           ))
         ))
 
 
@@ -135,7 +139,7 @@
          :theme (aget my-theme "default")
          :style {:flex            1
                  :backgroundColor (:primary palette)}}
-        (status-bar {:key      story-count
+        (status-bar {:key      (gensym "stories")
                      :hidden   false
                      :barStyle "light-content"})
         (apply n-list

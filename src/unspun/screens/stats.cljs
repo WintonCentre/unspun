@@ -11,7 +11,7 @@
 (defn edit-icon [palette]
   (n-icon {:name  "ios-arrow-dropright-outline"
            :key   2
-           :style {:color (:accent palette)
+           :style {:color     (:accent palette)
                    :transform [{:scale 2}]}
            }))
 
@@ -40,34 +40,31 @@
 
     (let [palette (get-palette (rum/react palette-index))]
       (container
-        {:style {:flex 1
+        {:key   "stats-container"
+         :style {:flex            1
                  :backgroundColor "white"}}
         (content
-          {:key   2
+          {:key   "stats-content"
            :theme (aget my-theme "default")
            :style {:flex 1}}
-          (status-bar {:key      10
+          (status-bar {:key      "stats-status-bar"
                        :hidden   false
                        :barStyle "light-content"})
           (n-list
-            {:key   1
+            {:key   "stats-list"
              :style {:flex 1}}
             (n-list-item
-              {:key 1}
+              {:key (gensym "item")}
               (txt {:key 1} (str "background risk: " (percentage br) " (baseline risk: " br ")")))
             (n-list-item
-              {:key 1}
+              {:key (gensym "item")}
               (txt {:key 1} (str (if (> rr 1) (str "increase: " (percentage (- rr 1)))
-                                              (str "decrease: " (percentage (- 1 rr))))  " (relative risk: " rr ")")))
+                                              (str "decrease: " (percentage (- 1 rr)))) " (relative risk: " rr ")")))
 
             (n-list-item
-              {:key 10}
-              (txt {:key 1}
-                   (compare-text-vector scenar)))
-            (n-list-item
-              {:key 11}
-              (txt {:key 1}
-                   (reduce str (nn-text-vector scenar)))))  ; Note that the reduce is not necessary here for some reason
-          )
+              {:key (gensym "item")}
+              (txt {} (compare-text-vector scenar)))
 
-        ))))
+            (n-list-item
+              {:key (gensym "item")}
+              (txt {} (nn-text-vector scenar)))))))))

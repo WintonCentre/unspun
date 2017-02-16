@@ -2,7 +2,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [button n-icon pixel-ratio font-scale]]
+            [shared.ui :refer [button n-icon pixel-ratio font-scale txt]]
             [unspun.db :refer [app-state palette-index stories story-index]]
             ))
 
@@ -29,12 +29,13 @@
 (rum/defc bottom-button-bar < rum/reactive []
   (let [palette (get-palette (rum/react palette-index))
         margin (Math.round (* 4 font-scale))]
-    (view {:style {:flex            0.5
+    (view {:key "bottom-button-bar"
+           :style {:flex            0.5
                    :flexDirection   "row"
                    :justifyContent  "space-around"
                    :alignItems      "center"
                    :backgroundColor (:dark-primary palette)}}
-          (button {:key       1
+          (button {:key       "prev-but"
                    :bordered  true
                    :small     true
                    :textStyle {:color (:text-icons palette)}
@@ -43,9 +44,10 @@
                                :borderColor (:text-icons palette)}
                    :onPress next-story}
                   (previous-icon palette)
-                  "Previous"
+                  (txt {:key "prev-txt"
+                        :style {:color (:text-icons palette)}} "Previous")
                   )
-          (button {:key       2
+          (button {:key       "next-but"
                    :flex      1
                    :bordered  true
                    :small     true
@@ -56,5 +58,6 @@
                    :onPress previous-story
                    }
                   (next-icon palette)
-                  "Next"
+                  (txt {:key   "next-txt"
+                        :style {:color (:text-icons palette)}} "Next")
                   ))))

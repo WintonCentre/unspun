@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index brand-title app-banner to-pc clamp]]
+            [unspun.db :refer [version app-state palette-index brand-title app-banner to-pc clamp]]
             [graphics.svg :refer [svg circle rect]]))
 
 ;(def logo-img (js/require "./assets/images/logo.png"))
@@ -23,10 +23,17 @@
 (defn brand-style []
   {:fontSize          30
    :lineHeight        60
-   :textAlignVertical "center"
    :fontWeight        "normal"
    :textAlign         "center"
    :color             (:light-primary (get-palette @palette-index))})
+
+(defn version-style []
+  {:fontSize          14
+   ;:lineHeight        10
+   :fontWeight        "normal"
+   :textAlign         "center"
+   :color             (:light-primary (get-palette @palette-index))})
+
 
 (defcs logo-page < rum/reactive [state router]
 
@@ -45,8 +52,12 @@
           (text {:style (brand-style)}
                 (rum/react brand-title))
 
-          (text {:style (brand-style)}
-                (rum/react app-banner))
+          (view {}
+            (text {:style (brand-style)}
+                  (rum/react app-banner))
+
+            (text {:style (version-style)}
+                  version))
 
           (view {:style {:flexDirection  "column"
                          :justifyContent "flex-start"

@@ -55,12 +55,19 @@
         block-width 5
         block-height 5
         highlight (pick-n-in-nn nn (max 0 ((if (> rr 1) identity dec) (anyway rr br))))
+
         ptext (fn [colour-key & bold] (partial text {:style {:color      (colour-key palette)
                                                              :fontWeight (if (= colour-key :light-primary)
                                                                            (if bold "bold" "normal")
                                                                            "bold")
                                                              :fontSize   (:fontSize scenar)
                                                              }}))
+        text-field (fn [palette-key weight content]
+                     (text {:key   (gensym "text-field")
+                            :style {:color      (palette-key palette)
+                                    :fontWeight weight
+                                    }} content))
+
         [nn-head nn-one nn-one-to-group nn-group nn-group-to-anyway nn-anyway nn-tail] (nn-text-vector scenar)
         ;(rest (re-matches #"(.*)<mark-one>(.*)</mark-one>(.*)<mark-group>(.*)</mark-group>(.*)<mark-anyway>(.*)</mark-anyway>(.*)" (nn-text-vector scenar)))
 
@@ -93,11 +100,7 @@
                                                       (:accent palette)
                                                       (:light-primary palette)) 0.5))
                                 (view {:style {:width 20}})))))))]
-
-      ;view {:style {:flex 1}}
-      #_(status-bar {:key      10
-                     :hidden   false
-                     :barStyle "light-content"})
+      
 
       (view {:style {:flex            1
                      :backgroundColor (:primary palette)}
@@ -108,13 +111,13 @@
                            :backgroundColor (:dark-primary palette)}}
                   (text {:style {:padding    20
                                  :fontSize   (:fontSize scenar)}}
-                        ((ptext :light-primary) nn-head)
-                        ((ptext (if (> rr 1) :accent :text-icons)) nn-one)
-                        ((ptext :light-primary) nn-one-to-group)
-                        ((ptext :light-primary :bold) nn-group)
-                        ((ptext :light-primary) nn-group-to-anyway)
-                        ((ptext :accent) nn-anyway)
-                        ((ptext :light-primary) nn-tail)
+                        (text-field :light-primary "normal" nn-head)
+                        (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
+                        (text-field :light-primary "normal" nn-one-to-group)
+                        (text-field :light-primary "bold" nn-group)
+                        (text-field :light-primary "normal" nn-group-to-anyway)
+                        (text-field :accent "bold" nn-anyway)
+                        (text-field :light-primary "normal" nn-tail)
                         ))
             (view {:key   2
                    :style {:flex            0.7

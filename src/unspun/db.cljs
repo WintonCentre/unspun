@@ -4,6 +4,8 @@
             [clojure.string :refer [capitalize replace]]
             ))
 
+(def version "v0.0.5")
+
 (def max-nn 1000)                                           ; maximum number needed to treat
 
 ;;;
