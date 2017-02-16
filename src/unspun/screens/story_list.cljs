@@ -87,7 +87,6 @@
                         "Add your own scenario")
                    (button {:key       2
                             :bordered  true
-                            :textStyle {:color (:accent palette)}
                             :style     {:borderWidth 0}
                             :onPress   #(.push navigator "not-yet")}
                            (add-icon palette)))))
@@ -106,7 +105,6 @@
                         (caps-tidy (story index)))
                    (button {:key       2
                             :bordered  true
-                            :textStyle {:color (:accent palette)}
                             :style     {:borderWidth 0}
                             :onPress   #(do (reset! story-index index)
                                             (.push navigator "tabs"))}

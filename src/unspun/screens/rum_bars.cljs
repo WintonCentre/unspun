@@ -1,7 +1,7 @@
 (ns unspun.screens.rum-bars
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
-            [shared.ui :refer [font-scale pixel-ratio]]
+            [shared.ui :refer [font-scale pixel-ratio get-dimensions]]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
@@ -138,7 +138,8 @@
               (pan-responder-mixin ::zoomer)
 
   ([state]
-   (let [scenar ((rum/react stories) (rum/react story-index))
+   (let [dimensions (get-dimensions)
+         scenar ((rum/react stories) (rum/react story-index))
          db (rum/react app-state)
          br (:baseline-risk scenar)
          rr (:relative-risk scenar)
@@ -163,6 +164,7 @@
 
 
      #_(prn "ub:" ub "flex:" (map (i->o axis-scale) ticks) "ticks" ticks)
+     (prn "dimensions are" dimensions)
      (view
        {:style {:flex 1}}
 

@@ -64,6 +64,8 @@
 (def pixel-ratio (.get PixelRatio))
 (def font-scale (.getFontScale PixelRatio))
 
+(defn get-dimensions [] (into {} (map (fn [[k, v]] [(keyword k), v]) (js->clj (.get (aget react-native "Dimensions") "window")))))
+
 ;; Gesture Responders
 (def pan-responder (aget react-native "PanResponder"))
 
