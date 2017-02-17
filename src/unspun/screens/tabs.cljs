@@ -24,7 +24,7 @@
              :navigatorUID       "tab-navigation"
              :barBackgroundColor (:dark-primary palette)
              :indicatorStyle     {:backgroundColor (:accent palette)}
-             :initialTab         "stats"
+             :initialTab         "bars"
              }
             (sliding-tab-navigation-item
               {:id    "stats"
@@ -35,7 +35,8 @@
             (sliding-tab-navigation-item
               {:id    "bars"
                :key   "bars"
-               :title "Graph"}
+               :title "Graph"
+               }
               (bars/page))
             (sliding-tab-navigation-item
               {:id    "icons"

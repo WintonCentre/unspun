@@ -1,7 +1,7 @@
 (ns unspun.screens.rum-bars
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
-            [shared.ui :refer [font-scale pixel-ratio get-dimensions]]
+            [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size]]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
@@ -23,6 +23,8 @@
 
 (def header-height 23)
 ;(def react-native (js/require "react-native"))
+
+(def tffsz (text-field-font-size))
 
 (defn easeOutQuad
   [elapsed-t duration]
@@ -49,20 +51,6 @@
                                    ::delta         (- new-value initial-value)
                                    ::initial-value initial-value}))))
 
-#_(comment                                                  ;; tests
-    (defn log-val [key ref old-state new-state]
-      (prn (:val new-state)))
-
-    (def foo (atom {:val 0}))
-
-    (add-watch foo :goo log-val)
-
-    (animate-to-new-value! foo easeOutQuad 50 1000 :val 20)
-
-    (remove-watch foo :goo))
-
-
-
 (defc header < rum/reactive []
   (let [palette (get-palette (rum/react palette-index))
         header-style {:height          header-height
@@ -86,19 +74,19 @@
 (defn percentage [value]
   (str (to-pc value) "%"))
 
-(def inner-top-label (partial bar-value-label {:font-size   26
+(def inner-top-label (partial bar-value-label {:font-size   (/ tffsz 0.6)
                                                :font-weight "400"
                                                :text-color  :text-icons
                                                :on-edge     :bottom
                                                :formatter   percentage}))
 
-(def outer-bottom-label (partial bar-value-label {:font-size   26
+(def outer-bottom-label (partial bar-value-label {:font-size   (/ tffsz 0.6)
                                                   :font-weight "400"
                                                   :text-color  :dark-primary
                                                   :on-edge     :top
                                                   :formatter   percentage}))
 
-(def error-label (partial bar-value-label {:font-size   26
+(def error-label (partial bar-value-label {:font-size   (/ tffsz 0.6)
                                            :font-weight "400"
                                            :text-color  :error
                                            :on-edge     :top
@@ -135,11 +123,9 @@
               (rum/local 1 :scale0)
               (rum/local false :zooming)
               (rum/local nil :rescaler)
-              (pan-responder-mixin ::zoomer)
-
+              (pan-responder-mixin ::zoomer (:height (get-dimensions)))
   ([state]
-   (let [dimensions (get-dimensions)
-         scenar ((rum/react stories) (rum/react story-index))
+   (let [scenar ((rum/react stories) (rum/react story-index))
          db (rum/react app-state)
          br (:baseline-risk scenar)
          rr (:relative-risk scenar)
@@ -160,11 +146,9 @@
                       (text {:key   (gensym "text-field")
                              :style {:color      (palette-key palette)
                                      :fontWeight weight
-                                     }} content))]
+                                     }} content))
+         ]
 
-
-     #_(prn "ub:" ub "flex:" (map (i->o axis-scale) ticks) "ticks" ticks)
-     (prn "dimensions are" dimensions)
      (view
        {:style {:flex 1}}
 
@@ -175,7 +159,7 @@
                             :alignItems      "center"
                             :backgroundColor (:dark-primary palette)}}
                    (text {:style {:padding    20
-                                  :fontSize   (:fontSize scenar)}}
+                                  :fontSize   tffsz}}
                          (text-field :light-primary "normal" cmp-head)
                          (text-field :text-icons "bold" cmp-brpc)
                          (text-field :light-primary "normal" cmp-brpc-to-change)
@@ -216,38 +200,36 @@
                          (view {:key   2
                                 :style {:flex 1}}
                                (for [[y1 y0] (partition 2 1 (reverse (map (i->o axis-scale) ticks)))]
-                                 (do
-                                   ;(prn [y1 y0])
-                                   (view {:key   (rand-int 100000)
-                                          :style {:flex          (- y1 y0)
-                                                  :flexDirection "row"
-                                                  :alignItems    "flex-start"
-                                                  }}
-                                         (text {:key   1
-                                                :style {:flex            0.1
-                                                        :color           (:light-primary palette)
-                                                        :backgroundColor "rgba(0,0,0,0)"
-                                                        :fontSize        10
-                                                        :textAlign       "center"}}
-                                               (str (cl-format nil (tick-format-specifier axis-scale)
-                                                               (let [y ((o->i axis-scale) y1)]
-                                                                 (if (> y 1) (Math.round y) y))
-                                                               ) "%"))
-                                         (view {:key   1.5
-                                                :style {:flex           0.8
-                                                        :height         1
-                                                        :alignItems     "flex-start"
-                                                        :borderTopColor (:light-primary palette)
-                                                        :borderTopWidth 1}})
-                                         (text {:key   2
-                                                :style {:flex            0.1
-                                                        :color           (:light-primary palette)
-                                                        :backgroundColor "rgba(0,0,0,0)"
-                                                        :fontSize        10
-                                                        :textAlign       "center"}}
-                                               (str (cl-format nil (tick-format-specifier axis-scale)
-                                                               (let [y ((o->i axis-scale) y1)]
-                                                                 (if (> y 1) (Math.round y) y))) "%")))))))
+                                 (view {:key   (rand-int 100000)
+                                        :style {:flex          (- y1 y0)
+                                                :flexDirection "row"
+                                                :alignItems    "flex-start"
+                                                }}
+                                       (text {:key   1
+                                              :style {:flex            0.1
+                                                      :color           (:light-primary palette)
+                                                      :backgroundColor "rgba(0,0,0,0)"
+                                                      :fontSize        (/ tffsz 1.4)
+                                                      :textAlign       "center"}}
+                                             (str (cl-format nil (tick-format-specifier axis-scale)
+                                                             (let [y ((o->i axis-scale) y1)]
+                                                               (if (> y 1) (Math.round y) y))
+                                                             ) "%"))
+                                       (view {:key   1.5
+                                              :style {:flex           0.8
+                                                      :height         1
+                                                      :alignItems     "flex-start"
+                                                      :borderTopColor (:light-primary palette)
+                                                      :borderTopWidth 1}})
+                                       (text {:key   2
+                                              :style {:flex            0.1
+                                                      :color           (:light-primary palette)
+                                                      :backgroundColor "rgba(0,0,0,0)"
+                                                      :fontSize        (/ tffsz 1.4)
+                                                      :textAlign       "center"}}
+                                             (str (cl-format nil (tick-format-specifier axis-scale)
+                                                             (let [y ((o->i axis-scale) y1)]
+                                                               (if (> y 1) (Math.round y) y))) "%"))))))
                    ;;;
                    ;; bars
                    ;;;
@@ -273,7 +255,7 @@
                                       :style {:flex           0.3
                                               :justifyContent "center"}}
                                      (text {:style {:color        (:text-icons palette)
-                                                    :fontSize     20
+                                                    :fontSize     (/ tffsz 0.85)
                                                     :textAlign    "right"
                                                     :paddingRight 10}}
                                            (:without scenar)))
@@ -289,7 +271,7 @@
                                       :style {:flex           0.3
                                               :justifyContent "center"}}
                                      (text {:style {:color     (:text-icons palette)
-                                                    :fontSize  20
+                                                    :fontSize  (/ tffsz 0.85)
                                                     :padding   10
                                                     :textAlign "left"}}
                                            (:with scenar)))))
@@ -302,7 +284,7 @@
                                   :right    0
                                   :flex     1
                                   :zIndex   1
-                                  :opacity  (if zooming 1 0)
+                                  :opacity  (if zooming 1 0.25)
                                   }}
                          (view {:style {:flex           1
                                         :flexDirection  "column"

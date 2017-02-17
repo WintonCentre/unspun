@@ -26,12 +26,6 @@
            :style {:color (:dark-primary palette)}
            }))
 
-#_(defn nnt-icon [palette]
-  (n-icon {:name  "md-keypad"
-           :key   (gensym "nnt")
-           :style {:color (:accent palette)}
-           }))
-
 (defn show-icon [palette]
   (n-icon {:name  "ios-arrow-dropright-outline"
            :key   (gensym "icon-foo")
@@ -44,14 +38,6 @@
            :key   (gensym "add")
            :style {:color     (:accent palette)
                    :transform [{:scale 1.67}]}}))
-
-
-#_(defn bars-icon [palette]
-  (n-icon {:name  "ios-stats"
-           :key   (gensym "bars")
-           :style {:width 9
-                   ;:paddingRight 5
-                   :color (:accent palette)}}))
 
 (defn select-palette-item! [index]
   (n-list-item
@@ -87,7 +73,8 @@
                         "Add your own scenario")
                    (button {:key       2
                             :bordered  true
-                            :style     {:borderWidth 0}
+                            :style     {:borderWidth 0
+                                        :borderColor "white"}
                             :onPress   #(.push navigator "not-yet")}
                            (add-icon palette)))))
 
@@ -105,7 +92,8 @@
                         (caps-tidy (story index)))
                    (button {:key       2
                             :bordered  true
-                            :style     {:borderWidth 0}
+                            :style     {:borderWidth 0
+                                        :borderColor "white"}
                             :onPress   #(do (reset! story-index index)
                                             (.push navigator "tabs"))}
                            (show-icon palette)))))

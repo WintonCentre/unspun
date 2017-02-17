@@ -3,6 +3,22 @@
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar] :as rn]))
 
 
+(def platform (aget react-native "Platform"))
+
+(defn get-platform
+  []
+  (.-OS platform))
+
+(defn ios?
+  []
+  (= "ios" (get-platform)))
+
+(defn android?
+  []
+  (= "android" (get-platform)))
+
+
+
 ;; ex-navigation
 (def ex-navigation (js/require "@exponent/ex-navigation"))
 (def create-router (aget ex-navigation "createRouter"))
@@ -12,6 +28,7 @@
 (def drawer-navigation-layout (partial element (aget ex-navigation "DrawerNavigationLayout")))
 (def drawer-navigation (partial element (aget ex-navigation "DrawerNavigation")))
 (def drawer-navigation-item (partial element (aget ex-navigation "DrawerNavigationItem")))
+
 (def tab-navigation (partial element (aget ex-navigation "TabNavigation")))
 (def tab-navigation-item (partial element (aget ex-navigation "TabNavigationItem")))
 (def sliding-tab-navigation (partial element (aget ex-navigation "SlidingTabNavigation")))
@@ -65,12 +82,36 @@
 (def font-scale (.getFontScale PixelRatio))
 
 (defn get-dimensions [] (into {} (map (fn [[k, v]] [(keyword k), v]) (js->clj (.get (aget react-native "Dimensions") "window")))))
+(defn status-bar-height [] (if (ios?) 20 25))
+(defn tab-bar-height [] 56)
+(defn tab-content-height [screen-height content-flex]
+  (* content-flex (- screen-height (tab-bar-height) (status-bar-height))))
+
+(defn screen-area []
+  (let [{:keys [width height]} (get-dimensions)]
+    (* width height)
+    ))
+
+(defn screen-width []
+  (:width (get-dimensions)))
+
+
+(defn text-field-font-size []
+  (let [{:keys [width height scale]} (get-dimensions)]
+    (Math.sqrt (/ (* width height) 1300))))
+
+(defn view-flex-area [content-flex view-flex]
+  (let [{:keys [width height]} (get-dimensions)
+        area (* content-flex view-flex width height)]
+    area))
+
+(defn default-font-size [] 20)
 
 ;; Gesture Responders
 (def pan-responder (aget react-native "PanResponder"))
 
 ;;;
-;; mixin to update navbar title --- probably not needed any more????
+;; mixin to update navbar title
 ;;;
 (defn add-page-title [title]
   {:will-mount (fn [state]

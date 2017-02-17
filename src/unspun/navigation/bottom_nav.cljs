@@ -2,7 +2,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [button n-icon pixel-ratio font-scale txt]]
+            [shared.ui :refer [button n-icon pixel-ratio font-scale txt text-field-font-size ios?]]
             [unspun.db :refer [app-state palette-index stories story-index]]
             ))
 
@@ -37,7 +37,7 @@
                    :backgroundColor (:dark-primary palette)}}
           (button {:key       "prev-but"
                    :bordered  true
-                   :small     true
+                   :small     (not (ios?))
                    :textStyle {:color (:text-icons palette)}
                    :style     {:margin margin
                                :borderWidth 2
@@ -48,16 +48,17 @@
                         :style {:color (:text-icons palette)}} "Previous")
                   )
           (button {:key       "next-but"
-                   :flex      1
                    :bordered  true
-                   :small     true
+                   :small     (not (ios?))
                    :textStyle {:color (:text-icons palette)}
-                   :style     {:margin margin
+                   :style     {:margin      margin
                                :borderWidth 2
                                :borderColor (:text-icons palette)}
-                   :onPress previous-story
+                   :onPress   previous-story
                    }
                   (next-icon palette)
                   (txt {:key   "next-txt"
-                        :style {:color (:text-icons palette)}} "Next")
+                        :style {:color (:text-icons palette)
+                                ;:fontSize (text-field-font-size)
+                                }} "Next")
                   ))))

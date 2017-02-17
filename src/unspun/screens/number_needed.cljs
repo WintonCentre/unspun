@@ -1,17 +1,18 @@
 (ns unspun.screens.number-needed
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [n-icon]]
+            [shared.ui :refer [n-icon screen-width text-field-font-size]]
             [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
             [rum.core :as rum]))
 
 
-(defn draw-icon [scenar color scale]
+(defn draw-icon [scenar color scale kk]
   (n-icon {:name  (:icon scenar)
            :style {:color           color
                    :backgroundColor "rgba(0,0,0,0)"
-                   :width           24
-                   :transform       [{:scale scale}]}}))
+                   :width           30                      ;(* 30 scale kk)
+                   :transform       [{:translateX 0}        ;(* 15 scale kk)
+                                     {:scale (* scale kk)}]}}))
 
 (defn icon-square-size [nn]
   (Math.ceil (Math.sqrt nn)))
@@ -56,23 +57,17 @@
         block-height 5
         highlight (pick-n-in-nn nn (max 0 ((if (> rr 1) identity dec) (anyway rr br))))
 
-        ptext (fn [colour-key & bold] (partial text {:style {:color      (colour-key palette)
-                                                             :fontWeight (if (= colour-key :light-primary)
-                                                                           (if bold "bold" "normal")
-                                                                           "bold")
-                                                             :fontSize   (:fontSize scenar)
-                                                             }}))
+        [nn-head nn-one nn-one-to-group nn-group nn-group-to-anyway nn-anyway nn-tail :as texts] (nn-text-vector scenar)
+
         text-field (fn [palette-key weight content]
                      (text {:key   (gensym "text-field")
                             :style {:color      (palette-key palette)
                                     :fontWeight weight
                                     }} content))
 
-        [nn-head nn-one nn-one-to-group nn-group nn-group-to-anyway nn-anyway nn-tail] (nn-text-vector scenar)
-        ;(rest (re-matches #"(.*)<mark-one>(.*)</mark-one>(.*)<mark-group>(.*)</mark-group>(.*)<mark-anyway>(.*)</mark-anyway>(.*)" (nn-text-vector scenar)))
-
+        kk (/ (screen-width) 500 (Math.pow (/ nn 200) 0.2))
         ]
-
+    ;(prn (str "kk = " kk))
     (letfn [(draw-block [block count]
 
               (for [r (range block-height)]
@@ -81,7 +76,7 @@
                                :flexDirection  "row"
                                :alignItems     "center"
                                :justifyContent "space-between"
-                               :maxHeight      20
+                               :maxHeight      (* 20 kk)
                                }}
                       (for [c (range block-width)
                             :let [k (+ c (* r 5))]
@@ -89,18 +84,18 @@
                         (view {:key   c
                                :style {:flex           1
                                        :flexDirection  "column"
-                                       :maxWidth       20
+                                       :maxWidth       (* 20 kk)
                                        :alignItems     "center"
                                        :justifyContent "space-between"
                                        }}
                               (if (< k count)
                                 (if (and (zero? k) (zero? block))
-                                  (draw-icon scenar ((if (> rr 1) :accent :text-icons) palette) 0.9)
+                                  (draw-icon scenar ((if (> rr 1) :accent :text-icons) palette) 0.9 kk)
                                   (draw-icon scenar (if (highlight (+ k (* block-width block-height block)))
                                                       (:accent palette)
-                                                      (:light-primary palette)) 0.5))
-                                (view {:style {:width 20}})))))))]
-      
+                                                      (:light-primary palette)) 0.5 kk))
+                                (view {:style {:width (* 20 kk)}})))))))]
+
 
       (view {:style {:flex            1
                      :backgroundColor (:primary palette)}
@@ -109,8 +104,8 @@
                            :justifyContent  "center"
                            :alignItems      "center"
                            :backgroundColor (:dark-primary palette)}}
-                  (text {:style {:padding    20
-                                 :fontSize   (:fontSize scenar)}}
+                  (text {:style {:padding  20
+                                 :fontSize (text-field-font-size)}}
                         (text-field :light-primary "normal" nn-head)
                         (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
                         (text-field :light-primary "normal" nn-one-to-group)
@@ -138,7 +133,7 @@
                                              :flexDirection  "row"
                                              :justifyContent "center"
                                              :alignItems     "center"}}
-                                    (text {:style {:fontSize        120
+                                    (text {:style {:fontSize        (* (text-field-font-size) 10)
                                                    :color           (:light-primary palette)
                                                    :backgroundColor "rgba(0,0,0,0)"
                                                    :opacity         0.5

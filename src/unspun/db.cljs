@@ -4,7 +4,7 @@
             [clojure.string :refer [capitalize replace]]
             ))
 
-(def version "v0.0.5")
+(def version "v0.0.6")
 
 (def max-nn 1000)                                           ; maximum number needed to treat
 
@@ -18,7 +18,6 @@
                           :relative-risk   1.18
                           :outcome         "bowel cancer"   ; " during their lifetime"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :fontSize        16
                           :with            "Bacon every day"
                           :without         "Normal"
                           :causative       false
@@ -30,7 +29,6 @@
                           :relative-risk   1.05
                           :outcome         "breast cancer"  ; " during their lifetime"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :fontSize        16
                           :with            "Taking HRT"
                           :without         "No HRT"
                           :causative       false
@@ -40,7 +38,6 @@
                           :exposure        "drinking half a bottle of wine a day"
                           :baseline-risk   0.12
                           :relative-risk   1.30
-                          :outcome         "breast cancer"  ; " during their lifetime"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :fontSize        16
                           :with            "Half a bottle a day"
@@ -52,7 +49,6 @@
                           :exposure        "being seen by a female doctor"
                           :baseline-risk   0.115
                           :relative-risk   0.96
-                          :outcome         "death within 30 days of admission"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :fontSize        14
                           :with            "Female doctor"
@@ -66,7 +62,6 @@
                           :relative-risk   0.7
                           :outcome         "heart attack or stroke within 10 years"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :fontSize        16
                           :with            "Taking statins"
                           :without         "No statins"
                           :causative       true
