@@ -4,7 +4,7 @@
             [clojure.string :refer [capitalize replace]]
             ))
 
-(def version "v0.0.7")
+(def version "v0.0.8")
 
 (def max-nn 1000)                                           ; maximum number needed to treat
 
@@ -16,7 +16,7 @@
                           :exposure        "eating a bacon sandwich every day"
                           :baseline-risk   0.06
                           :relative-risk   1.18
-                          :outcome         "bowel cancer"   ; " during their lifetime"
+                          :outcome         "developing bowel cancer"   ; " during their lifetime"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Bacon every day"
                           :without         "Normal"
@@ -27,7 +27,7 @@
                           :exposure        "taking HRT for 5 years"
                           :baseline-risk   0.1
                           :relative-risk   1.05
-                          :outcome         "breast cancer"  ; " during their lifetime"
+                          :outcome         "developing breast cancer"  ; " during their lifetime"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Taking HRT"
                           :without         "No HRT"
@@ -39,7 +39,7 @@
                           :baseline-risk   0.12
                           :relative-risk   1.30
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :outcome         "breast cancer"
+                          :outcome         "developing breast cancer"
                           :with            "Half a bottle a day"
                           :without         "Not drinking"
                           :causative       false
@@ -50,7 +50,7 @@
                           :baseline-risk   0.115
                           :relative-risk   0.96
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :outcome         "death within 30 days of admission"
+                          :outcome         "dying within 30 days of admission"
                           :with            "Female doctor"
                           :without         "Male doctor"
                           :causative       false
@@ -60,7 +60,7 @@
                           :exposure        "taking statins each day"
                           :baseline-risk   0.1
                           :relative-risk   0.7
-                          :outcome         "heart attack or stroke within 10 years"
+                          :outcome         "having a heart attack or stroke within 10 years"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Taking statins"
                           :without         "No statins"
@@ -176,25 +176,6 @@
       " to "
       (str erpc "%.")])))
 
-#_(defn nn1 [subjects]
-    (str "On average, for one <mark-one>~a " (singular-form subjects) "</mark-one> to experience ~a, <mark-group>~d more</mark-group> ~:*" (n-plural-form subjects) " would need to be ~a. "))
-#_(def nn1-2 "Of these, <mark-anyway>~d</mark-anyway> would experience ~a anyway.")
-
-#_(defn nn2 [subjects]
-    (str "On average, to find <mark-one>one ~a</mark-one> " (singular-form subjects) " to experience ~a, we would need to take <mark-group>a group of ~d</mark-group> more ~:*" (n-plural-form subjects) " ~a. "))
-
-#_(defn nn-text-vector-old
-    "Generate text for number needed screens"
-    ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
-     (let [brpc (to-pc baseline-risk)
-           erpc (to-pc (* baseline-risk relative-risk))]
-       (if causative
-         (str (caps-tidy (format (nn1 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure))
-              (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome)))
-
-         (str (caps-tidy (format (nn2 subjects) (extra relative-risk) outcome (number-needed relative-risk baseline-risk) exposure))
-              (caps-tidy (format nn1-2 (anyway relative-risk baseline-risk) outcome)))))))
-
 (defn nn-text-vector
   "Generate a vector of texts for number needed screens. We return a vector rather than a single string to make
   it easy to apply different formatting to each element."
@@ -205,13 +186,13 @@
          anyway-count ((if (> relative-risk 1) identity dec)
                         (anyway relative-risk baseline-risk))
          outcome-text (if true                                  ;(> relative-risk 1)
-                        (str "would experience " outcome " anyway. ")
+                        (str "would " outcome " anyway. ")
                         (str "would otherwise have experienced " outcome ". ")
                         )]
      (if causative
-       ["On average, to find "                              ; head
+       ["On average, for "                              ; head
         (str "one " (extra relative-risk) " " (singular-form subjects) " ") ; mark-one
-        (format "to experience ~a, " outcome)               ; one-to-group
+        (format "~a, " outcome)               ; one-to-group
         (format "~d more " nn)                              ; group
         (format (str (n-plural-form subjects) " would need to be ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count) ;anyway
@@ -219,7 +200,7 @@
         ]
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " (singular-form subjects) " ") ; mark-one
-        (format "to experience ~a, we would need to take " outcome) ; one-to-group
+        (format "~a, we would need " outcome) ; one-to-group
         (format "a group of ~d more " nn)                   ; group
         (format (str (n-plural-form subjects) " ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count) ;anyway

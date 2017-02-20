@@ -16,6 +16,10 @@
             [cljs.core.async :refer [<!]]
             ))
 
+
+
+(enable-console-print!)
+
 (go
   (<! (set-item :foo {:bar "baz"})) ;; => [nil], or [error]
   (println (<! (get-item :foo))))   ;; => [nil {:bar "baz"}], or [error nil]

@@ -76,6 +76,7 @@
 (def n-list (partial element (aget native-base "List")))
 (def n-list-item (partial element (aget native-base "ListItem")))
 (def radio (partial element (aget native-base "Radio")))
+(def right (partial element (aget native-base "Right")))
 (def grid (partial element (aget native-base "Grid")))
 (def row (partial element (aget native-base "Row")))
 (def button (partial element (aget native-base "Button")))

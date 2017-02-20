@@ -1,7 +1,7 @@
 (ns unspun.screens.select-palette
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
-            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio right]]
             [unspun.db :refer [app-state palette-index]]
             [themes.palettes :refer [palettes get-palette]]
             ))
@@ -20,11 +20,13 @@
 
 (defn select-palette-item! [index]
   (n-list-item
-    {:key index}
-    (radio {:key      1
-            :onPress  #(reset! palette-index index)
-            :selected (= @palette-index index)})
-    (txt {:key 2} (palette-titles index))))
+    {:key      (gensym "radio-list")
+     :selected (= @palette-index index)
+     :onPress  #(reset! palette-index index)}
+    (txt {:key 2} (palette-titles index))
+    (right (radio {:key      (gensym "radio")
+                   :selected (= @palette-index index)}))
+    ))
 
 (rum/defcs page < rum/reactive
                   (rum/local 0 ::selection) [state]
