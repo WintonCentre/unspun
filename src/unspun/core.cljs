@@ -1,5 +1,6 @@
 (ns unspun.core
-  (:require-macros [rum.core :refer [defc]])
+  (:require-macros [rum.core :refer [defc]]
+                   [cljs.core.async.macros :refer [go]])
   (:require [re-natal.support :as support]
             [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
@@ -10,7 +11,14 @@
             [shared.ui :refer [ex-navigation create-router navigation-provider
                                stack-navigation drawer-navigation drawer-navigation-item]]
             [unspun.screens.top-drawer :refer [drawer]]
+
+            [glittershark.core-async-storage :refer [get-item set-item]]
+            [cljs.core.async :refer [<!]]
             ))
+
+(go
+  (<! (set-item :foo {:bar "baz"})) ;; => [nil], or [error]
+  (println (<! (get-item :foo))))   ;; => [nil {:bar "baz"}], or [error nil]
 
 
 (defc AppRoot < rum/reactive [state]

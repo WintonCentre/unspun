@@ -17,7 +17,11 @@
   []
   (= "android" (get-platform)))
 
-
+;; AsyncStorage
+;; see https://github.com/glittershark/core-async-storage
+(def async-storage (aget react-native "AsyncStorage"))
+(def store-set-item (aget async-storage "setItem"))
+(def store-get-item (aget async-storage "getItem"))
 
 ;; ex-navigation
 (def ex-navigation (js/require "@exponent/ex-navigation"))
