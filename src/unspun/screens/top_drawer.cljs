@@ -50,10 +50,12 @@
                                          (when isSelected (aget st "selectedText"))
                                          (when (= name "ios-podium") #js {:width 12}))}))))
 
-(rum/defc header []
-  (let [st (styles (get-palette @palette-index))]
-    (view {:style (aget st "header")}
-          (text {:style {:color "#fff"}} "Hi there"))))
+(rum/defc header
+  "this is hidden!"
+  ([]
+   (let [st (styles (get-palette @palette-index))]
+     (view {:style (aget st "header")}
+           (text {:style {:color "#fff"}} "Not visible!")))))
 
 (rum/defc title [palette a-string isSelected]
   (let [st (styles palette)]
@@ -80,7 +82,7 @@
     (drawer-navigation
       {:drawerPosition "right"
        :navigatorUID   "top-drawer"
-       :renderHeader   #(header)
+       :renderHeader   #(header)                            ;;todo - wrong and unsused?
        :drawerWidth    200
        :drawerStyle    {:backgroundColor (:dark-primary (get-palette (rum/react palette-index)))
                         :height          20}

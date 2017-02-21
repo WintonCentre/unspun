@@ -186,8 +186,8 @@
          anyway-count ((if (> relative-risk 1) identity dec)
                         (anyway relative-risk baseline-risk))
          outcome-text (if true                                  ;(> relative-risk 1)
-                        (str "would " outcome " anyway. ")
-                        (str "would otherwise have experienced " outcome ". ")
+                        (str "would be " outcome " anyway. ")
+                        (str "would otherwise be " outcome ". ")
                         )]
      (if causative
        ["On average, for "                              ; head
