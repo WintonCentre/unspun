@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar list-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio text-field-font-size]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item ]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             ))
@@ -39,16 +39,19 @@
                     :backgroundColor (:primary palette)}]
 
     (let [palette (get-palette (rum/react palette-index))
-          font-size (text-field-font-size)]
+          text-style {                                      ;:fontSize 14
+                      :color (:text-icons palette)}]
       (container
         {:key   "stats-container"
          :style {:flex            1
-                 :backgroundColor "white"}}
+                 :backgroundColor (:primary palette)
+                }}
         (content
           {:key   "stats-content"
            :theme (aget my-theme "default")
            :style {:flex 1}}
-          (status-bar {:key      "stats-status-bar"
+
+          #_(status-bar {:key      "stats-status-bar"
                        :hidden   false
                        :barStyle "light-content"})
           (n-list
@@ -57,19 +60,19 @@
             (n-list-item
               {:key (gensym "item")}
               (txt {:key   1
-                    :style {:fontSize font-size}}
+                    :style text-style}
                    (str "background risk: " (percentage br) " (baseline risk: " br ")")))
             (n-list-item
               {:key (gensym "item")}
               (txt {:key   1
-                    :style {:fontSize font-size}}
+                    :style text-style}
                    (str (if (> rr 1) (str "increase: " (percentage (- rr 1)))
                                      (str "decrease: " (percentage (- 1 rr)))) " (relative risk: " rr ")")))
 
             (n-list-item
               {:key (gensym "item")}
-              (txt {:style {:fontSize font-size}} (compare-text-vector scenar)))
+              (txt {:style text-style} (compare-text-vector scenar)))
 
             (n-list-item
               {:key (gensym "item")}
-              (txt {:style {:fontSize font-size}} (nn-text-vector scenar)))))))))
+              (txt {:style text-style} (nn-text-vector scenar)))))))))

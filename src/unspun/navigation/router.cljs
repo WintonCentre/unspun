@@ -41,11 +41,9 @@
                                   :select-palette (wrap select-palette/page)
                                   :stories        (wrap story-list/page)
                                   :tabs           (wrap tabs/page)
-
-                                  ;:svg-test       (wrap test-page)
                                   })))
 
-(def r-help "May be my question is just how to pass props when we use the Navigator to route my app?
+#_(def r-help "May be my question is just how to pass props when we use the Navigator to route my app?
 
 When you use <Navigator />, you're able to specify a renderScene function which will decide how
 to render your scene.
