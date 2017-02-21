@@ -97,6 +97,11 @@
     (* width height)
     ))
 
+(defn screen-w-h []
+  (let [{:keys [width height]} (get-dimensions)]
+    [width height]
+    ))
+
 (defn screen-width []
   (:width (get-dimensions)))
 

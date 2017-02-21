@@ -16,7 +16,8 @@
                           :exposure        "eating a bacon sandwich every day"
                           :baseline-risk   0.06
                           :relative-risk   1.18
-                          :outcome         ["developing bowel cancer" "develop bowel cancer"] ; " during their lifetime"
+                          :outcome         ["developing bowel cancer"
+                                            "develop bowel cancer"]
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Bacon every day"
                           :without         "Normal"
@@ -27,7 +28,8 @@
                           :exposure        "taking HRT for 5 years"
                           :baseline-risk   0.1
                           :relative-risk   1.05
-                          :outcome         ["developing breast cancer" "develop breast cancer"]  ; " during their lifetime"
+                          :outcome         ["developing breast cancer"
+                                            "develop breast cancer"]
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Taking HRT"
                           :without         "No HRT"
@@ -39,7 +41,8 @@
                           :baseline-risk   0.12
                           :relative-risk   1.30
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :outcome         ["developing breast cancer" "develop breast cancer"]
+                          :outcome         ["developing breast cancer"
+                                            "develop breast cancer"]
                           :with            "Half a bottle a day"
                           :without         "Not drinking"
                           :causative       false
@@ -50,7 +53,8 @@
                           :baseline-risk   0.115
                           :relative-risk   0.96
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :outcome         ["dying within 30 days of admission" "die within 30 days of admission"]
+                          :outcome         ["dying within 30 days of admission"
+                                            "die within 30 days of admission"]
                           :with            "Female doctor"
                           :without         "Male doctor"
                           :causative       false
@@ -60,7 +64,8 @@
                           :exposure        "taking statins each day"
                           :baseline-risk   0.1
                           :relative-risk   0.7
-                          :outcome         ["having a heart attack or stroke within 10 years" "have a heart attack or stroke within 10 years"]
+                          :outcome         ["having a heart attack or stroke within 10 years"
+                                            "have a heart attack or stroke within 10 years"]
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Taking statins"
                           :without         "No statins"

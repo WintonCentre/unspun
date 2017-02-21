@@ -1,7 +1,7 @@
 (ns unspun.screens.number-needed
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [n-icon screen-width text-field-font-size]]
+            [shared.ui :refer [n-icon screen-width screen-w-h text-field-font-size]]
             [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
             [rum.core :as rum]))
 
@@ -18,7 +18,7 @@
   (Math.ceil (Math.sqrt nn)))
 
 (defn col-blocks [nn]
-  (min 3 (* (quot (icon-square-size nn) 5))))
+  (Math.round (/ (icon-square-size nn) 5)))
 
 (defn cols-rows-blocked [nn]
   (let [cols (* 5 (col-blocks nn))
@@ -64,8 +64,9 @@
                             :style {:color      (palette-key palette)
                                     :fontWeight weight
                                     }} content))
-
-        kk (/ (screen-width) 500 (Math.pow (/ nn 200) 0.2))
+        [w h] (screen-w-h)
+        sw (min w (* (- h 210) 0.9 0.7))
+        kk (/ sw 500 (Math.pow (/ nn 225) 0.4))
         ]
     ;(prn (str "kk = " kk))
     (letfn [(draw-block [block count]
