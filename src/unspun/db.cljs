@@ -2,9 +2,10 @@
   (:require [rum.core :as rum]
             [clojure.pprint :refer [cl-format]]
             [clojure.string :refer [capitalize replace]]
+            [shared.language :refer [present-participle]]
             ))
 
-(def version "v0.0.9")
+(def version "v0.0.10")
 
 (def max-nn 1000)                                           ; maximum number needed to treat
 
@@ -16,8 +17,8 @@
                           :exposure        "eating a bacon sandwich every day"
                           :baseline-risk   0.06
                           :relative-risk   1.18
-                          :outcome         ["developing bowel cancer"
-                                            "develop bowel cancer"]
+                          :outcome-verb    "develop"
+                          :outcome         "bowel cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Bacon every day"
                           :without         "Normal"
@@ -28,8 +29,8 @@
                           :exposure        "taking HRT for 5 years"
                           :baseline-risk   0.1
                           :relative-risk   1.05
-                          :outcome         ["developing breast cancer"
-                                            "develop breast cancer"]
+                          :outcome-verb    "develop"
+                          :outcome         "breast cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Taking HRT"
                           :without         "No HRT"
@@ -41,8 +42,8 @@
                           :baseline-risk   0.12
                           :relative-risk   1.30
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :outcome         ["developing breast cancer"
-                                            "develop breast cancer"]
+                          :outcome-verb    "develop"
+                          :outcome         "breast cancer"
                           :with            "Half a bottle a day"
                           :without         "Not drinking"
                           :causative       false
@@ -53,8 +54,8 @@
                           :baseline-risk   0.115
                           :relative-risk   0.96
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :outcome         ["dying within 30 days of admission"
-                                            "die within 30 days of admission"]
+                          :outcome-verb    "die"
+                          :outcome         "within 30 days of admission"
                           :with            "Female doctor"
                           :without         "Male doctor"
                           :causative       false
@@ -64,8 +65,8 @@
                           :exposure        "taking statins each day"
                           :baseline-risk   0.1
                           :relative-risk   0.7
-                          :outcome         ["having a heart attack or stroke within 10 years"
-                                            "have a heart attack or stroke within 10 years"]
+                          :outcome-verb    "have"
+                          :outcome         "a heart attack or stroke within 10 years"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Taking statins"
                           :without         "No statins"
@@ -100,7 +101,9 @@
     (str "How much does " (:exposure scenario) " "
          (if (> (:relative-risk scenario) 1) "increase" "decrease")
          " the risk of "
-         (first (:outcome scenario))
+         (present-participle (:outcome-verb scenario))
+         " "
+         (:outcome scenario)
          "?")))
 
 ;;;
@@ -161,10 +164,10 @@
 (defn compare-text-vector
   "Generate a vector of texts for compare screens. We return a vector rather than a single string to make
   it easy to apply different formatting to each element."
-  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
+  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome-verb outcome causative]}]
    (let [brpc (to-pc baseline-risk)
          erpc (to-pc (* baseline-risk relative-risk))]
-     [(str "The risk of " (first outcome) " for " (second subjects) " is ")
+     [(str "The risk of " (present-participle outcome-verb) " " outcome " for " (second subjects) " is ")
       (str brpc "%. ")
       (str "The risk for those " exposure " is ")
       (str (increased? brpc erpc))
@@ -174,31 +177,33 @@
 (defn nn-text-vector
   "Generate a vector of texts for number needed screens. We return a vector rather than a single string to make
   it easy to apply different formatting to each element."
-  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome causative]}]
+  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome-verb outcome causative]}]
    (let [brpc (to-pc baseline-risk)
          erpc (to-pc (* baseline-risk relative-risk))
          nn (number-needed relative-risk baseline-risk)
          anyway-count ((if (> relative-risk 1) identity dec)
                         (anyway relative-risk baseline-risk))
-         outcome-text (if true                                  ;(> relative-risk 1)
-                        (str "would " (second outcome) " anyway. ")
-                        (str "would otherwise " (second outcome) ". ")
+         outcome-inf (str outcome-verb " " outcome)
+         outcome-pp (str (present-participle outcome-verb) " " outcome)
+         outcome-text (if (> relative-risk 1)
+                        (str "would " outcome-inf " anyway. ")
+                        (str "would still " outcome-inf". ")
                         )]
      (if causative
-       ["On average, for "                              ; head
+       ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " (singular-form subjects) " ") ; mark-one
-        (format "to ~a, " (second outcome))                 ; one-to-group
+        (format "to ~a, " outcome-inf)                 ; one-to-group
         (format "~d more " nn)                              ; group
         (format (str (n-plural-form subjects) " would need to be ~a. Of these, ") nn exposure) ; group-to-anyway
-        (format "~d " anyway-count) ;anyway
+        (format "~d " anyway-count)                         ;anyway
         outcome-text
         ]
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " (singular-form subjects) " ") ; mark-one
-        (format "to ~a, we would need " (second outcome))    ; one-to-group
+        (format "to ~a, we would need " outcome-inf)   ; one-to-group
         (format "a group of ~d more " nn)                   ; group
         (format (str (n-plural-form subjects) " ~a. Of these, ") nn exposure) ; group-to-anyway
-        (format "~d " anyway-count) ;anyway
+        (format "~d " anyway-count)                         ;anyway
         outcome-text
         ]))))
 

@@ -22,7 +22,9 @@
             "rebuild-modules" ["run" "-m" "user" "--rebuild-modules"]
             "prod-build"      ^{:doc "Recompile code with prod profile."}
                               ["externs"
-                               ["with-profile" "prod" "cljsbuild" "once" "main"]]}
+                               ["with-profile" "prod" "cljsbuild" "once" "main"]]
+            "travis"          ^{:doc "Run travis test locally"}
+                              ["with-profile" "test" "doo" "phantom" "test" "once"]}
 
   :doo {:build "test"}
 
@@ -48,8 +50,8 @@
                                                          :optimize-constants false
                                                          :optimizations      :advanced
                                                          :closure-defines    {"goog.DEBUG" false}}}]}}
-             :test {:doo {:build "test"}
-                    :plugins [[lein-doo "0.1.7"]]
+             :test {:doo          {:build "test"}
+                    :plugins      [[lein-doo "0.1.7"]]
                     :source-paths ["src" "test" "env/test"]
                     :cljsbuild    {:builds [{:id           "test"
                                              :source-paths ["src" "test" "env/test"]
@@ -58,5 +60,4 @@
                                                             :output-dir    "target"
                                                             :pretty-print  true
                                                             :source-map    false
-                                                            :optimizations :none}}]}
-                    }})
+                                                            :optimizations :none}}]}}})
