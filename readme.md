@@ -1,4 +1,5 @@
 ## unspun
+[![Build Status](https://travis-ci.org/WintonCentre/unspun.svg?branch=master)](https://travis-ci.org/WintonCentre/unspun)
 
 Exponent starter for a NNE/NNP app for journalists and clinicians. A web version is also needed.
 
