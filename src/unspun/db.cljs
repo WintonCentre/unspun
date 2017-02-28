@@ -9,10 +9,13 @@
 
 (def max-nn 1000)                                           ; maximum number needed to treat
 
+(def winton-csv " https://www.dropbox.com/s/hk1co7elsw8bcvd/risk-app-data.csv?dl=0")
+
 ;;;
 ;; APP-STATE
 ;;;
-(def scenarios {:bacon   {:icon            "ios-man"
+(def scenarios {:bacon   {:tags            ["food" "bowel" "cancer"]
+                          :icon            "ios-man"
                           :subjects        ["person" "people"]
                           :exposure        "eating a bacon sandwich every day"
                           :baseline-risk   0.06
@@ -24,7 +27,8 @@
                           :without         "Normal"
                           :causative       false
                           }
-                :hrt5    {:icon            "ios-woman"
+                :hrt5    {:tags            ["preventitive" "breast" "cancer" "osteoporosis"]
+                          :icon            "ios-woman"
                           :subjects        ["woman" "women in their 50s"]
                           :exposure        "taking HRT for 5 years"
                           :baseline-risk   0.1
@@ -36,7 +40,8 @@
                           :without         "No HRT"
                           :causative       false
                           }
-                :wine    {:icon            "ios-wine"
+                :wine    {:tags            ["alcohol" "breast" "cancer"]
+                          :icon            "ios-wine"
                           :subjects        ["woman" "women"]
                           :exposure        "drinking half a bottle of wine a day"
                           :baseline-risk   0.12
@@ -48,7 +53,8 @@
                           :without         "Not drinking"
                           :causative       false
                           }
-                :wdoc    {:icon            "ios-person"
+                :wdoc    {:tags            ["gender" "care"]
+                          :icon            "ios-person"
                           :subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
                           :exposure        "being seen by a female doctor"
                           :baseline-risk   0.115
@@ -60,7 +66,8 @@
                           :without         "Male doctor"
                           :causative       false
                           }
-                :statins {:icon            "ios-contact"
+                :statins {:tags            ["preventitive" "medication"]
+                          :icon            "ios-contact"
                           :subjects        ["person" "people just within NICE guidelines for prescribing statins"]
                           :exposure        "taking statins each day"
                           :baseline-risk   0.1
@@ -72,6 +79,8 @@
                           :without         "No statins"
                           :causative       true
                           }})
+
+
 
 
 (defn initial-stories []
@@ -187,12 +196,12 @@
          outcome-pp (str (present-participle outcome-verb) " " outcome)
          outcome-text (if (> relative-risk 1)
                         (str "would " outcome-inf " anyway. ")
-                        (str "would still " outcome-inf". ")
+                        (str "would still " outcome-inf ". ")
                         )]
      (if causative
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " (singular-form subjects) " ") ; mark-one
-        (format "to ~a, " outcome-inf)                 ; one-to-group
+        (format "to ~a, " outcome-inf)                      ; one-to-group
         (format "~d more " nn)                              ; group
         (format (str (n-plural-form subjects) " would need to be ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count)                         ;anyway
@@ -200,7 +209,7 @@
         ]
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " (singular-form subjects) " ") ; mark-one
-        (format "to ~a, we would need " outcome-inf)   ; one-to-group
+        (format "to ~a, we would need " outcome-inf)        ; one-to-group
         (format "a group of ~d more " nn)                   ; group
         (format (str (n-plural-form subjects) " ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count)                         ;anyway
