@@ -14,6 +14,7 @@
 
             [glittershark.core-async-storage :refer [get-item set-item]]
             [cljs.core.async :refer [<!]]
+            [shared.client :refer [fetch-csv-file]]
             ))
 
 
