@@ -9,7 +9,7 @@
                  [cljs-exponent "0.1.4"]
                  [react-native-externs "0.0.2-SNAPSHOT"]
                  [org.clojure/tools.namespace "0.2.11"]
-                 [wintoncentre/data.csv "0.0.1"]
+                 ;[wintoncentre/data.csv "0.0.1"]
                  [core-async-storage "0.2.0"]]
   :plugins [[lein-cljsbuild "1.1.4"]
             [lein-figwheel "0.5.4-7"]
