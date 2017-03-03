@@ -9,7 +9,7 @@
 
 (def max-nn 1000)                                           ; maximum number needed to treat
 
-(def winton-csv "https://www.dropbox.com/s/hk1co7elsw8bcvd/risk-app-data.csv?dl=0")
+(def winton-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/risk-app-data.csv")
 
 ;;;
 ;; APP-STATE
