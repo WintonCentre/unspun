@@ -7,6 +7,8 @@
 
 (def version "v0.0.10")
 
+(def flash-error-time 5000)                                 ; duration (ms) of flash error messages
+
 (def max-nn 1000)                                           ; maximum number needed to treat
 
 (def winton-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/risk-app-data.csv")
@@ -94,6 +96,7 @@
                       :story-index   0
                       :notifications true
                       :screen        :home
+                      :error         nil
                       }))
 
 (def palette-index (rum/cursor-in app-state [:palette-index]))
