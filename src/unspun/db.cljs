@@ -11,12 +11,27 @@
 
 (def max-nn 1000)                                           ; maximum number needed to treat
 
+(def max-id-length 100)                                     ; maximum length of a csv column id
+
 (def winton-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/risk-app-data.csv")
 
 ;;;
 ;; APP-STATE
 ;;;
-(def scenarios {:bacon   {:tags            ["food" "bowel" "cancer"]
+(def valid-field? #{:tags
+                    :icon
+                    :subjects
+                    :exposure
+                    :baseline-risk
+                    :relative-risk
+                    :outcome-verb
+                    :outcome
+                    :evidence-source
+                    :with
+                    :without
+                    :causative})
+
+(def scenarios {:bacon   {:tags            #{"food" "bowel" "cancer"}
                           :icon            "ios-man"
                           :subjects        ["person" "people"]
                           :exposure        "eating a bacon sandwich every day"
@@ -29,7 +44,7 @@
                           :without         "Normal"
                           :causative       false
                           }
-                :hrt5    {:tags            ["preventitive" "breast" "cancer" "osteoporosis"]
+                :hrt5    {:tags            #{"preventitive" "breast" "cancer" "osteoporosis"}
                           :icon            "ios-woman"
                           :subjects        ["woman" "women in their 50s"]
                           :exposure        "taking HRT for 5 years"
@@ -42,7 +57,7 @@
                           :without         "No HRT"
                           :causative       false
                           }
-                :wine    {:tags            ["alcohol" "breast" "cancer"]
+                :wine    {:tags            #{"alcohol" "breast" "cancer"}
                           :icon            "ios-wine"
                           :subjects        ["woman" "women"]
                           :exposure        "drinking half a bottle of wine a day"
@@ -55,7 +70,7 @@
                           :without         "Not drinking"
                           :causative       false
                           }
-                :wdoc    {:tags            ["gender" "care"]
+                :wdoc    {:tags            #{"gender" "care"}
                           :icon            "ios-person"
                           :subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
                           :exposure        "being seen by a female doctor"
@@ -68,7 +83,7 @@
                           :without         "Male doctor"
                           :causative       false
                           }
-                :statins {:tags            ["preventitive" "medication"]
+                :statins {:tags            #{"preventitive" "medication"}
                           :icon            "ios-contact"
                           :subjects        ["person" "people just within NICE guidelines for prescribing statins"]
                           :exposure        "taking statins each day"

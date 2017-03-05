@@ -1,11 +1,12 @@
 (ns shared.client
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [unspun.db :refer [winton-csv app-state flash-error-time]]
+  (:require [unspun.db :refer [winton-csv app-state flash-error-time max-id-length valid-field?]]
             [clojure.data.csv :refer [read-csv]]
             [clojure.core.]
             [clojure.core.async :refer [timeout <!]]
-            [clojure.string :refer [starts-with? triml split]]
+            [clojure.string :refer [starts-with? ends-with? trim triml split lower-case]]
             [shared.http-status-codes :refer [status-message]]
+            [graphics.icons :refer [icon-name?]]
             ))
 
 (def csv (atom nil))
@@ -15,22 +16,79 @@
 
 (defn colon-str-to-id [cstr]
   (let [tstr (first-word cstr)]
-    (if (and (< (count tstr) 100)
+    (if (and (< (count tstr) (+ 2 max-id-length))
              (starts-with? tstr ":"))
       (keyword (.substr tstr 1))
       nil)))
 
 (defn column-ids [rcsv]
-  (reduce conj {}
-          (filter (comp not nil? first)
-                  (map-indexed (fn [idx itm] [(colon-str-to-id itm) idx])
-                               (first (for [v rcsv :when (= ":scenarios" (first v))] v))))))
+  (into [] (filter (comp not nil?)
+                   (map colon-str-to-id
+                        (first (for [v rcsv :when (= ":scenarios" (first v))] v))))))
 
-(defn column-index
-  "find the column index for a given column-id"
-  ([csv-row id]
-   (let [[_ keys [& cols]] csv-row]
-     (.indexOf keys (str key)))))
+(defn get-scenario-data [rcsv]
+  (filter (comp #(and (starts-with? % ":")
+                      (not (starts-with? % ":scenario")))
+                first-word
+                first) rcsv))
+
+(defn truncate [n s]
+  (.substr s 0 n))
+
+(def trunc128 (partial truncate 128))
+(def trunc64 (partial truncate 64))
+(def trunc32 (partial truncate 32))
+
+(defn make-valid-tags [value]
+  (into #{} (map (comp trunc128 lower-case trim) (first (read-csv value)))))
+
+(defn make-valid-icon [value]
+  (icon-name? (trunc64 (trim value))))
+
+(defn make-valid-float [value]
+  (let [sval (trunc32 (trim value))
+        float (if (ends-with? sval "%")
+                (/ (js/parseFloat sval) 100)
+                (js/parseFloat sval))]
+    (if (js/isNaN float) nil float)))
+
+(defn in-range [val min-val & [max-val]]
+  (if (and (>= val min-val)
+           (or (nil? max-val)
+               (<= val max-val)))
+    val
+    nil))
+
+(defn valid-value? [field value]
+  (let [f (field {:tags            make-valid-tags
+                  :icon            make-valid-icon
+                  :subjects        identity
+                  :exposure        identity
+                  :baseline-risk   #(in-range (make-valid-float %) 0)
+                  :relative-risk   #(in-range (make-valid-float %) 0 1)
+                  :outcome-verb    identity
+                  :outcome         identity
+                  :evidence-source identity
+                  :with            identity
+                  :without         identity
+                  :causative       identity})]
+    (f value)))
+
+(defn make-scenario [sd col-ids]
+  (reduce conj {}
+          (for [i (range 1 (min (count (rest sd)) (count col-ids)))
+                :let [field (col-ids i)]
+                :when (valid-field? field)
+                :let [value ((vec (rest sd)) (dec i))
+                      valid-value (valid-value? field value)]
+                :when valid-value]
+            [field valid-value])))
+
+(defn make-scenarios [sdata col-ids]
+  (reduce conj {} (for [sd sdata]
+                    [(colon-str-to-id (first sd))
+                     (make-scenario sd col-ids)])))
+;; networking
 
 (defn store-csv [data]
   (reset! csv (read-csv data))
@@ -64,6 +122,28 @@
 (slurp-csv winton-csv store-csv flash-error)
 
 (comment
+  (= (trunc128 (clojure.string/join "" (repeat 128 ".")))
+     (trunc128 (clojure.string/join "" (repeat 129 "."))))
+  ; => true
+
+  (make-valid-tags "food, bowel, cancer")
+  ; => #{"food" "bowel" "cancer"}
+
+  (make-valid-icon "   ios-woman  ")
+  ; => "ios-woman"
+
+  (make-valid-float "  10.00% ")
+  ; => 0.1
+
+  (make-valid-float "  % ")
+  ; => nil
+
+  (valid-field? :nn)
+  ; => nil
+
+  (valid-field? :relative-risk)
+  ; => :relative-risk
+
   (first-word ":aaa bbb")
   ; => ":aaa"
 
@@ -74,35 +154,50 @@
   (slurp-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/plain.txt" store-csv flash-error)
 
   (column-ids @csv)
-  ;=>
-  ;{:baseline-risk 11,
-  ; :tags 1,
-  ; :exposed 14,
-  ; :source-uri 13,
-  ; :scenarios 0,
-  ; :nn 15,
-  ; :outcome 9,
-  ; :icon 4,
-  ; :without 7,
-  ; :with 6,
-  ; :causative 12,
-  ; :subjects 3,
-  ; :exposure 5,
-  ; :relative-risk 10,
-  ; :outcome-verb 8,
-  ; :subject 2}
+  ;=> [:scenarios
+  ;  :tags
+  ;  :subject
+  ;  :subjects
+  ;  :icon
+  ;  :exposure
+  ;  :with
+  ;  :without
+  ;  :outcome-verb
+  ;  :outcome
+  ;  :relative-risk
+  ;  :baseline-risk
+  ;  :causative
+  ;  :source-uri
+  ;  :exposed
+  ;  :nn]
 
   (-> @csv
       (read-csv)
       (field-to-column :scenarios))
   ; => 0
 
-  (field-to-column (read-csv @csv) :scenarios)
-  ; => 0
+  (colon-str-to-id ":scenarios")
+  ; => :scenarios
 
-  (field-to-column (read-csv @csv) :tags)
-  ; => 1
+  (colon-str-to-id ":wom bat")
+  ; => :wom
+
+  (colon-str-to-id (str ":" (clojure.string/join (repeat 100 "a"))))
+  ; => :aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+  (colon-str-to-id (str ":" (clojure.string/join (repeat 101 "a"))))
+  ; => nil
 
   (status-message 404)
   ; => "Not Found
+
+  (status-message 500)
+  ; => "Internal Server Error"
+
+  (get-scenario-data @csv)
+  ; => ([":bacon" ...] [":hrt" ...] ...)
+
+  (make-scenarios (get-scenario-data @csv) (column-ids @csv))
+
+  (apply make-scenarios ((juxt get-scenario-data column-ids) @csv))
   )
