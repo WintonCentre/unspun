@@ -64,8 +64,8 @@
                   :icon            make-valid-icon
                   :subjects        identity
                   :exposure        identity
-                  :baseline-risk   #(in-range (make-valid-float %) 0)
-                  :relative-risk   #(in-range (make-valid-float %) 0 1)
+                  :baseline-risk   #(in-range (make-valid-float %) 0 1)
+                  :relative-risk   #(in-range (make-valid-float %) 0)
                   :outcome-verb    identity
                   :outcome         identity
                   :evidence-source identity
