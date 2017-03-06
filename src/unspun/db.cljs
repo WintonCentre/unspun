@@ -20,6 +20,7 @@
 ;;;
 (def valid-field? #{:tags
                     :icon
+                    :subject
                     :subjects
                     :exposure
                     :baseline-risk
@@ -29,7 +30,8 @@
                     :evidence-source
                     :with
                     :without
-                    :causative})
+                    :causative
+                    :sources})
 
 (def scenarios {:bacon   {:tags            #{"food" "bowel" "cancer"}
                           :icon            "ios-man"

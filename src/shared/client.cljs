@@ -9,6 +9,10 @@
             [graphics.icons :refer [icon-name?]]
             ))
 
+;;;
+;; Client-side support for reading scenarios from csv files
+;;;
+
 (def csv (atom nil))
 
 (defn first-word [s]
@@ -52,6 +56,21 @@
                 (js/parseFloat sval))]
     (if (js/isNaN float) nil float)))
 
+(defn make-valid-string [value min-length & [max-length]]
+  (let [sval ((if max-length (partial truncate max-length) identity) (trim value))]
+    (if (>= (count sval) min-length) sval nil)))
+
+(defn make-valid-boolean [value]
+  (#{"true" "t" "yes" "y"} (lower-case (trim value))))
+
+;;
+;;
+;;
+(defn make-valid-markdown
+  "Links in this markdown should only be rendered when the CSV source is trusted or when the user has typed in the markdown herself."
+  [value]
+  (make-valid-string value 0 1024))
+
 (defn in-range [val min-val & [max-val]]
   (if (and (>= val min-val)
            (or (nil? max-val)
@@ -60,18 +79,20 @@
     nil))
 
 (defn valid-value? [field value]
-  (let [f (field {:tags            make-valid-tags
-                  :icon            make-valid-icon
-                  :subjects        identity
-                  :exposure        identity
-                  :baseline-risk   #(in-range (make-valid-float %) 0 1)
-                  :relative-risk   #(in-range (make-valid-float %) 0)
-                  :outcome-verb    identity
-                  :outcome         identity
-                  :evidence-source identity
-                  :with            identity
-                  :without         identity
-                  :causative       identity})]
+  (let [f (field {:tags          make-valid-tags
+                  :icon          make-valid-icon
+                  :subject       #(make-valid-string % 1 64)
+                  :subjects      #(make-valid-string % 1 128)
+                  :exposure      #(make-valid-string % 1 228)
+                  :baseline-risk #(in-range (make-valid-float %) 0 1)
+                  :relative-risk #(in-range (make-valid-float %) 0)
+                  :outcome-verb  #(make-valid-string % 1 64)
+                  :outcome       #(make-valid-string % 1 128)
+                  :with          #(make-valid-string % 1 32)
+                  :without       #(make-valid-string % 1 32)
+                  :causative     make-valid-boolean
+                  :sources       make-valid-markdown
+                  })]
     (f value)))
 
 (defn make-scenario [sd col-ids]
@@ -137,6 +158,24 @@
 
   (make-valid-float "  % ")
   ; => nil
+
+  (make-valid-string "" 1 10)
+  ; => nil
+
+  (make-valid-string "." 1 10)
+  ; => "."
+
+  (make-valid-string "..........." 1 10)
+  ; => ".........."
+
+  (make-valid-string "12345678901" 1 10)
+  ; => nil
+
+  (make-valid-boolean "foo")
+  ; => nil
+
+  (make-valid-boolean "T")
+  ; => "t"
 
   (valid-field? :nn)
   ; => nil

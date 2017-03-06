@@ -43,30 +43,48 @@
 (defmethod gen-pp :ie-ying [word-data] (ie-ying word-data))
 (defmethod gen-pp :cons-undup-ing [word-data] (cons-e-ing word-data))
 
-(defn present-participle [infinitive]
-  (gen-pp (classify infinitive)))
+(def present-participle (comp gen-pp classify))
 
-(classify "develop")
-(add-ing (classify "develop"))
-(gen-pp (classify "develop"))
-(present-participle "develop")
+(comment
+  ;;
+  ;; tests
+  ;;
+  (classify "develop")
+  ; => {:root "devel", :last-two ("o" "p"), :vowels ["o" nil], :verb-form :add-ing}
 
-(classify "die")
-(ie-ying (classify "die"))
-(gen-pp (classify "die"))
-(present-participle "die")
+  (add-ing (classify "develop"))
+  (present-participle "develop")
+  ; => "developing"
 
-(classify "try")
-(add-ing (classify "try"))
-(gen-pp (classify "try"))
-(present-participle "try")
+  (classify "die")
+  ; => {:root "d", :last-two ("i" "e"), :vowels ["i" "e"], :verb-form :ie-ying}
 
-(classify "be")
-(add-ing (classify "be"))
-(gen-pp (classify "be"))
-(present-participle "be")
+  (ie-ying (classify "die"))
+  (gen-pp (classify "die"))
+  (present-participle "die")
+  ; => "dying"
 
-(classify "have")
-(cons-e-ing (classify "have"))
-(gen-pp (classify "have"))
+  (classify "try")
+  ; => {:root "t", :last-two ("r" "y"), :vowels [nil nil], :verb-form :add-ing}
+
+  (add-ing (classify "try"))
+  (gen-pp (classify "try"))
+  (present-participle "try")
+  ; => "trying"
+
+  (classify "be")
+  ; => {:root "", :last-two ("b" "e"), :vowels [nil "e"], :verb-form :add-ing}
+
+  (add-ing (classify "be"))
+  (gen-pp (classify "be"))
+  (present-participle "be")
+  ; => "being"
+
+  (classify "have")
+  ; => {:root "ha", :last-two ("v" "e"), :vowels [nil "e"], :verb-form :cons-e-ing}
+
+  (cons-e-ing (classify "have"))
+  (gen-pp (classify "have"))
+  ; => "having"
+  )
 

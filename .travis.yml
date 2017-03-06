@@ -3,4 +3,4 @@ sudo: false
 lein: lein2
 script: lein2 with-profile test doo phantom test once
 jdk:
-- oraclejdk8
+  - oraclejdk8

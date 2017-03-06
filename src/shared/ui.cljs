@@ -38,6 +38,10 @@
 (def sliding-tab-navigation (partial element (aget ex-navigation "SlidingTabNavigation")))
 (def sliding-tab-navigation-item (partial element (aget ex-navigation "SlidingTabNavigationItem")))
 
+;; Hyperlinks
+(def linking (aget react-native "Linking"))
+(defn openURL [url] (.openURL linking url))
+
 ;; vector-icons
 (def vector-icons (js/require "@exponent/vector-icons"))
 (def Ionicons (aget vector-icons "Ionicons"))
