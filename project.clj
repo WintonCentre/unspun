@@ -31,7 +31,7 @@
 
   :profiles {:dev  {:dependencies [[figwheel-sidecar "0.5.4-7"]
                                    [com.cemerick/piggieback "0.2.1"]]
-                    :source-paths ["src" "env/dev"]
+                    :source-paths ["src" "notest" "env/dev"]
                     :cljsbuild    {:builds [{:id           "main"
                                              :source-paths ["src" "env/dev"]
                                              :figwheel     true

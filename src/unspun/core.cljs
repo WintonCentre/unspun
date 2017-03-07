@@ -12,9 +12,8 @@
                                stack-navigation drawer-navigation drawer-navigation-item]]
             [unspun.screens.top-drawer :refer [drawer]]
 
-            [glittershark.core-async-storage :refer [get-item slurp-csv set-item]]
+            [glittershark.core-async-storage :refer [get-item set-item]]
             [cljs.core.async :refer [<!]]
-            [shared.client :refer [slurp-csv]]
             ))
 
 

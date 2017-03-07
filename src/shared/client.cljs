@@ -55,7 +55,9 @@
     (if (js/isNaN float) nil float)))
 
 (defn make-valid-string [value min-length & [max-length]]
-  (let [sval ((if max-length (partial truncate max-length) identity) (trim value))]
+  (let [sval ((if max-length
+                #(if (> (count %) max-length) nil %)
+                identity) (trim value))]
     (if (>= (count sval) min-length) sval nil)))
 
 (defn make-valid-boolean [value]
@@ -116,12 +118,12 @@
 
 (defn store-csv [creator data]
   ;(reset! csv (read-csv data))
-  #_(let [csv-data make-scenarios ((juxt get-scenario-data column-ids) (read-csv data))]
-      (swap! app-state
-             update :stories
-             #(mapv second (merge-new-scenarios creator %1 %2))
-             csv-data)
-      )
+  (let [csv-data (make-scenarios ((juxt get-scenario-data column-ids) (read-csv data)))]
+    (swap! app-state
+           update :stories
+           #(merge-new-scenarios creator (scenarios-as-map %1) %2)
+           csv-data)
+    )
   )
 
 (defn flash-error [error]
@@ -133,23 +135,7 @@
     (prn "cleared flash-error")
     ))
 
-(defn slurp-csv [url success-handler error-handler]
-  (-> (js/fetch url)
 
-      (.then (fn [resp]
-               (when-not (nil? resp)
-                 ;(.log js/console resp)
-                 (let [handler (if (.-ok resp)
-                                 success-handler
-                                 #(error-handler (str url "\n" (status-message (.-status resp)))))]
-                   (-> (.text resp)
-                       (.then handler))))))
-
-      (.catch (fn [error]
-                (.log js/console error)
-                (error-handler "Network connection error")))))
-
-(slurp-csv winton-csv #(store-csv {:creator winton-csv} %) flash-error)
 
 (comment
   (def mock-csv-data '([""
