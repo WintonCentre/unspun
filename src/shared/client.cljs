@@ -1,6 +1,6 @@
 (ns shared.client
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [unspun.db :refer [winton-csv app-state flash-error-time max-id-length valid-field?]]
+  (:require [unspun.db :refer [winton-csv app-state scenarios-as-map scenarios-as-vec with-additions flash-error-time max-id-length valid-field?]]
             [clojure.data.csv :refer [read-csv]]
             [clojure.core.]
             [clojure.core.async :refer [timeout <!]]
@@ -12,8 +12,6 @@
 ;;;
 ;; Client-side support for reading scenarios from csv files
 ;;;
-
-(def csv (atom nil))
 
 (defn first-word [s]
   (first (split (triml s) #"\s+")))
@@ -79,7 +77,8 @@
     nil))
 
 (defn valid-value? [field value]
-  (let [f (field {:tags          make-valid-tags
+  (let [f (field {:scenario      identity
+                  :tags          make-valid-tags
                   :icon          make-valid-icon
                   :subject       #(make-valid-string % 1 64)
                   :subjects      #(make-valid-string % 1 128)
@@ -95,32 +94,35 @@
                   })]
     (f value)))
 
-(defn make-scenario [sd col-ids]
-  (reduce conj {}
-          (for [i (range 1 (min (count (rest sd)) (count col-ids)))
+(defn make-scenario [[sc-key & sc-val] col-ids]
+  (reduce conj {:scenario sc-key}
+          (for [i (range 1 (min (count sc-val) (count col-ids)))
                 :let [field (col-ids i)]
                 :when (valid-field? field)
-                :let [value ((vec (rest sd)) (dec i))
+                :let [value ((vec sc-val) (dec i))
                       valid-value (valid-value? field value)]
                 :when (not (nil? valid-value))]
             [field valid-value])))
 
-(defn make-scenarios [sdata col-ids]
-  (reduce conj {} (for [sd sdata]
-                    [(colon-str-to-id (first sd))
-                     (make-scenario sd col-ids)])))
+(defn make-scenarios [[sdata col-ids]]
+  (reduce conj {}
+          (for [sd sdata]
+            [(colon-str-to-id (first sd))
+             (make-scenario sd col-ids)])))
 ;; networking
 
-(defn merge-new-stories [old-stories new-stories]
-  )
+(defn merge-new-scenarios [creator old-scenarios new-scenarios]
+  (with-additions creator (scenarios-as-vec (merge old-scenarios new-scenarios))))
 
-(defn store-csv [data]
+(defn store-csv [creator data]
   ;(reset! csv (read-csv data))
-  (let [csv-data (apply make-scenarios ((juxt get-scenario-data column-ids) (read-csv data)))]
-    (swap! app-state update :stories merge-new-stories (mapv second csv-data))
-    )
-  ;(prn "data")
-  )                                                         ;; add encoding parameter?
+  #_(let [csv-data make-scenarios ((juxt get-scenario-data column-ids) (read-csv data))]
+      (swap! app-state
+             update :stories
+             #(mapv second (merge-new-scenarios creator %1 %2))
+             csv-data)
+      )
+  )
 
 (defn flash-error [error]
   (prn (str "flash-error: " error))
@@ -144,11 +146,170 @@
                        (.then handler))))))
 
       (.catch (fn [error]
+                (.log js/console error)
                 (error-handler "Network connection error")))))
 
-(slurp-csv winton-csv store-csv flash-error)
+(slurp-csv winton-csv #(store-csv {:creator winton-csv} %) flash-error)
 
 (comment
+  (def mock-csv-data '([""
+                        "Tags (comma separated, for search)"
+                        "Case (singular, brief & generic)"
+                        "Cases (plural & specific)"
+                        "icon* (see icons sheet)"
+                        "Exposure"
+                        "Brief exposure label"
+                        "Non-exposure label"
+                        "Event (verb infinitive)"
+                        "Event (NP or AP for intransitive verb)"
+                        "Relative risk"
+                        "Baseline risk"
+                        "Causative?"
+                        "Exposed risk"
+                        "Number needed to be exposed"
+                        "List sources using a list of links written in markdown (see quick reference here).\rUse alt-enter to start a new line in the same cell."
+                        "Comments"]
+                        [":scenarios"
+                         ":tags"
+                         ":subject"
+                         ":subjects"
+                         ":icon"
+                         ":exposure"
+                         ":with"
+                         ":without"
+                         ":outcome-verb"
+                         ":outcome"
+                         ":relative-risk"
+                         ":baseline-risk"
+                         ":causative"
+                         ""
+                         ""
+                         ":sources"
+                         ""]
+                        [":bacon"
+                         "food, bowel, cancer"
+                         "person"
+                         "people"
+                         "ios-man"
+                         "eating a bacon sandwich every day"
+                         "bacon every day"
+                         "normal"
+                         "develop"
+                         "bowel cancer"
+                         "1.18"
+                         "6.0%"
+                         "FALSE"
+                         "7.1%"
+                         "93"
+                         "* For relative risk, see: [Risk per 50g of daily processed meat. IARC Monograph](http://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(15)00444-1/abstract)\r* For baseline risk, see: [Lifetime risk 7.3% for men, 5.5% for women](http://www.cancerresearchuk.org/health-professional/cancer-statistics/risk/lifetime-risk#heading-One)"
+                         ""]
+                        [":hrt"
+                         "preventitive, breast, cancer, osteoporosis"
+                         "woman"
+                         "women in their 50s"
+                         "ios-woman"
+                         "taking HRT for 5 years"
+                         "taking HRT"
+                         "No HRT"
+                         "develop"
+                         "breast cancer"
+                         "1.05"
+                         "10.0%"
+                         "FALSE"
+                         "10.5%"
+                         "200"
+                         ""
+                         ""]
+                        [":wine"
+                         "alcohol, breast, cancer"
+                         "woman"
+                         "women"
+                         "ios-wine"
+                         "drinking half a bottle of wine a day"
+                         "half a bottle a day"
+                         "not drinking"
+                         "develop"
+                         "breast cancer"
+                         "1.30"
+                         "12.0%"
+                         "FALSE"
+                         "15.6%"
+                         "28"
+                         ""
+                         ""]
+                        [":wdoc"
+                         "gender,care"
+                         "person"
+                         "US people over 65 admitted to hospital under Medicare"
+                         "ios-person"
+                         "being seen by a female doctor"
+                         "female doctor"
+                         "male doctor"
+                         "die"
+                         "within 30 days of admission"
+                         "0.96"
+                         "11.5%"
+                         "FALSE"
+                         "11.0%"
+                         "217"
+                         ""
+                         ""]
+                        [":statins"
+                         "preventitive, medication"
+                         "person"
+                         "people just within NICE guidelines for prescribing statins"
+                         "ios-person"
+                         "taking statins each day"
+                         "taking statins"
+                         "no statins"
+                         "have"
+                         "a heart attack or stroke within 10 years"
+                         "0.70"
+                         "10.0%"
+                         "TRUE"
+                         "7.0%"
+                         "33"
+                         ""
+                         ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""]
+                        ["," "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""])
+    )
+
   (= (trunc128 (clojure.string/join "" (repeat 128 ".")))
      (trunc128 (clojure.string/join "" (repeat 129 "."))))
   ; => true
@@ -198,7 +359,7 @@
 
   (slurp-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/plain.txt" store-csv flash-error)
 
-  (column-ids @csv)
+  (column-ids mock-csv-data)
   ;=>
   ;[:scenarios
   ; :tags
@@ -218,11 +379,6 @@
   ; :sources
   ; nil]
 
-  (-> @csv
-      (read-csv)
-      (field-to-column :scenarios))
-  ; => 0
-
   (colon-str-to-id ":scenarios")
   ; => :scenarios
 
@@ -241,10 +397,22 @@
   (status-message 500)
   ; => "Internal Server Error"
 
-  (get-scenario-data @csv)
+  (get-scenario-data mock-csv-data)
   ; => ([":bacon" ...] [":hrt" ...] ...)
 
-  (make-scenarios (get-scenario-data @csv) (column-ids @csv))
+  (make-scenarios [(get-scenario-data mock-csv-data) (column-ids mock-csv-data)])
 
-  (apply make-scenarios ((juxt get-scenario-data column-ids) @csv))
+  (make-scenarios ((juxt get-scenario-data column-ids) mock-csv-data))
+
+  (defn mockstore-csv [creator mock-data]
+    (let [csv-data (make-scenarios ((juxt get-scenario-data column-ids) mock-data))]
+
+      (swap! app-state
+             update :stories
+             #(merge-new-scenarios creator (scenarios-as-map %1) %2)
+             csv-data)
+      )
+    )
+
+  (mockstore-csv {:creator winton-csv} mock-csv-data)
   )

@@ -13,6 +13,7 @@
 
 (def max-id-length 100)                                     ; maximum length of a csv column id
 
+(def app-src "https://github.com/wintoncentre/unspun")
 (def winton-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/risk-app-data.csv")
 
 ;;;
@@ -93,17 +94,23 @@
                           :relative-risk   0.7
                           :outcome-verb    "have"
                           :outcome         "a heart attack or stroke within 10 years"
-                          :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+                          :sources "https://wintoncentre.maths.cam.ac.uk/"
                           :with            "Taking statins"
                           :without         "No statins"
                           :causative       true
                           }})
 
 
+(defn scenarios-as-vec [m]
+  (mapv (fn [[k v]] (merge v {:scenario k})) m))
 
+(defn scenarios-as-map [v]
+  (reduce conj {} (map (fn [s] [(:scenario s) s]) v)))
 
-(defn initial-stories []
-  (mapv first scenarios) (map second scenarios))
+(defn with-additions [addition-map scenario-vec]
+  (mapv #(merge addition-map %) scenario-vec))
+
+(defn initial-stories [] (with-additions {:creator app-src} (scenarios-as-vec scenarios)))
 
 (def app-state (atom {:palette-index 0
                       :brand-title   "Winton Centre"
@@ -237,28 +244,118 @@
         ]))))
 
 
-;; todo: Cache these, or just generate as needed?
+;; todo: copy these to test suite
 
 (comment
 
   (nn-text-vector (:hrt5 scenarios))
-  (compare-text-vector (:hrt5 scenarios))
+  ;=>
+  ;["On average, for "
+  ; "one extra woman "
+  ; "to develop breast cancer, we would need "
+  ; "a group of 200 more "
+  ; "women in their 50s taking HRT for 5 years. Of these, "
+  ; "20 "
+  ; "would develop breast cancer anyway. "]
 
+  (compare-text-vector (:hrt5 scenarios))
+  ;=>
+  ;["The risk of developing breast cancer for women in their 50s is "
+  ; "10%. "
+  ; "The risk for those taking HRT for 5 years is "
+  ; "increased"
+  ; " to "
+  ; "11%."]
 
   (nn-text-vector (:bacon scenarios))
-  (compare-text-vector (:bacon scenarios))
+  ;=>
+  ;["On average, for "
+  ; "one extra person "
+  ; "to develop bowel cancer, we would need "
+  ; "a group of 93 more "
+  ; "people eating a bacon sandwich every day. Of these, "
+  ; "6 "
+  ; "would develop bowel cancer anyway. "]
 
+  (compare-text-vector (:bacon scenarios))
+  ;=>
+  ;["The risk of developing bowel cancer for people is "
+  ; "6%. "
+  ; "The risk for those eating a bacon sandwich every day is "
+  ; "increased"
+  ; " to "
+  ; "7%."]
 
   (nn-text-vector (:wine scenarios))
+  ;=>
+  ;["On average, for "
+  ; "one extra woman "
+  ; "to develop breast cancer, we would need "
+  ; "a group of 28 more "
+  ; "women drinking half a bottle of wine a day. Of these, "
+  ; "3 "
+  ; "would develop breast cancer anyway. "]
+
   (compare-text-vector (:wine scenarios))
+  ;=>
+  ;["The risk of developing breast cancer for women is "
+  ; "12%. "
+  ; "The risk for those drinking half a bottle of wine a day is "
+  ; "increased"
+  ; " to "
+  ; "16%."]
 
 
   (nn-text-vector (:wdoc scenarios))
+  ;=>
+  ;["On average, for "
+  ; "one fewer person "
+  ; "to die within 30 days of admission, we would need "
+  ; "a group of 217 more "
+  ; "US people over 65 admitted to hospital under Medicare being seen by a female doctor. Of these, "
+  ; "24 "
+  ; "would still die within 30 days of admission. "]
+
   (compare-text-vector (:wdoc scenarios))
+  ;=>
+  ;["The risk of dying within 30 days of admission for US people over 65 admitted to hospital under Medicare is "
+  ; "12%. "
+  ; "The risk for those being seen by a female doctor is "
+  ; "decreased"
+  ; " to "
+  ; "11%."]
 
 
   (nn-text-vector (:statins scenarios))
+  ;=>
+  ;["On average, for "
+  ; "one fewer person "
+  ; "to have a heart attack or stroke within 10 years, "
+  ; "33 more "
+  ; "people just within NICE guidelines for prescribing statins would need to be taking statins each day. Of these, "
+  ; "2 "
+  ; "would still have a heart attack or stroke within 10 years. "]
+
   (compare-text-vector (:statins scenarios))
+  ;=>
+  ;["The risk of having a heart attack or stroke within 10 years for people just within NICE guidelines for prescribing statins is "
+  ; "10%. "
+  ; "The risk for those taking statins each day is "
+  ; "decreased"
+  ; " to "
+  ; "7%."]
+
+
+  (= (scenarios-as-vec (scenarios-as-map (scenarios-as-vec scenarios)))
+     (scenarios-as-vec scenarios))
+  ; => true
+
+  (with-additions {:creator app-src
+                   :sources "test source"} (scenarios-as-vec scenarios))
+
+  (initial-stories)
   )
+
+
 
 
