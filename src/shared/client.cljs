@@ -26,9 +26,9 @@
       nil)))
 
 (defn column-ids [rcsv]
-  (into [] (filter (comp not nil?)
-                   (map colon-str-to-id
-                        (first (for [v rcsv :when (= ":scenarios" (first v))] v))))))
+  (into []
+        (map colon-str-to-id
+             (first (for [v rcsv :when (= ":scenarios" (first v))] v)))))
 
 (defn get-scenario-data [rcsv]
   (filter (comp #(and (starts-with? % ":")
@@ -193,22 +193,24 @@
   (slurp-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/plain.txt" store-csv flash-error)
 
   (column-ids @csv)
-  ;=> [:scenarios
-  ;  :tags
-  ;  :subject
-  ;  :subjects
-  ;  :icon
-  ;  :exposure
-  ;  :with
-  ;  :without
-  ;  :outcome-verb
-  ;  :outcome
-  ;  :relative-risk
-  ;  :baseline-risk
-  ;  :causative
-  ;  :source-uri
-  ;  :exposed
-  ;  :nn]
+  ;=>
+  ;[:scenarios
+  ; :tags
+  ; :subject
+  ; :subjects
+  ; :icon
+  ; :exposure
+  ; :with
+  ; :without
+  ; :outcome-verb
+  ; :outcome
+  ; :relative-risk
+  ; :baseline-risk
+  ; :causative
+  ; nil
+  ; nil
+  ; :sources
+  ; nil]
 
   (-> @csv
       (read-csv)
