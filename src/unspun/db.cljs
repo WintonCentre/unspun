@@ -103,7 +103,7 @@
 
 
 (defn initial-stories []
-  (mapv second scenarios))
+  (mapv first scenarios) (map second scenarios))
 
 (def app-state (atom {:palette-index 0
                       :brand-title   "Winton Centre"

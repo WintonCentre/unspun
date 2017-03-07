@@ -61,7 +61,7 @@
     (if (>= (count sval) min-length) sval nil)))
 
 (defn make-valid-boolean [value]
-  (#{"true" "t" "yes" "y"} (lower-case (trim value))))
+  (if (#{"true" "t" "yes" "y"} (lower-case (trim value))) true false))
 
 ;;
 ;;
@@ -102,7 +102,7 @@
                 :when (valid-field? field)
                 :let [value ((vec (rest sd)) (dec i))
                       valid-value (valid-value? field value)]
-                :when valid-value]
+                :when (not (nil? valid-value))]
             [field valid-value])))
 
 (defn make-scenarios [sdata col-ids]
@@ -111,8 +111,14 @@
                      (make-scenario sd col-ids)])))
 ;; networking
 
+(defn merge-new-stories [old-stories new-stories]
+  )
+
 (defn store-csv [data]
-  (reset! csv (read-csv data))
+  ;(reset! csv (read-csv data))
+  (let [csv-data (apply make-scenarios ((juxt get-scenario-data column-ids) (read-csv data)))]
+    (swap! app-state update :stories merge-new-stories (mapv second csv-data))
+    )
   ;(prn "data")
   )                                                         ;; add encoding parameter?
 
