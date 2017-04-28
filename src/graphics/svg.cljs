@@ -21,7 +21,7 @@
    "Defs"
    "Stop"])
 
-(def wrap-svg (partial aget expo "Components" "Svg"))
+(def wrap-svg (partial aget expo "Svg"))
 
 (defn wrap-svg-component [name]
   (partial element (wrap-svg name)))
