@@ -12,7 +12,7 @@
             ))
 
 ;; vector-icons
-(def vector-icons (js/require "@exponent/vector-icons"))
+(def vector-icons (js/require "@expo/vector-icons"))
 (def Ionicons (aget vector-icons "Ionicons"))
 
 (defn ionicon [attrs] (.createElement js/React Ionicons attrs))

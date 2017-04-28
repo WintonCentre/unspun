@@ -24,7 +24,7 @@
 (def store-get-item (aget async-storage "getItem"))
 
 ;; ex-navigation
-(def ex-navigation (js/require "@exponent/ex-navigation"))
+(def ex-navigation (js/require "@expo/ex-navigation"))
 (def create-router (aget ex-navigation "createRouter"))
 
 (def navigation-provider (partial element (aget ex-navigation "NavigationProvider")))
@@ -43,7 +43,7 @@
 (defn openURL [url] (.openURL linking url))
 
 ;; vector-icons
-(def vector-icons (js/require "@exponent/vector-icons"))
+(def vector-icons (js/require "@expo/vector-icons"))
 (def Ionicons (aget vector-icons "Ionicons"))
 (def ionicon (partial element Ionicons))
 (def Entypo (aget vector-icons "Entypo"))

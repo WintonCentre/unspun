@@ -1,6 +1,5 @@
 (ns unspun.navigation.router
-  (:require [cljs-exponent.core :refer [exponent]]
-            [cljs-exponent.components :refer [element]]
+  (:require [cljs-exponent.components :refer [element]]
             [clojure.string :refer [lower-case]]
             [shared.ui :refer [create-router]]
             [unspun.screens.logo :as logo :refer [logo-page]]

@@ -8,21 +8,20 @@
             [themes :refer [copy-native-themes]]))
 ;; This namespace is loaded automatically by nREPL
 
-;; read project.clj to get build configs
-(def project-config (->> "project.clj"
-                         slurp
-                         read-string
-                         (drop 1)
-                         (apply hash-map)))
-
-(def profiles (:profiles project-config))
-
-(def cljs-builds (get-in profiles [:dev :cljsbuild :builds]))
+(defn get-cljs-builds
+  []
+  (let [project-config (->> "project.clj"
+                            slurp
+                            read-string
+                            (drop 1)
+                            (apply hash-map))
+        profiles (:profiles project-config)]
+    (get-in profiles [:dev :cljsbuild :builds])))
 
 (defn enable-source-maps
   []
   (println "Source maps enabled.")
-  (let [path "node_modules/react-native/packager/react-packager/src/Server/index.js"]
+  (let [path "node_modules/react-native/packager/src/Server/index.js"]
     (spit path
           (str/replace (slurp path) "/\\.map$/" "/main.map$/"))))
 
@@ -34,15 +33,22 @@
 (defn get-lan-ip
   []
   (cond
-    (= "Mac OS X" (System/getProperty "os.name"))
+    (some #{(System/getProperty "os.name")} ["Mac OS X" "Windows 10"])
     (.getHostAddress (java.net.InetAddress/getLocalHost))
 
     :else
     (->> (java.net.NetworkInterface/getNetworkInterfaces)
          (enumeration-seq)
-         (filter #(and (not (.isLoopback %))
-                       (not (str/starts-with? (.getName %) "docker"))))
+         (filter #(not (or (str/starts-with? (.getName %) "docker")
+                           (str/starts-with? (.getName %) "br-"))))
          (map #(.getInterfaceAddresses %))
+         (map
+           (fn [ip]
+             (seq (filter #(instance?
+                            java.net.Inet4Address
+                            (.getAddress %))
+                          ip))))
+         (remove nil?)
          (first)
          (filter #(instance?
                    java.net.Inet4Address
@@ -66,9 +72,9 @@
   (let [modules (->> (file-seq (io/file "assets"))
                      (filter #(and (not (re-find #"DS_Store" (str %)))
                                    (.isFile %)))
-                     (map (fn [file] (when-let [path (str file)]
-                                      (str "../../" path))))
-                     (concat js-modules ["react" "react-native" "exponent"])
+                     (map (fn [file] (when-let [unix-path (->> file .toPath .iterator iterator-seq (str/join "/"))]
+                                      (str "../../" unix-path))))
+                     (concat js-modules ["react" "react-native" "expo"])
                      (distinct))
         modules-map (zipmap
                      (->> modules
@@ -76,6 +82,7 @@
                                      (if (str/starts-with? % "../../assets")
                                        (-> %
                                            (str/replace "../../" "./")
+                                           (str/replace "\\" "/")
                                            (str/replace "@2x" "")
                                            (str/replace "@3x" ""))
                                        %)
@@ -83,6 +90,7 @@
                      (->> modules
                           (map #(format "(js/require \"%s\")"
                                         (-> %
+                                            (str/replace "\\" "/")
                                             (str/replace "@2x" "")
                                             (str/replace "@3x" ""))))))]
     (try
@@ -171,6 +179,7 @@
   []
   (rebuild-modules))
 
+;; Lein
 (defn start-figwheel
   "Start figwheel for one or more builds"
   [& build-ids]
@@ -184,7 +193,7 @@
     :build-ids  (if (seq build-ids)
                   build-ids
                   ["main"])
-    :all-builds cljs-builds})
+    :all-builds (get-cljs-builds)})
   (ra/cljs-repl))
 
 (defn stop-figwheel
@@ -204,4 +213,13 @@
     "--themes"
     (copy-native-themes)
 
-    (prn "You can run lein figwheel or lein rebuild-modules.")))
+    (prn "You can run lein figwheel or lein rebuild-modules or lein themes.")))
+
+;; Boot
+(defn prepare
+  []
+  (init-external-modules)
+  (enable-source-maps)
+  (write-main-js)
+  (write-env-dev)
+  (watch-for-external-modules))

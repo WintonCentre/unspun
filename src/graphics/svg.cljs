@@ -1,5 +1,5 @@
 (ns graphics.svg
-  (:require [cljs-exponent.core :refer [exponent]]
+  (:require [cljs-exponent.core :refer [expo]]
             [cljs-exponent.components :refer [element]]
             [clojure.string :refer [lower-case]]
             ))
@@ -21,7 +21,7 @@
    "Defs"
    "Stop"])
 
-(def wrap-svg (partial aget exponent "Components" "Svg"))
+(def wrap-svg (partial aget expo "Components" "Svg"))
 
 (defn wrap-svg-component [name]
   (partial element (wrap-svg name)))

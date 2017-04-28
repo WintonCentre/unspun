@@ -3,16 +3,16 @@
   :url "http://wintoncentre.maths.cam.ac.uk"
   :license {:name "MIT License"
             :url  "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.9.0-alpha10"]
-                 [org.clojure/clojurescript "1.9.293"]
-                 [rum "0.10.7" :exclusions [cljsjs/react cljsjs/react-dom sablono]]
-                 [cljs-exponent "0.1.4"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha15"]
+                 [org.clojure/clojurescript "1.9.521"]
+                 [org.clojure/core.async "0.3.442"]
+                 [rum "0.10.8" :exclusions [cljsjs/react cljsjs/react-dom sablono]]
+                 [cljs-exponent "0.1.6"]
                  [react-native-externs "0.0.2-SNAPSHOT"]
                  [org.clojure/tools.namespace "0.2.11"]
-                 ;[wintoncentre/data.csv "0.0.1"]
-                 [core-async-storage "0.2.0"]]
-  :plugins [[lein-cljsbuild "1.1.4"]
-            [lein-figwheel "0.5.4-7"]
+                 [core-async-storage "0.2.0" :exclusions [org.clojure/core.async]]]
+  :plugins [[lein-cljsbuild "1.1.6"]
+            [lein-figwheel "0.5.4-7" :exclusions [org.clojure/core.async]]
             [lein-environ "1.0.1"]]
   :clean-targets ["target/" "main.js"]
   :aliases {"figwheel"        ["run" "-m" "user" "--figwheel"]
@@ -29,7 +29,7 @@
 
   :doo {:build "test"}
 
-  :profiles {:dev  {:dependencies [[figwheel-sidecar "0.5.4-7"]
+  :profiles {:dev  {:dependencies [[figwheel-sidecar "0.5.4-7" :exclusions [org.clojure/core.async]]
                                    [com.cemerick/piggieback "0.2.1"]]
                     :source-paths ["src" "notest" "env/dev"]
                     :cljsbuild    {:builds [{:id           "main"
