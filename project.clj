@@ -12,8 +12,8 @@
                  [org.clojure/tools.namespace "0.2.11"]
                  [core-async-storage "0.2.0" :exclusions [org.clojure/core.async]]]
   :plugins [[lein-cljsbuild "1.1.6"]
-            [lein-figwheel "0.5.4-7" :exclusions [org.clojure/core.async]]
-            [lein-environ "1.0.1"]]
+            [lein-figwheel "0.5.10" :exclusions [org.clojure/core.async]]
+            [lein-environ "1.1.0"]]
   :clean-targets ["target/" "main.js"]
   :aliases {"figwheel"        ["run" "-m" "user" "--figwheel"]
             "themes"          ["run" "-m" "themes"]
@@ -29,7 +29,7 @@
 
   :doo {:build "test"}
 
-  :profiles {:dev  {:dependencies [[figwheel-sidecar "0.5.4-7" :exclusions [org.clojure/core.async]]
+  :profiles {:dev  {:dependencies [[figwheel-sidecar "0.5.10" :exclusions [org.clojure/core.async]]
                                    [com.cemerick/piggieback "0.2.1"]]
                     :source-paths ["src" "notest" "env/dev"]
                     :cljsbuild    {:builds [{:id           "main"

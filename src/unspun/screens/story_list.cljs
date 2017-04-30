@@ -1,6 +1,6 @@
 (ns unspun.screens.story-list
   (:require [rum.core :as rum]
-            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
+            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view refresh-control] :as rn]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title]]
             [unspun.db :refer [app-state palette-index stories story-index story caps-tidy]]
             [themes.palettes :refer [palettes get-palette]]
@@ -109,16 +109,20 @@
     (container
       {:style {:flex 1}}
       (content
-        {:key   1
-         :theme (aget my-theme "default")
-         :style {:flex            1
-                 :backgroundColor (:primary palette)}}
+        {:key             1
+         :theme           (aget my-theme "default")
+         :style           {:flex            1
+                           :backgroundColor (:primary palette)}
+         :refreshControl (refresh-control {
+                                            :onRefresh #(.log js/console "Refreshing")})
+         }
         (status-bar {:key      (gensym "stories")
                      :hidden   false
                      :barStyle "light-content"})
         (apply n-list
                (concat [{:key   1
-                         :style {:flex 1}}]
+                         :style {:flex 1}
+                         }]
                        [(add-card! navigator palette)]
                        ;[(story-card! navigator palette 0)]
                        [(map (partial story-card! navigator palette) (range story-count))]))))))
