@@ -98,8 +98,11 @@
                                             (.push navigator "tabs"))}
                            (show-icon palette)))))
 
+(def refreshing (atom true) )
+
 (rum/defcs page < rum/reactive
-                  (rum/local 0 ::selection) (add-page-title "Scenarios")
+                  (rum/local 0 ::selection)
+                  (add-page-title "Scenarios")
   [state]
   (let [palette (get-palette (rum/react palette-index))
         stories (rum/react stories)
@@ -109,12 +112,12 @@
     (container
       {:style {:flex 1}}
       (content
-        {:key             1
-         :theme           (aget my-theme "default")
-         :style           {:flex            1
-                           :backgroundColor (:primary palette)}
-         :refreshControl (refresh-control {
-                                            :onRefresh #(.log js/console "Refreshing")})
+        {:key            1
+         :theme          (aget my-theme "default")
+         :style          {:flex            1
+                          :backgroundColor (:primary palette)}
+         :refreshControl (refresh-control {:refreshing (rum/react refreshing)
+                                           :onRefresh  #(.log js/console "Refreshing")})
          }
         (status-bar {:key      (gensym "stories")
                      :hidden   false
