@@ -24,14 +24,14 @@
                       "Number needed to be exposed"
                       "List sources using a list of links written in markdown (see quick reference here).\rUse alt-enter to start a new line in the same cell."
                       "Comments"]
-                      [":scenarios"
+                      [":scenario-id"
                        ":tags"
                        ":subject"
                        ":subjects"
                        ":icon"
                        ":exposure"
-                       ":with"
-                       ":without"
+                       ":with-label"
+                       ":without-label"
                        ":outcome-verb"
                        ":outcome"
                        ":relative-risk"
@@ -255,8 +255,8 @@
                                 :sources       "* For relative risk, see: [Risk per 50g of daily processed meat. IARC Monograph](http://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(15)00444-1/abstract)\r* For baseline risk, see: [Lifetime risk 7.3% for men, 5.5% for women](http://www.cancerresearchuk.org/health-professional/cancer-statistics/risk/lifetime-risk#heading-One)",
                                 :outcome       "bowel cancer",
                                 :icon          "ios-man",
-                                :without       "normal",
-                                :with          "bacon every day",
+                                :without-label       "normal",
+                                :with-label          "bacon every day",
                                 :causative     false,
                                 :subjects      "people",
                                 :exposure      "eating a bacon sandwich every day",
@@ -269,8 +269,8 @@
                                 :sources       "",
                                 :outcome       "breast cancer",
                                 :icon          "ios-woman",
-                                :without       "No HRT",
-                                :with          "taking HRT",
+                                :without-label       "No HRT",
+                                :with-label          "taking HRT",
                                 :causative     false,
                                 :subjects      "women in their 50s",
                                 :exposure      "taking HRT for 5 years",
@@ -283,8 +283,8 @@
                                 :sources       "",
                                 :outcome       "breast cancer",
                                 :icon          "ios-wine",
-                                :without       "not drinking",
-                                :with          "half a bottle a day",
+                                :without-label       "not drinking",
+                                :with-label          "half a bottle a day",
                                 :causative     false,
                                 :subjects      "women",
                                 :exposure      "drinking half a bottle of wine a day",
@@ -297,8 +297,8 @@
                                 :sources       "",
                                 :outcome       "within 30 days of admission",
                                 :icon          "ios-person",
-                                :without       "male doctor",
-                                :with          "female doctor",
+                                :without-label       "male doctor",
+                                :with-label          "female doctor",
                                 :causative     false,
                                 :subjects      "US people over 65 admitted to hospital under Medicare",
                                 :exposure      "being seen by a female doctor",
@@ -311,8 +311,8 @@
                                 :sources       "",
                                 :outcome       "a heart attack or stroke within 10 years",
                                 :icon          "ios-person",
-                                :without       "no statins",
-                                :with          "taking statins",
+                                :without-label       "no statins",
+                                :with-label          "taking statins",
                                 :causative     true,
                                 :subjects      "people just within NICE guidelines for prescribing statins",
                                 :exposure      "taking statins each day",
@@ -340,8 +340,8 @@
                                 :sources "* For relative risk, see: [Risk per 50g of daily processed meat. IARC Monograph](http://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(15)00444-1/abstract)\r* For baseline risk, see: [Lifetime risk 7.3% for men, 5.5% for women](http://www.cancerresearchuk.org/health-professional/cancer-statistics/risk/lifetime-risk#heading-One)",
                                 :outcome "bowel cancer",
                                 :icon "ios-man",
-                                :without "normal",
-                                :with "bacon every day",
+                                :without-label "normal",
+                                :with-label "bacon every day",
                                 :causative false,
                                 :subjects "people",
                                 :exposure "eating a bacon sandwich every day",
@@ -354,8 +354,8 @@
                                 :creator "https://github.com/wintoncentre/unspun",
                                 :outcome "breast cancer",
                                 :icon "ios-woman",
-                                :without "No HRT",
-                                :with "Taking HRT",
+                                :without-label "No HRT",
+                                :with-label "Taking HRT",
                                 :causative false,
                                 :subjects ["woman" "women in their 50s"],
                                 :exposure "taking HRT for 5 years",
@@ -369,8 +369,8 @@
                                 :sources "",
                                 :outcome "breast cancer",
                                 :icon "ios-wine",
-                                :without "not drinking",
-                                :with "half a bottle a day",
+                                :without-label "not drinking",
+                                :with-label "half a bottle a day",
                                 :causative false,
                                 :subjects "women",
                                 :exposure "drinking half a bottle of wine a day",
@@ -384,8 +384,8 @@
                                 :sources "",
                                 :outcome "within 30 days of admission",
                                 :icon "ios-person",
-                                :without "male doctor",
-                                :with "female doctor",
+                                :without-label "male doctor",
+                                :with-label "female doctor",
                                 :causative false,
                                 :subjects "US people over 65 admitted to hospital under Medicare",
                                 :exposure "being seen by a female doctor",
@@ -399,8 +399,8 @@
                                 :sources "",
                                 :outcome "a heart attack or stroke within 10 years",
                                 :icon "ios-person",
-                                :without "no statins",
-                                :with "taking statins",
+                                :without-label "no statins",
+                                :with-label "taking statins",
                                 :causative true,
                                 :subjects "people just within NICE guidelines for prescribing statins",
                                 :exposure "taking statins each day",
@@ -414,8 +414,8 @@
                                 :sources "",
                                 :outcome "breast cancer",
                                 :icon "ios-woman",
-                                :without "No HRT",
-                                :with "taking HRT",
+                                :without-label "No HRT",
+                                :with-label "taking HRT",
                                 :causative false,
                                 :subjects "women in their 50s",
                                 :exposure "taking HRT for 5 years",

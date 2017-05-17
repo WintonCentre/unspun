@@ -26,7 +26,7 @@
 (defn column-ids [rcsv]
   (into []
         (map colon-str-to-id
-             (first (for [v rcsv :when (= ":scenarios" (first v))] v)))))
+             (first (for [v rcsv :when (= ":scenario-id" (first v))] v)))))
 
 (defn get-scenario-data [rcsv]
   (filter (comp #(and (starts-with? % ":")
@@ -89,8 +89,8 @@
                   :relative-risk #(in-range (make-valid-float %) 0)
                   :outcome-verb  #(make-valid-string % 1 64)
                   :outcome       #(make-valid-string % 1 128)
-                  :with          #(make-valid-string % 1 32)
-                  :without       #(make-valid-string % 1 32)
+                  :with-label    #(make-valid-string % 1 32)
+                  :without-label #(make-valid-string % 1 32)
                   :causative     make-valid-boolean
                   :sources       make-valid-markdown
                   })]
@@ -155,14 +155,14 @@
                         "Number needed to be exposed"
                         "List sources using a list of links written in markdown (see quick reference here).\rUse alt-enter to start a new line in the same cell."
                         "Comments"]
-                        [":scenarios"
+                        [":scenario-id"
                          ":tags"
                          ":subject"
                          ":subjects"
                          ":icon"
                          ":exposure"
-                         ":with"
-                         ":without"
+                         ":with-label"
+                         ":without-label"
                          ":outcome-verb"
                          ":outcome"
                          ":relative-risk"
@@ -347,14 +347,14 @@
 
   (column-ids mock-csv-data)
   ;=>
-  ;[:scenarios
+  ;[:scenario-id
   ; :tags
   ; :subject
   ; :subjects
   ; :icon
   ; :exposure
-  ; :with
-  ; :without
+  ; :with-label
+  ; :without-label
   ; :outcome-verb
   ; :outcome
   ; :relative-risk
@@ -365,8 +365,8 @@
   ; :sources
   ; nil]
 
-  (colon-str-to-id ":scenarios")
-  ; => :scenarios
+  (colon-str-to-id ":scenario-id")
+  ; => :scenario-id
 
   (colon-str-to-id ":wom bat")
   ; => :wom

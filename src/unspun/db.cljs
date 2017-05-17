@@ -29,8 +29,8 @@
                     :outcome-verb
                     :outcome
                     :evidence-source
-                    :with
-                    :without
+                    :with-label
+                    :without-label
                     :causative
                     :sources})
 
@@ -43,8 +43,8 @@
                           :outcome-verb    "develop"
                           :outcome         "bowel cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :with            "Bacon every day"
-                          :without         "Normal"
+                          :with-label            "Bacon every day"
+                          :without-label         "Normal"
                           :causative       false
                           }
                 :hrt5    {:tags            #{"preventitive" "breast" "cancer" "osteoporosis"}
@@ -56,8 +56,8 @@
                           :outcome-verb    "develop"
                           :outcome         "breast cancer"
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                          :with            "Taking HRT"
-                          :without         "No HRT"
+                          :with-label            "Taking HRT"
+                          :without-label         "No HRT"
                           :causative       false
                           }
                 :wine    {:tags            #{"alcohol" "breast" "cancer"}
@@ -69,8 +69,8 @@
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :outcome-verb    "develop"
                           :outcome         "breast cancer"
-                          :with            "Half a bottle a day"
-                          :without         "Not drinking"
+                          :with-label            "Half a bottle a day"
+                          :without-label         "Not drinking"
                           :causative       false
                           }
                 :wdoc    {:tags            #{"gender" "care"}
@@ -82,8 +82,8 @@
                           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
                           :outcome-verb    "die"
                           :outcome         "within 30 days of admission"
-                          :with            "Female doctor"
-                          :without         "Male doctor"
+                          :with-label            "Female doctor"
+                          :without-label         "Male doctor"
                           :causative       false
                           }
                 :statins {:tags            #{"preventitive" "medication"}
@@ -95,8 +95,8 @@
                           :outcome-verb    "have"
                           :outcome         "a heart attack or stroke within 10 years"
                           :sources "https://wintoncentre.maths.cam.ac.uk/"
-                          :with            "Taking statins"
-                          :without         "No statins"
+                          :with-label            "Taking statins"
+                          :without-label         "No statins"
                           :causative       true
                           }})
 
