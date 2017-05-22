@@ -5,7 +5,7 @@
             [shared.language :refer [present-participle]]
             ))
 
-(def version "v0.0.10")
+(def version "v0.0.11")
 
 (def flash-error-time 5000)                                 ; duration (ms) of flash error messages
 
@@ -345,6 +345,9 @@
   ; " to "
   ; "7%."]
 
+  (scenarios-as-vec scenarios)
+
+  (scenarios-as-map (scenarios-as-vec scenarios))
 
   (= (scenarios-as-vec (scenarios-as-map (scenarios-as-vec scenarios)))
      (scenarios-as-vec scenarios))

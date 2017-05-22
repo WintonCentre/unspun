@@ -112,12 +112,13 @@
     (container
       {:style {:flex 1}}
       (content
-        {:key            1
-         :theme          (aget my-theme "default")
-         :style          {:flex            1
-                          :backgroundColor (:primary palette)}
-         :refreshControl (refresh-control {:refreshing (rum/react refreshing)
-                                           :onRefresh  #(.log js/console "Refreshing")})
+        {:key   1
+         :theme (aget my-theme "default")
+         :style {:flex            1
+                 :backgroundColor (:primary palette)}
+         #_(comment
+             :refreshControl (refresh-control {:refreshing (rum/react refreshing)
+                                               :onRefresh  #(.log js/console "Refreshing")}))
          }
         (status-bar {:key      (gensym "stories")
                      :hidden   false

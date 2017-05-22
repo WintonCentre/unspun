@@ -325,12 +325,12 @@
   ; => nil
 
   (make-valid-boolean "foo")
-  ; => nil
+  ; => false
 
   (make-valid-boolean "T")
   ; => "t"
 
-  (valid-field? :nn)
+  (valid-field? :scenario-id)
   ; => nil
 
   (valid-field? :relative-risk)
