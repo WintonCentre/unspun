@@ -1,6 +1,7 @@
 (ns shared.client
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [unspun.db :refer [winton-csv app-state scenarios-as-map scenarios-as-vec with-additions flash-error-time max-id-length valid-field?]]
+            [shared.schema :refer [db-schema scenario-keys]]
             [clojure.data.csv :refer [read-csv]]
             [clojure.core.]
             [clojure.core.async :refer [timeout <!]]
@@ -66,7 +67,7 @@
 ;;
 ;;
 ;;
-(defn make-valid-markdown
+(defn make-valid-source
   "Links in this markdown should only be rendered when the CSV source is trusted or when the user has typed in the markdown herself."
   [value]
   (make-valid-string value 0 1024))
@@ -79,20 +80,21 @@
     nil))
 
 (defn valid-value? [field value]
-  (let [f (field {:scenario      identity
-                  :tags          make-valid-tags
-                  :icon          make-valid-icon
-                  :subject       #(make-valid-string % 1 64)
-                  :subjects      #(make-valid-string % 1 128)
-                  :exposure      #(make-valid-string % 1 228)
-                  :baseline-risk #(in-range (make-valid-float %) 0 1)
-                  :relative-risk #(in-range (make-valid-float %) 0)
-                  :outcome-verb  #(make-valid-string % 1 64)
-                  :outcome       #(make-valid-string % 1 128)
-                  :with-label    #(make-valid-string % 1 32)
-                  :without-label #(make-valid-string % 1 32)
-                  :causative     make-valid-boolean
-                  :sources       make-valid-markdown
+  (let [f (field {:scenario              identity
+                  :tags                  make-valid-tags
+                  :icon                  make-valid-icon
+                  :subject               #(make-valid-string % 1 64)
+                  :subjects              #(make-valid-string % 1 128)
+                  :exposure              #(make-valid-string % 1 228)
+                  :baseline-risk         #(in-range (make-valid-float %) 0 1)
+                  :relative-risk         #(in-range (make-valid-float %) 0)
+                  :outcome-verb          #(make-valid-string % 1 64)
+                  :outcome               #(make-valid-string % 1 128)
+                  :with-label            #(make-valid-string % 1 32)
+                  :without-label         #(make-valid-string % 1 32)
+                  :causative             make-valid-boolean
+                  :sources-baseline-risk make-valid-source
+                  :sources-relative-risk make-valid-source
                   })]
     (f value)))
 
