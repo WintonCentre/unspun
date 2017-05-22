@@ -75,6 +75,10 @@
     (is (= (status-message 500)
            "Internal Server Error"))))
 
+(comment
+  (column-ids mock-csv-data)
+  )
+
 (deftest csv-parsing
   (testing "csv parsing utilities"
 
@@ -115,6 +119,10 @@
     (is (= (make-scenarios ((juxt get-scenario-data column-ids) mock-csv-data))
            mock-scenarios))
 
-    (is (=  (mockstore-csv {:creator winton-csv} mock-csv-data)
+    (is (= (mockstore-csv {:creator winton-csv} mock-csv-data)
             mock-app-state))
     ))
+
+(comment
+  (mockstore-csv {:creator winton-csv} mock-csv-data)
+  )

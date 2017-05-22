@@ -27,7 +27,8 @@
 (defn column-ids [rcsv]
   (into []
         (map colon-str-to-id
-             (first (for [v rcsv :when (= ":scenario-id" (first v))] v)))))
+             (first (for [v rcsv
+                          :when (= ":scenario-id" (first v))] v)))))
 
 (defn get-scenario-data [rcsv]
   (filter (comp #(and (starts-with? % ":")
