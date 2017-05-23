@@ -42,6 +42,9 @@
     )
   )
 
+; todo
+; (def mock-scenario-data)
+
 (def mock-app-state {:screen :home,
                      :app-banner "Relative Risks Unspun",
                      :story-index 0,
