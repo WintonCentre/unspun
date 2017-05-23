@@ -21,7 +21,7 @@
                 (error-handler "Network connection error")))))
 
 (comment
-  (def winton-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/risk-app-data.csv")
+  ;(def winton-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/risk-app-data.csv")
   (slurp-csv winton-csv #(println %) #(println "error: " %))
 
   ;; This is where we want to end up
