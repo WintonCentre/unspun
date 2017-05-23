@@ -164,6 +164,25 @@
   (def mock-csv-data (read-csv mock-raw-csv))
 
   (column-ids mock-csv-data)
+  ;=>
+  ;[:scenario
+  ; :tags
+  ; :subject
+  ; :subjects
+  ; :icon
+  ; :exposure
+  ; :with-label
+  ; :without-label
+  ; :outcome-verb
+  ; :outcome
+  ; :relative-risk
+  ; :baseline-risk
+  ; :causative
+  ; :exposed-risk
+  ; :nne
+  ; :sources-relative-risk
+  ; :sources-baseline-risk
+  ; :comments]
 
   (let [[row1, row2, row3] (take 3 mock-csv-data)]
     (prn "row1 = " row1)

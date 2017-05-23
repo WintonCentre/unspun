@@ -34,6 +34,9 @@
                     :causative
                     :sources})
 
+;;;
+;; Built in data
+;;;
 (def scenarios {:bacon   {:tags            #{"food" "bowel" "cancer"}
                           :icon            "ios-man"
                           :subjects        ["person" "people"]

@@ -83,7 +83,7 @@
   (testing "csv parsing utilities"
 
     (is (= (column-ids mock-csv-data)
-           [:scenario-id
+           [:scenario
             :tags
             :subject
             :subjects
@@ -96,10 +96,11 @@
             :relative-risk
             :baseline-risk
             :causative
-            nil
-            nil
-            :sources
-            nil]))
+            :exposed-risk
+            :nne
+            :sources-relative-risk
+            :sources-baseline-risk
+            :comments]))
 
     (is (= (colon-str-to-id ":scenario-id")
            :scenario-id))
