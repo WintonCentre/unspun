@@ -145,6 +145,11 @@
 (comment
 
   ;;;
+  ;; See test profile version in shared.client
+  ;;;
+
+
+  ;;;
   ;; Generate this string by:
   ;; 1) Saving the spreadsheet as a csv file (e.g. in incoming/risk-app.csv)
   ;; 2) Reading the file into EDN using

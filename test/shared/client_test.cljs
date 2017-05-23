@@ -119,11 +119,25 @@
              bacon)
            ))
 
+    (is (= (first (make-scenarios ((juxt get-scenario-data column-ids) mock-csv-data)))
+           [:bacon
+            {:without-label "normal",
+             :baseline-risk 0.06,
+             :tags #{"food" "bowel" "cancer"},
+             :outcome "bowel cancer",
+             :icon "ios-man",
+             :causative false,
+             :with-label "bacon every day",
+             :subjects "people",
+             :exposure "eating a bacon sandwich every day",
+             :relative-risk 1.18,
+             :scenario ":bacon",
+             :outcome-verb "develop",
+             :subject "person"}]))
+
+
     (comment
       ;failing tests
-
-      (is (= (make-scenarios ((juxt get-scenario-data column-ids) mock-csv-data))
-             mock-scenarios))
 
       (is (= (mockstore-csv {:creator winton-csv} mock-csv-data)
              mock-app-state)))
