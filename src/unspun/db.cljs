@@ -19,20 +19,25 @@
 ;;;
 ;; APP-STATE
 ;;;
-(def valid-field? #{:tags
-                    :icon
+
+(def valid-field? #{:scenario
+                    :tags
                     :subject
                     :subjects
+                    :icon
                     :exposure
-                    :baseline-risk
-                    :relative-risk
-                    :outcome-verb
-                    :outcome
-                    :evidence-source
                     :with-label
                     :without-label
+                    :outcome-verb
+                    :outcome
+                    :relative-risk
+                    :baseline-risk
                     :causative
-                    :sources})
+                    :exposed-risk
+                    :nne
+                    :sources-relative-risk
+                    :sources-baseline-risk
+                    :comments})
 
 ;;;
 ;; Built in data
