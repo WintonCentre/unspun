@@ -114,8 +114,10 @@
     (is (= (colon-str-to-id (str ":" (clojure.string/join (repeat 101 "a"))))
            nil))
 
-    (is (= (get-scenario-data mock-csv-data)
-           mock-scenario-data))
+    (is (= (first (get-scenario-data mock-csv-data))
+           (let [[_ _ bacon] mock-csv-data]
+             bacon)
+           ))
 
     (comment
       ;failing tests

@@ -184,12 +184,6 @@
   ; :sources-baseline-risk
   ; :comments]
 
-  (let [[row1, row2, row3] (take 3 mock-csv-data)]
-    (prn "row1 = " row1)
-    (prn "row2 = " row2)
-    (prn "row3 = " row3)
-    )
-
   (= (trunc128 (clojure.string/join "" (repeat 128 ".")))
      (trunc128 (clojure.string/join "" (repeat 129 "."))))
   ; => true
@@ -224,7 +218,7 @@
   (make-valid-boolean "T")
   ; => "t"
 
-  (valid-field? :scenario-id)
+  (valid-field? :scenario)
   ; => nil
 
   (valid-field? :relative-risk)
