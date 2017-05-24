@@ -13,6 +13,7 @@
                                    colon-str-to-id
                                    get-scenario-data
                                    make-scenarios]]
+            [clojure.set :refer [subset?]]
             [shared.mocks :refer [mock-csv-data
                                   ; mock-scenario-data ; todo
                                   ; mock-scenarios ;todo
@@ -119,25 +120,19 @@
              bacon)
            ))
 
+    (is (let [[key scenario] (first (make-scenarios ((juxt get-scenario-data column-ids) mock-csv-data)))]
+          (and (keyword? key)
+               (subset? (into #{} (keys scenario)) valid-field?)))
+        )
+
 
     (comment
       ;failing tests
+      (let [[key scenario] (first (make-scenarios ((juxt get-scenario-data column-ids) mock-csv-data)))]
+        (and (keyword? key)
+             (subset? (into #{} (keys scenario)) valid-field?)))
 
-      (is (= (first (make-scenarios ((juxt get-scenario-data column-ids) mock-csv-data)))
-             [:bacon
-              {:without-label "normal",
-               :baseline-risk 0.06,
-               :tags #{"food" "bowel" "cancer"},
-               :outcome "bowel cancer",
-               :icon "ios-man",
-               :causative false,
-               :with-label "bacon every day",
-               :subjects "people",
-               :exposure "eating a bacon sandwich every day",
-               :relative-risk 1.18,
-               :scenario ":bacon",
-               :outcome-verb "develop",
-               :subject "person"}]))
+      (valid-key? :bacon)
 
 
 

@@ -97,7 +97,14 @@
                   :sources-baseline-risk make-valid-source
                   :sources-relative-risk make-valid-source
                   })]
-    (f value)))
+    (if f (f value) nil)))
+
+(comment
+  (valid-value? :with-label "1234")
+
+  (valid-value? :nne nil)
+  )
+
 
 (defn make-scenario [[sc-key & sc-val] col-ids]
   (reduce conj {:scenario sc-key}
