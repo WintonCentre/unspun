@@ -10,7 +10,7 @@
                  [cljs-exponent "0.1.6"]
                  [react-native-externs "0.0.2-SNAPSHOT"]
                  [org.clojure/tools.namespace "0.2.11"]
-                 [core-async-storage "0.2.0" :exclusions [org.clojure/core.async]]]
+                 [core-async-storage "0.3.0" :exclusions [org.clojure/core.async]]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel "0.5.10" :exclusions [org.clojure/core.async]]
             [lein-environ "1.1.0"]]

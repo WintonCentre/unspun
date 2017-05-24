@@ -2,10 +2,10 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view refresh-control] :as rn]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title]]
-            [unspun.db :refer [app-state refreshing palette-index stories story-index story caps-tidy winton-csv]]
+            [unspun.db :refer [app-state refreshing palette-index stories story-index story caps-tidy winton-csv flash-error]]
             [themes.palettes :refer [palettes get-palette]]
             [shared.non-phantom :refer [slurp-csv]]
-            [shared.client :refer [store-csv flash-error]]
+            [shared.client :refer [store-csv]]
             ))
 
 (def palette-titles

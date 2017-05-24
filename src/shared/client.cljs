@@ -1,9 +1,8 @@
 (ns shared.client
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [unspun.db :refer [winton-csv app-state scenarios-as-map scenarios-as-vec with-additions flash-error-time max-id-length valid-field?]]
+  (:require [unspun.db :refer [winton-csv app-state scenarios-as-map scenarios-as-vec with-additions flash-error flash-error-time max-id-length valid-field?]]
             [shared.schema :refer [db-schema scenario-keys]]
             [clojure.data.csv :refer [read-csv]]
-            [clojure.core.]
             [clojure.core.async :refer [timeout <!]]
             [clojure.string :refer [starts-with? ends-with? trim triml split lower-case]]
             [shared.http-status-codes :refer [status-message]]
@@ -136,15 +135,6 @@
            csv-data)
     )
   )
-
-(defn flash-error [error]
-  (prn (str "flash-error: " error))
-  (swap! app-state assoc :error error)
-  (go
-    (<! (timeout flash-error-time))
-    (swap! app-state assoc :error nil)
-    (prn "cleared flash-error")
-    ))
 
 ;;;
 ;; Take 2 csv processing

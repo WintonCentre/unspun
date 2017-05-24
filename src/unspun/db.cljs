@@ -132,6 +132,7 @@
                       :stories       (initial-stories)
                       :story-index   0
                       :notifications true
+                      :use-cache     false
                       :screen        :home
                       :error         nil
                       :refreshing    false
@@ -145,6 +146,7 @@
 (def story-index (rum/cursor-in app-state [:story-index]))
 (def stories (rum/cursor-in app-state [:stories]))
 (def notifications (rum/cursor-in app-state [:notifications]))
+(def use-cache (rum/cursor-in app-state [:use-cache]))
 
 
 (defn story [index]
@@ -256,6 +258,16 @@
         outcome-text
         ]))))
 
+(defn flash-error
+  "flash an error state in the database"
+  [error]
+  (prn (str "flash-error: " error))
+  (swap! app-state assoc :error error)
+  (go
+    (<! (timeout flash-error-time))
+    (swap! app-state assoc :error nil)
+    (prn "cleared flash-error")
+    ))
 
 ;; todo: copy these to test suite
 

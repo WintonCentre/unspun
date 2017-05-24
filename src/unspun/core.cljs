@@ -12,7 +12,7 @@
                                stack-navigation drawer-navigation drawer-navigation-item]]
             [unspun.screens.top-drawer :refer [drawer]]
 
-            [glittershark.core-async-storage :refer [get-item set-item]]
+            [glittershark.core-async-storage :refer [get-item set-item multi-get multi-set]]
             [cljs.core.async :refer [<!]]
             ))
 
@@ -37,3 +37,5 @@
 (defn init []
   (mount-app)
   (.registerComponent rn/app-registry "main" (fn [] root-component-factory)))
+
+

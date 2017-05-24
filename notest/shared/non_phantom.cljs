@@ -1,7 +1,7 @@
 (ns shared.non-phantom
   (:require [shared.http-status-codes :refer [status-message]]
-            [shared.client :refer [flash-error store-csv]]
-            [unspun.db :refer [winton-csv]]
+            [shared.client :refer [store-csv]]
+            [unspun.db :refer [winton-csv flash-error]]
             ))
 
 ;;
