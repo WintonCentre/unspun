@@ -133,8 +133,10 @@
                       :notifications true
                       :screen        :home
                       :error         nil
+                      :refreshing false
                       }))
 
+(def refreshing (rum/cursor app-state :refreshing))
 (def palette-index (rum/cursor-in app-state [:palette-index]))
 (def brand-title (rum/cursor-in app-state [:brand-title]))
 (def app-banner (rum/cursor-in app-state [:app-banner]))

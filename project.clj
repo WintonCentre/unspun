@@ -33,7 +33,7 @@
                                    [com.cemerick/piggieback "0.2.1"]]
                     :source-paths ["src" "notest" "env/dev"]
                     :cljsbuild    {:builds [{:id           "main"
-                                             :source-paths ["src" "env/dev"]
+                                             :source-paths ["src" "notest" "env/dev"]
                                              :figwheel     true
                                              :compiler     {:output-to     "target/not-used.js"
                                                             :main          "env.main"
@@ -41,7 +41,7 @@
                                                             :optimizations :none}}]}
                     :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}
              :prod {:cljsbuild {:builds [{:id           "main"
-                                          :source-paths ["src" "env/prod"]
+                                          :source-paths ["src" "notest" "env/prod"]
                                           :compiler     {:output-to          "main.js"
                                                          :main               "env.main"
                                                          :output-dir         "target"

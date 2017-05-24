@@ -2,8 +2,10 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view refresh-control] :as rn]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title]]
-            [unspun.db :refer [app-state palette-index stories story-index story caps-tidy]]
+            [unspun.db :refer [app-state refreshing palette-index stories story-index story caps-tidy winton-csv]]
             [themes.palettes :refer [palettes get-palette]]
+            [shared.non-phantom :refer [slurp-csv]]
+            [shared.client :refer [store-csv flash-error]]
             ))
 
 (def palette-titles
@@ -13,6 +15,11 @@
   (content {:theme (aget my-theme "default")}
            (n-icon {:name  name
                     :style {:color (:dark-primary (get-palette @palette-index))}})))
+
+(defn refresh-icon [palette]
+  (n-icon {:name "ios-cloud-download"
+           :style {:color (:accent palette)
+                   :fontSize 30}}))
 
 (defn story-icon [palette name]
   (n-icon {:name  name
@@ -39,6 +46,7 @@
            :style {:color     (:accent palette)
                    :transform [{:scale 1.67}]}}))
 
+
 (defn select-palette-item! [index]
   (n-list-item
     {:key index}
@@ -59,24 +67,34 @@
                       :alignItems      "center"
                       :padding         10})
 
+(defn refresh-list []
+  (slurp-csv winton-csv
+             (fn [csv]
+               (store-csv {:creator winton-csv} csv)
+               (swap! app-state assoc :refreshing false))
+             flash-error)
+  (swap! app-state assoc :refreshing true)
+  )
+
 (defn add-card! [navigator palette]
   (card {:key   (gensym "add-card")
          :style card-style}
         (card-item {:header true
                     :key    1
-                    :style  card-item-style}
+                    :onPress refresh-list
+                    :style  (merge card-item-style {:height 40 :padding 0 :backgroundColor (:light-primary palette)})}
                    (txt {:key   1
                          :style {:flex       4
                                  :marginLeft 34
                                  :fontWeight "normal"
                                  :color      (:secondary-text palette)}}
-                        "Add your own scenario")
-                   (button {:key       2
-                            :bordered  true
-                            :style     {:borderWidth 0
-                                        :borderColor "white"}
-                            :onPress   #(.push navigator "not-yet")}
-                           (add-icon palette)))))
+                        "Refresh")
+                   (button {:key      2
+                            :bordered true
+                            :style    {:borderWidth 0
+                                       :borderColor "white"}
+                            :onPress  refresh-list}
+                           (refresh-icon palette)))))
 
 (defn story-card! [navigator palette index]
   (card {:key   (gensym "story-card")
@@ -98,8 +116,6 @@
                                             (.push navigator "tabs"))}
                            (show-icon palette)))))
 
-(def refreshing (atom true) )
-
 (rum/defcs page < rum/reactive
                   (rum/local 0 ::selection)
                   (add-page-title "Scenarios")
@@ -112,13 +128,13 @@
     (container
       {:style {:flex 1}}
       (content
-        {:key   1
-         :theme (aget my-theme "default")
-         :style {:flex            1
-                 :backgroundColor (:primary palette)}
-         #_(comment
-             :refreshControl (refresh-control {:refreshing (rum/react refreshing)
-                                               :onRefresh  #(.log js/console "Refreshing")}))
+        {:key            1
+         :theme          (aget my-theme "default")
+         :style          {:flex            1
+                          :backgroundColor (:primary palette)}
+
+         :refreshControl (refresh-control {:refreshing (rum/react refreshing)
+                                           :onRefresh  refresh-list})
          }
         (status-bar {:key      (gensym "stories")
                      :hidden   false
