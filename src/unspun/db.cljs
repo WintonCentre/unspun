@@ -42,19 +42,20 @@
 ;;;
 ;; Built in data
 ;;;
-(def scenarios {:bacon {:tags            #{"food" "bowel" "cancer"}
-                        :icon            "ios-man"
-                        :subject         "person"
-                        :subjects        "people"
-                        :exposure        "eating a bacon sandwich every day"
-                        :baseline-risk   0.06
-                        :relative-risk   1.18
-                        :outcome-verb    "develop"
-                        :outcome         "bowel cancer"
-                        :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-                        :with-label      "Bacon every day"
-                        :without-label   "Normal"
-                        :causative       false
+(def scenarios {:bacon {:tags                  #{"food" "bowel" "cancer"}
+                        :icon                  "ios-man"
+                        :subject               "person"
+                        :subjects              "people"
+                        :exposure              "eating a bacon sandwich every day"
+                        :baseline-risk         0.06
+                        :relative-risk         1.18
+                        :outcome-verb          "develop"
+                        :outcome               "bowel cancer"
+                        :with-label            "Bacon every day"
+                        :without-label         "Normal"
+                        :causative             false
+                        :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
+                        :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
                         }})
 
 (comment
@@ -133,7 +134,7 @@
                       :notifications true
                       :screen        :home
                       :error         nil
-                      :refreshing false
+                      :refreshing    false
                       }))
 
 (def refreshing (rum/cursor app-state :refreshing))
@@ -239,7 +240,7 @@
                         )]
      (if causative
        ["On average, for "                                  ; head
-        (str "one " (extra relative-risk) " " subject " ") ; mark-one
+        (str "one " (extra relative-risk) " " subject " ")  ; mark-one
         (format "to ~a, " outcome-inf)                      ; one-to-group
         (format "~d more " nn)                              ; group
         (format (str (n-plural-form [subject subjects]) " would need to be ~a. Of these, ") nn exposure) ; group-to-anyway
@@ -247,7 +248,7 @@
         outcome-text
         ]
        ["On average, for "                                  ; head
-        (str "one " (extra relative-risk) " " subject " ") ; mark-one
+        (str "one " (extra relative-risk) " " subject " ")  ; mark-one
         (format "to ~a, we would need " outcome-inf)        ; one-to-group
         (format "a group of ~d more " nn)                   ; group
         (format (str (n-plural-form [subject subjects]) " ~a. Of these, ") nn exposure) ; group-to-anyway
