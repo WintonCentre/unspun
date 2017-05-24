@@ -17,8 +17,7 @@
             [shared.mocks :refer [mock-csv-data
                                   ; mock-scenario-data ; todo
                                   ; mock-scenarios ;todo
-                                  mockstore-csv
-                                  mock-app-state]]
+                                  mockstore-csv]]
             [shared.http-status-codes :refer [status-message]]
             ))
 
@@ -122,8 +121,7 @@
 
     (is (let [[key scenario] (first (make-scenarios ((juxt get-scenario-data column-ids) mock-csv-data)))]
           (and (keyword? key)
-               (subset? (into #{} (keys scenario)) valid-field?)))
-        )
+               (subset? (into #{} (keys scenario)) valid-field?))))
 
 
     (comment
@@ -136,8 +134,7 @@
 
 
 
-      (is (= (mockstore-csv {:creator winton-csv} mock-csv-data)
-             mock-app-state)))
+      (mockstore-csv {:creator winton-csv} mock-csv-data))
     ))
 
 (comment

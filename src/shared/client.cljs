@@ -123,6 +123,7 @@
              (make-scenario sd col-ids)])))
 ;; networking
 
+; :todo - move to metadata?
 (defn merge-new-scenarios [creator old-scenarios new-scenarios]
   (with-additions creator (scenarios-as-vec (merge old-scenarios new-scenarios))))
 

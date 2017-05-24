@@ -4,6 +4,10 @@
             [unspun.db :refer [winton-csv]]
             ))
 
+;;
+;; This is production code that cannot be tested in phantom because phantom does not support js/fetch
+;;
+
 (defn slurp-csv [url success-handler error-handler]
   (-> (js/fetch url)
 
