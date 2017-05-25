@@ -5,7 +5,7 @@
             [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
             [unspun.db :refer [app-state brand-title palette-index]]
-            [shared.async-storage :refer [setup-watches!]]
+            [shared.async-storage :refer [reload-app-state!]]
             [unspun.navigation.router :refer [Router]]
             [unspun.screens.top-drawer :refer [drawer]]
             [themes.palettes :refer [palettes get-palette]]
@@ -34,12 +34,12 @@
 
 (defonce root-component-factory (support/make-root-component-factory))
 
-(setup-watches!)
-
 (defn mount-app [] (support/mount (AppRoot app-state)))
 
 (defn init []
   (mount-app)
-  (.registerComponent rn/app-registry "main" (fn [] root-component-factory)))
+  (.registerComponent rn/app-registry "main" (fn [] root-component-factory))
+  (reload-app-state!)
+  )
 
 
