@@ -12,8 +12,6 @@
             [shared.ui :refer [ex-navigation create-router navigation-provider
                                stack-navigation drawer-navigation drawer-navigation-item]]
             [unspun.screens.top-drawer :refer [drawer]]
-
-            [glittershark.core-async-storage :refer [get-item set-item multi-get multi-set]]
             [cljs.core.async :refer [<!]]
 
             ))
