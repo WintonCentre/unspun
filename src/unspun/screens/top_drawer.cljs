@@ -141,7 +141,7 @@
            :defaultRouteConfig (defaultRouteConfig "Settings")
            :initialRoute       (.getRoute Router "settings")}))
 
-      (drawer-navigation-item
+      #_(drawer-navigation-item
         {:id            "share"
          :selectedStyle (aget st "selectedItemStyle")
          :renderIcon    #(menu-icon "ios-share-outline" palette %)

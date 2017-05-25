@@ -5,6 +5,7 @@
             [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight] :as rn]
             [unspun.db :refer [app-state brand-title palette-index]]
+            [shared.async-storage :refer [setup-watches!]]
             [unspun.navigation.router :refer [Router]]
             [unspun.screens.top-drawer :refer [drawer]]
             [themes.palettes :refer [palettes get-palette]]
@@ -14,6 +15,7 @@
 
             [glittershark.core-async-storage :refer [get-item set-item multi-get multi-set]]
             [cljs.core.async :refer [<!]]
+
             ))
 
 
@@ -31,6 +33,8 @@
   )
 
 (defonce root-component-factory (support/make-root-component-factory))
+
+(setup-watches!)
 
 (defn mount-app [] (support/mount (AppRoot app-state)))
 
