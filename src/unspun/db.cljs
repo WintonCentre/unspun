@@ -1,5 +1,7 @@
 (ns unspun.db
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [rum.core :as rum]
+            [clojure.core.async :refer [timeout <!]]
             [clojure.pprint :refer [cl-format]]
             [clojure.string :refer [capitalize replace]]
             [shared.language :refer [present-participle]]
