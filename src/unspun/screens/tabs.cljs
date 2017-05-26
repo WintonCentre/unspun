@@ -22,14 +22,14 @@
              :key                "tabs"
              :id                 "tab-navigation"
              :navigatorUID       "tab-navigation"
-             :barBackgroundColor (:dark-primary palette)
+             :barBackgroundColor (:primary palette)
              :indicatorStyle     {:backgroundColor (:accent palette)}
              :initialTab         "bars"
              }
             (sliding-tab-navigation-item
-              {:id    "stats"
-               :key   "stats"
-               :title "Numbers"}
+              {:id         "stats"
+               :key        "stats"
+               :title      "Numbers"}
               (stats/page)
               )
             (sliding-tab-navigation-item

@@ -23,7 +23,16 @@
     {:key      (gensym "radio-list")
      :selected (= @palette-index index)
      :onPress  #(reset! palette-index index)}
-    (txt {:key 2} (palette-titles index))
+    (view {:style {:backgroundColor (:primary (get-palette index))
+                   :borderRadius    30
+                   :width           30
+                   :height          30}}
+          (view {:style {:backgroundColor (:accent (get-palette index))
+                         :borderRadius    10
+                         :width           10
+                         :height          10}}))
+    (txt {:key 2
+          :style {:paddingLeft 10}} (palette-titles index))
     (right (radio {:key      (gensym "radio")
                    :selected (= @palette-index index)}))
     ))

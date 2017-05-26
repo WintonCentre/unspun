@@ -119,7 +119,7 @@
                       {:key     6
                        :icon    (download-icon palette)
                        :onPress #(.push (aget (:rum/react-component state) "props" "navigator") "edit-url")
-                       :title   "Update URL for risk scenarios " :hasNavArrow true}
+                       :title   "Set the URL for scenario updates" :hasNavArrow true}
                       )
                     ))
             (view {:style {:flex 1}}

@@ -17,44 +17,21 @@
                 :divider        "#BDBDBD"
                 :error          "#FF6688"}
 
-               :blue-grey-pink                              ;;WebAIM.org contrast checked
-               {:dark-primary   "#37474f"
-                :primary        "#455A64"
+               :dark-blue-grey-orange                       ;;WebAIM.org contrast checked
+               {:dark-primary   "#263238"
+                :primary        "#37474f"
                 :light-primary  "#CFD8DC"
                 :text-icons     "#FFFFFF"
-                :accent         "#FF4081"
-                :light-accent   "#F48fb1"
+                :accent         "#FF9800"
+                :light-accent   "#FFD180"
                 :primary-text   "#212121"
                 :secondary-text "#757575"
                 :divider        "#BDBDBD"
                 :error          "#FF6688"}
-
-
-               :mid-blue-grey-pink
-               {:dark-primary   "#455A64"
-                :primary        "#607D8B"
-                :light-primary  "#CFD8DC"
-                :text-icons     "#FFFFFF"
-                :accent         "#FF4081"
-                :light-accent   "#F48fb1"
-                :primary-text   "#212121"
-                :secondary-text "#757575"
-                :divider        "#BDBDBD"
-                :error          "#FF6688"}
-
-               #_{:dark-primary   "#455A64"
-                  :primary        "#607D8B"
-                  :light-primary  "#CFD8DC"
-                  :text-icons     "#FFFFFF"
-                  :accent         "#FF4081"
-                  :primary-text   "#212121"
-                  :secondary-text "#757575"
-                  :divider        "#BDBDBD"
-                  :error          "#FF6688"}
 
                :blue-grey-teal
-               {:dark-primary   "#455A64"
-                :primary        "#607D8B"
+               {:dark-primary   "#263238"
+                :primary        "#37474f"
                 :light-primary  "#CFD8DC"
                 :text-icons     "#FFFFFF"
                 :accent         "#009688"
@@ -100,15 +77,15 @@
                 :divider        "#BDBDBD"
                 :error          "#FF6688"}
 
-               :deep-purple-pink
-               {:dark-primary   "#512DA8"
-                :primary        "#673AB7"
-                :light-primary  "#D1C4E9"
-                :text-icons     "#FEFEFE"
-                :accent         "#FF4081"
-                :light-accent   "##F48fb1"
-                :primary-text   "#212121"
-                :secondary-text "#757575"
+               :dark-on-light
+               {:dark-primary   "#80cbc4"
+                :primary        "#4db6ac"
+                :light-primary  "#00695c"
+                :text-icons     "#eeeeee"
+                :accent         "#283593"
+                :light-accent   "#e1f5fe"
+                :primary-text   "#cccccc"
+                :secondary-text "#212121"
                 :divider        "#BDBDBD"
                 :error          "#FF6688"}})
 
