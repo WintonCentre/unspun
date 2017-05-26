@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [clojure.core.async :refer [timeout <!]]
             [clojure.pprint :refer [cl-format]]
-            [clojure.string :refer [capitalize replace]]
+            [clojure.string :refer [capitalize replace trim split]]
             [shared.language :refer [present-participle]]
             ))
 
@@ -140,6 +140,33 @@
                       :refreshing    false
                       :scenario-url  winton-csv
                       }))
+
+(defn parse-source [source]
+  (let [[link1 url1] (split (trim source) #"\s*\]\s*\(\s*")
+        [prefix link2] (split link1 #"\s*\[\s*")
+        [url2 postfix] (split url1 #"\s*\).*")
+        ]
+    {:prefix (trim prefix) :link link2 :url url2}))
+; (parse-source "   hello [ there] ( http://foo.com  )")
+; => {:prefix "hello", :link "there", :url "http://foo.com"}
+
+(defn parse-sources [sources]
+  (when (and sources (not= sources ""))
+    (map parse-source (split (trim sources) #"\n+"))))
+
+(comment
+  (parse-source "   hello [ there] ( http://foo.com  )")
+  ;=> {:prefix "hello", :link "there", :url "http://foo.com"}
+
+  (parse-sources "\n\nA comment [ link1 ] (url1  )\n Another comment [link2]( url2)\n")
+  ;=> ({:prefix "A comment", :link "link1", :url "url1"} {:prefix "Another comment", :link "link2", :url "url2"})
+
+  (parse-sources "")
+  ;=> nil
+
+  (parse-sources nil)
+  ;=> nil
+  )
 
 (def refreshing (rum/cursor app-state :refreshing))
 (def palette-index (rum/cursor-in app-state [:palette-index]))

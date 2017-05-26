@@ -52,8 +52,8 @@
                          (text {:style text-style}
                                "In pictures the app reveals that 93 people would have to give up eating daily bacon before 1 person would be saved from cancer.")
                          (text {:style text-style}
-                               "It looks quite different when you put it like that!\n\nLook at our other examples, or put in numbers for yourself to reveal the truth behind those headline figures.")
-                         (text {:style text-style}
+                               "It looks quite different when you put it like that!\n\nRefresh the list of scenarios to see our latest.\n\n See Settings to hook up your own data source.")
+                         #_(text {:style text-style}
                                "Turn on notifications if you want to know when we add more examples.")
                          )
             (view {:style {:flex            0.18

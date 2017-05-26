@@ -4,7 +4,7 @@
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar list-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item ]]
-            [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp]]
+            [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp parse-sources]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             ))
 
@@ -24,6 +24,21 @@
 (defn percentage [value]
   (str (to-pc value) "%"))
 
+(empty? "a")
+
+(defn show-sources [style sources]
+  (prn sources)
+  (let [small-link-style (merge style {:color "blue" :textDecoration "underline"})]
+    (when sources
+      (when-not (empty? (:prefix sources))
+        (txt {:key   2
+              :style style}
+             (:prefix sources)))
+      (when-not (empty? (:link sources))
+        (txt {:key     3
+              :style   small-link-style
+              :onPress #(js/alert (str "Visit " (:url sources)))}
+             (str " " (:link sources)))))))
 
 (defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
@@ -39,8 +54,10 @@
                     :backgroundColor (:primary palette)}]
 
     (let [palette (get-palette (rum/react palette-index))
-          text-style {                                      ;:fontSize 14
-                      :color (:text-icons palette)}]
+          text-style {:color (:text-icons palette)}
+          small-text-style (merge text-style {:fontSize 10})
+          br-sources (parse-sources (:sources-baseline-risk scenar))
+          rr-sources (parse-sources (:sources-relative-risk scenar))]
       (container
         {:key   "stats-container"
          :style {:flex            1
@@ -61,13 +78,16 @@
               {:key (gensym "item")}
               (txt {:key   1
                     :style text-style}
-                   (str "background risk: " (percentage br) " (baseline risk: " br ")")))
+                   (str "background risk: " (percentage br) " (baseline risk: " br ")")
+                   (show-sources small-text-style br-sources))
+              )
             (n-list-item
               {:key (gensym "item")}
               (txt {:key   1
                     :style text-style}
                    (str (if (> rr 1) (str "increase: " (percentage (- rr 1)))
-                                     (str "decrease: " (percentage (- 1 rr)))) " (relative risk: " rr ")")))
+                                     (str "decrease: " (percentage (- 1 rr)))) " (relative risk: " rr ")")
+                   (show-sources small-text-style rr-sources)))
 
             (n-list-item
               {:key (gensym "item")}
