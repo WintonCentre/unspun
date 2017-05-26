@@ -85,14 +85,13 @@
                                  :justifyContent  "flex-end"
                                  :alignItems      "flex-start"
                                  }}
-                       (button {:style   {:backgroundColor (:secondary-text palette)}
+                       (button {:style   {:backgroundColor (:accent palette)}
                                 :onPress #(reset! scenario-url winton-csv)}
-                               (text {:style {:color "white"}
+                               (text {:style {:color (:text-icons palette)}
                                       :block true} "Revert to default setting"))
 
                        )
             )
-
 
       )))
 
@@ -160,8 +159,7 @@
                                       :number-of-lines 3
                                       :keyboardType    "url"
                                       :value           (rum/react scenario-url)
-                                      :onChangeText    #(do (println %)
-                                                            (reset! scenario-url %))})
+                                      :onChangeText    #(reset! scenario-url %)})
 
                          )
 

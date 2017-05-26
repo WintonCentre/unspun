@@ -68,7 +68,7 @@
                       {:key         1
                        :headerText  "offline use"
                        :headerStyle {:marginTop 30
-                                     :color     "rgba(255,255,255,0.8)"}})
+                                     :color     (:text-icons palette)}})
 
 
                     #_(settings-list-item
@@ -102,7 +102,7 @@
                       {:key         3
                        :headerText  "theming"
                        :headerStyle {:marginTop 30
-                                     :color     "rgba(255,255,255,0.8)"}})
+                                     :color     (:text-icons palette)}})
                     (settings-list-item
                       {:key     4
                        :icon    (palette-icon palette)
@@ -113,7 +113,7 @@
                       {:key         5
                        :headerText  "updates"
                        :headerStyle {:marginTop 30
-                                     :color     "rgba(255,255,255,0.8)"}})
+                                     :color     (:text-icons palette)}})
 
                     (settings-list-item
                       {:key     6

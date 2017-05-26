@@ -106,7 +106,7 @@
                                           }
                                 :onPress #(jumpToDrawer "scenarios" "stories")}
 
-                               (text {:style {:color      (:text-icons (get-palette (rum/react palette-index)))
+                               (text {:style {:color      (:light-accent (get-palette (rum/react palette-index)))
                                               :textAlign  "center"
                                               :fontWeight "bold"}}
                                      "Start")))))

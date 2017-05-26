@@ -78,15 +78,15 @@
                 :error          "#FF6688"}
 
                :dark-on-light
-               {:dark-primary   "#80cbc4"
-                :primary        "#4db6ac"
-                :light-primary  "#00695c"
-                :text-icons     "#eeeeee"
-                :accent         "#283593"
-                :light-accent   "#e1f5fe"
-                :primary-text   "#cccccc"
-                :secondary-text "#212121"
-                :divider        "#BDBDBD"
+               {:dark-primary   "#ffffff"
+                :primary        "#eeeeee"
+                :light-primary  "#666666"
+                :text-icons     "#000000"
+                :accent         "#263238"
+                :light-accent   "#999999"
+                :primary-text   "#444444"
+                :secondary-text "#222222"
+                :divider        "#666666"
                 :error          "#FF6688"}})
 
 

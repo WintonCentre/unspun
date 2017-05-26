@@ -18,7 +18,7 @@
 
 (defn refresh-icon [palette]
   (n-icon {:name "ios-cloud-download"
-           :style {:color (:accent palette)
+           :style {:color (:primary palette)
                    :fontSize 30}}))
 
 (defn story-icon [palette name]
@@ -87,7 +87,7 @@
                          :style {:flex       4
                                  :marginLeft 34
                                  :fontWeight "normal"
-                                 :color      (:secondary-text palette)}}
+                                 :color      (:primary palette)}}
                         "Refresh")
                    (button {:key      2
                             :bordered true

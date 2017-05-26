@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar list-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item ]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item linking]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp parse-sources]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
             ))
@@ -27,18 +27,19 @@
 (empty? "a")
 
 (defn show-sources [style sources]
-  (prn sources)
-  (let [small-link-style (merge style {:color "blue" :textDecoration "underline"})]
-    (when sources
-      (when-not (empty? (:prefix sources))
-        (txt {:key   2
-              :style style}
-             (:prefix sources)))
-      (when-not (empty? (:link sources))
-        (txt {:key     3
-              :style   small-link-style
-              :onPress #(js/alert (str "Visit " (:url sources)))}
-             (str " " (:link sources)))))))
+
+  (let [small-link-style (merge style {:textDecorationLine "underline"})]
+    (map (fn [source] (when source
+                        (when-not (empty? (:prefix source))
+                          (txt {:key   2
+                                :style style}
+                               (:prefix source)))
+                        (when-not (empty? (:link source))
+                          (txt {:key     3
+                                :style   small-link-style
+                                :onPress #(.openURL linking (:url source))}
+                               (str " " (:link source))))))
+         sources)))
 
 (defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
@@ -55,7 +56,7 @@
 
     (let [palette (get-palette (rum/react palette-index))
           text-style {:color (:text-icons palette)}
-          small-text-style (merge text-style {:fontSize 10})
+          small-text-style (merge text-style {:fontSize 14})
           br-sources (parse-sources (:sources-baseline-risk scenar))
           rr-sources (parse-sources (:sources-relative-risk scenar))]
       (container
@@ -68,9 +69,6 @@
            :theme (aget my-theme "default")
            :style {:flex 1}}
 
-          #_(status-bar {:key      "stats-status-bar"
-                       :hidden   false
-                       :barStyle "light-content"})
           (n-list
             {:key   "stats-list"
              :style {:flex 1}}
@@ -78,15 +76,15 @@
               {:key (gensym "item")}
               (txt {:key   1
                     :style text-style}
-                   (str "background risk: " (percentage br) " (baseline risk: " br ")")
+                   (str "Background risk: " (percentage br) " (baseline risk: " br ")\n\n")
                    (show-sources small-text-style br-sources))
               )
             (n-list-item
               {:key (gensym "item")}
               (txt {:key   1
                     :style text-style}
-                   (str (if (> rr 1) (str "increase: " (percentage (- rr 1)))
-                                     (str "decrease: " (percentage (- 1 rr)))) " (relative risk: " rr ")")
+                   (str (if (> rr 1) (str "Increased risk: " (percentage (- rr 1)))
+                                     (str "Decreased risk: " (percentage (- 1 rr)))) " (relative risk: " rr ")\n\n")
                    (show-sources small-text-style rr-sources)))
 
             (n-list-item

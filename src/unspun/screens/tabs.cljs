@@ -15,7 +15,8 @@
         palette (get-palette (rum/react palette-index))]
     (view {:style {
                    :flex            1
-                   :backgroundColor "#CCF"
+                   ;:backgroundColor "#CCF"
+                   :color "red"
                    }}
           (sliding-tab-navigation
             {:flex               0.9
@@ -24,12 +25,14 @@
              :navigatorUID       "tab-navigation"
              :barBackgroundColor (:primary palette)
              :indicatorStyle     {:backgroundColor (:accent palette)}
+             :labelStyle         {:color (:text-icons palette)}
              :initialTab         "bars"
              }
             (sliding-tab-navigation-item
               {:id         "stats"
                :key        "stats"
-               :title      "Numbers"}
+               :title      "Numbers"
+               :style {:color "red"}}
               (stats/page)
               )
             (sliding-tab-navigation-item

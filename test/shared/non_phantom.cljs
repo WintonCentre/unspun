@@ -25,7 +25,7 @@
 
 (comment
 
-  (slurp-csv @scenario-url #(println %) #(println "error: " %))
+  ;(slurp-csv @scenario-url #(println %) #(println "error: " %))
 
   ;; This is where we want to end up
   (slurp-csv @scenario-url #(store-csv {:creator @scenario-url} %) flash-error))
