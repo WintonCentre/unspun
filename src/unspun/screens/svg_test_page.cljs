@@ -18,7 +18,7 @@
    :backgroundColor (:primary palette)})
 
 (defc startup-title < rum/reactive [& {:keys [title style]
-                                       :or   {title "Relative Risks Unspun"
+                                       :or   {title "Risk Checker"
                                               style (title-style (get-palette (rum/react palette-index)))}}]
   (text {
          :style style} title))

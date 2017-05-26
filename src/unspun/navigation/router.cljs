@@ -12,6 +12,7 @@
             [unspun.screens.not-yet :as not-yet]
             [unspun.screens.story-list :as story-list]
             [unspun.screens.select-palette :as select-palette]
+            [unspun.screens.scenario-url-editor :as edit-url]
             [unspun.screens.tabs :as tabs]
             [themes.palettes :refer [get-palette header-background]]
             [unspun.db :refer [palette-index]]
@@ -38,6 +39,7 @@
                                   :settings       (wrap settings/page)
                                   :not-yet        (wrap not-yet/page)
                                   :select-palette (wrap select-palette/page)
+                                  :edit-url       (wrap edit-url/page)
                                   :stories        (wrap story-list/page)
                                   :tabs           (wrap tabs/page)
                                   })))

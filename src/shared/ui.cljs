@@ -1,6 +1,6 @@
 (ns shared.ui
   (:require [cljs-exponent.core :refer [react-native]]
-            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar refresh-control] :as rn]))
+            [cljs-exponent.components :refer [element text text-input view image touchable-highlight status-bar refresh-control] :as rn]))
 
 
 (def platform (aget react-native "Platform"))

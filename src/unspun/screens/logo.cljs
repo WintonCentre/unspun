@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [version app-state palette-index brand-title app-banner to-pc clamp]]
+            [unspun.db :refer [version app-state palette-index brand-title app-banner to-pc clamp winton-csv scenario-url]]
             [graphics.svg :refer [svg circle rect]]))
 
 ;(def logo-img (js/require "./assets/images/logo.png"))
@@ -21,18 +21,21 @@
    :backgroundColor (:primary (get-palette @palette-index))})
 
 (defn brand-style []
-  {:fontSize          30
-   :lineHeight        60
-   :fontWeight        "normal"
-   :textAlign         "center"
-   :color             (:light-primary (get-palette @palette-index))})
+  {:fontSize   30
+   :lineHeight 60
+   :fontWeight "normal"
+   :textAlign  "center"
+   :color      (:light-primary (get-palette @palette-index))})
 
 (defn version-style []
-  {:fontSize          14
+  {:fontSize   14
    ;:lineHeight        10
-   :fontWeight        "normal"
-   :textAlign         "center"
-   :color             (:light-primary (get-palette @palette-index))})
+   :fontWeight "normal"
+   :textAlign  "center"
+   :color      (:light-primary (get-palette @palette-index))})
+
+(defn winton-brand? [url]
+  (= url winton-csv))
 
 
 (defcs logo-page < rum/reactive [state router]
@@ -50,23 +53,27 @@
                        :barStyle "light-content"})
 
           (text {:style (brand-style)}
-                (rum/react brand-title))
+                (if (winton-brand? (rum/react scenario-url))
+                  (rum/react brand-title)
+                  "Customised"))
 
-          (view {}
-            (text {:style (brand-style)}
-                  (rum/react app-banner))
+          (when (winton-brand? (rum/react scenario-url))
+            (view {}
+                  (text {:style (brand-style)}
+                        (rum/react app-banner))
 
-            (text {:style (version-style)}
-                  version))
+                  (text {:style (version-style)}
+                        version)))
 
-          (view {:style {:flexDirection  "column"
-                         :justifyContent "flex-start"
-                         :alignItems     "center"
-                         }}
-                (image {:source          brand
-                        :resizeMode      "contain"
-                        :style           {:width  250
-                                          :height 250}}))
+          (when (winton-brand? (rum/react scenario-url))
+            (view {:style {:flexDirection  "column"
+                           :justifyContent "flex-start"
+                           :alignItems     "center"
+                           }}
+                  (image {:source     brand
+                          :resizeMode "contain"
+                          :style      {:width  250
+                                       :height 250}})))
 
           (touchable-highlight {:style   {;:flex           0.1
                                           :marginLeft     20
@@ -99,9 +106,9 @@
                                           }
                                 :onPress #(jumpToDrawer "scenarios" "stories")}
 
-                               (text {:style {:color           (:text-icons (get-palette (rum/react palette-index)))
-                                              :textAlign       "center"
-                                              :fontWeight      "bold"}}
+                               (text {:style {:color      (:text-icons (get-palette (rum/react palette-index)))
+                                              :textAlign  "center"
+                                              :fontWeight "bold"}}
                                      "Start")))))
 
 

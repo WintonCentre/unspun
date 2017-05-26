@@ -129,7 +129,7 @@
 
 (def app-state (atom {:palette-index 0
                       :brand-title   "Winton Centre"
-                      :app-banner    "Relative Risks Unspun"
+                      :app-banner    "Risk Checker"
                       :scenario      :hrt5
                       :stories       (initial-stories)
                       :story-index   0
@@ -151,6 +151,7 @@
 (def notifications (rum/cursor-in app-state [:notifications]))
 (def use-cache (rum/cursor-in app-state [:use-cache]))
 (def scenario-url (rum/cursor-in app-state [:scenario-url]))
+(def error-status (rum/cursor-in app-state [:error]))
 
 
 (defn story [index]
@@ -265,12 +266,12 @@
 (defn flash-error
   "flash an error state in the database"
   [error]
-  (prn (str "flash-error: " error))
+  (js/alert error)
   (swap! app-state assoc :error error)
   (go
     (<! (timeout flash-error-time))
-    (swap! app-state assoc :error nil)
-    (prn "cleared flash-error")
+    (reset! error-status nil)
+    (reset! refreshing nil)
     ))
 
 ;; todo: copy these to test suite
