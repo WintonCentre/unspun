@@ -1,7 +1,7 @@
 (ns shared.non-phantom
   (:require [shared.http-status-codes :refer [status-message]]
             [shared.client :refer [store-csv]]
-            [unspun.db :refer [winton-csv flash-error ]]
+            [unspun.db :refer [scenario-url flash-error ]]
             ))
 
 ;;
@@ -13,7 +13,6 @@
 
       (.then (fn [resp]
                (when-not (nil? resp)
-                 ;(.log js/console resp)
                  (let [handler (if (.-ok resp)
                                  success-handler
                                  #(error-handler (str url "\n" (status-message (.-status resp)))))]
@@ -21,12 +20,12 @@
                        (.then handler))))))
 
       (.catch (fn [error]
-                (.log js/console error)
+                (flash-error error)
                 (error-handler "Network connection error")))))
 
 (comment
-  ;(def winton-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/risk-app-data.csv")
-  (slurp-csv winton-csv #(println %) #(println "error: " %))
+
+  (slurp-csv @scenario-url #(println %) #(println "error: " %))
 
   ;; This is where we want to end up
-  (slurp-csv winton-csv #(store-csv {:creator winton-csv} %) flash-error))
+  (slurp-csv @scenario-url #(store-csv {:creator @scenario-url} %) flash-error))

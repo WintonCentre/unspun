@@ -134,10 +134,11 @@
                       :stories       (initial-stories)
                       :story-index   0
                       :notifications true
-                      :use-cache     false
+                      :use-cache     true
                       :screen        :home
                       :error         nil
                       :refreshing    false
+                      :scenario-url  winton-csv
                       }))
 
 (def refreshing (rum/cursor app-state :refreshing))
@@ -149,6 +150,7 @@
 (def stories (rum/cursor-in app-state [:stories]))
 (def notifications (rum/cursor-in app-state [:notifications]))
 (def use-cache (rum/cursor-in app-state [:use-cache]))
+(def scenario-url (rum/cursor-in app-state [:scenario-url]))
 
 
 (defn story [index]

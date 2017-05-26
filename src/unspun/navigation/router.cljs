@@ -23,7 +23,7 @@
 
 (defn wrap [screen]
   (let [cp-class (:rum/class (meta screen))]
-    #(wrap-route cp-class {:navigationBar {:backgroundColor "black" ;header-background
+    #(wrap-route cp-class {:navigationBar {:backgroundColor "black"
                                            }})))
 
 

@@ -84,7 +84,7 @@
                        :switchOnValueChange #(reset! use-cache %)
                        :hasSwitch           true
                        :icon                (cache-icon palette cache-on)
-                       :title               (if cache-on "Storing scenarios on device.\nSwitch off to clear storage." "Local storage cleared.\nSwitch on to use offline.")
+                       :title               (if cache-on "Save app state on device.\nSwitch off to clear." "Local storage cleared.\nSwitch on to use offline.")
                                             :title-style {:width   120
                                                           :opacity 0.5
                                                           }})

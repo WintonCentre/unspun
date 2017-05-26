@@ -8,11 +8,6 @@
 
 (defn pan-logger [name]
   (fn [evt gesture-state]
-    #_(when gesture-state
-      #_(doseq [prop ["moveX" "moveY" "x0" "y0" "dx" "dy" "vx" "vy" "numberActiveTouches"]]
-        (.log js/console (g-prop gesture-state prop)))
-      (.log js/console name)
-      )
     (if (= name "onTerminationRequest") false true)))
 
 (defn onTerminationRequest []
@@ -21,7 +16,6 @@
 
 (defn on-release [state]
   (fn [_ _]
-    #_(.log js/console "release")
     (reset! (:zooming state) false)
     ))
 

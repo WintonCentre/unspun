@@ -24,7 +24,8 @@
                                :fontSize 30}} "hello")
                 (apply picker
                   [{:selectedValue "js"
-                    :onValueChange #(.log js/console %)}
+                    ;:onValueChange #(.log js/console %)
+                    }
                    (picker-item {:label "Java" :value "java"})
                    (picker-item {:label "JavaScript" :value "js"})
                    (picker-item {:label "Objective C" :value "objc"})

@@ -9,12 +9,12 @@
 
 
 (defn save-app-state! [new-state]
-  (println "saved app-state")
+  ;(println "saved app-state")
   (go (let [[error] (<! (set-item app-cache-key new-state))]
         (when-not (nil? error) (flash-error error)))))
 
 (defn save-use-cache! [new-state]
-  (println "save-use-cache!")
+  ;(println "save-use-cache!")
   (go (let [[error] (<! (set-item use-cache-key new-state))]
         (when-not (nil? error) (flash-error error)))))
 
@@ -22,22 +22,22 @@
 (defn add-app-state-watch []
   (add-watch app-state app-cache-key
              (fn [key app-state old-state new-state]
-               (println "app-state  -> " new-state)
+               ;(println "app-state  -> " new-state)
                (save-app-state! new-state)
                )))
 
 (defn use-cache-changed [key use-cache old new]
-  (println key old "->" new)
+  ;(println key old "->" new)
   (if new
     (do
       ;; use-cache is on. Save app-state and arrange to resave it on change
-      (println "cache on")
+      ;(println "cache on")
       (save-app-state! @app-state)
       (save-use-cache! true)
       (add-app-state-watch))
     (do
       ;; use-cache is off. Clear cache and remove app-state watch
-      (println "clear app state")
+      ;(println "clear app state")
       (remove-watch app-state app-cache-key)
       (save-use-cache! false)
       (go (<! (remove-item app-cache-key)))
@@ -59,7 +59,7 @@
   (go
     ;; avoid interference from active watches by removing them.
     ;; necessary for a figwheel reload
-    (println "reloading-app-state")
+    ;(println "reloading-app-state")
     (remove-watch use-cache use-cache-key)
     (remove-watch app-state app-cache-key)
 
@@ -67,7 +67,7 @@
     (let [[error using-cache?] (<! (get-item use-cache-key))]
       (if error
         (flash-error error)
-        (do (println "cache is " using-cache?)
+        (do                                                 ;(println "cache is " using-cache?)
             (when using-cache?
               ; load app-state from cache
               (go (let [[cache-error cache] (<! (get-item app-cache-key))]
