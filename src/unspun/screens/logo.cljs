@@ -9,7 +9,7 @@
 ;(def logo-img (js/require "./assets/images/logo.png"))
 (def brand (js/require "./assets/images/brand.png"))
 
-(def shadow-size 2)
+(def shadow-size 1)
 
 (defn alert [title]
   (.alert rn/alert title))
@@ -95,7 +95,9 @@
                                           :marginLeft      20
                                           :marginRight     20
                                           :height          50
-                                          :backgroundColor (:accent (get-palette (rum/react palette-index)))
+                                          ;:backgroundColor (:accent (get-palette (rum/react palette-index)))
+                                          :borderColor    (:accent (get-palette (rum/react palette-index)))
+                                          :borderWidth    2
                                           :borderRadius    30
                                           :shadowColor     "#000"
                                           :shadowOffset    {:width shadow-size :height shadow-size}
@@ -106,7 +108,7 @@
                                           }
                                 :onPress #(jumpToDrawer "scenarios" "stories")}
 
-                               (text {:style {:color      (:light-accent (get-palette (rum/react palette-index)))
+                               (text {:style {:color      (:text-icons (get-palette (rum/react palette-index)))
                                               :textAlign  "center"
                                               :fontWeight "bold"}}
                                      "Start")))))

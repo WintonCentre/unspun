@@ -59,7 +59,27 @@
             (view {:style {:flex            0.18
                            :backgroundColor (:dark-primary palette)
                            }}
-                  (touchable-highlight {:style {:flex            1
+                  (touchable-highlight {:style   {:flex            1
+                                                  :margin      20
+                                                  :height          50
+                                                  :borderColor    (:accent (get-palette (rum/react palette-index)))
+                                                  :borderWidth    2
+                                                  :borderRadius    30
+                                                  :shadowColor     "#000"
+                                                  :shadowOffset    {:width shadow-size :height shadow-size}
+                                                  :shadowRadius    shadow-size
+                                                  :shadowOpacity   0.5
+                                                  :alignItems      "center"
+                                                  :justifyContent  "center"
+                                                  }
+                                        :onPress #(jumpToDrawer "scenarios" "stories")}
+
+                                       (text {:style {:color      (:text-icons (get-palette (rum/react palette-index)))
+                                                      :textAlign  "center"
+                                                      :fontWeight "bold"}}
+                                             "Start"))
+
+                  #_(touchable-highlight {:style {:flex            1
                                                 :margin          20
                                                 :backgroundColor (:accent (get-palette (rum/react palette-index)))
                                                 :borderRadius    30

@@ -258,7 +258,7 @@
                                                     :fontSize     (/ tffsz 0.85)
                                                     :textAlign    "right"
                                                     :paddingRight 10}}
-                                           (:without scenar)))
+                                           (:without-label scenar)))
                                (view {:key   2
                                       :style {:flex 0.2}}
                                      (labelled-vertical-bar palette br (rum/react (:scale state))))
@@ -274,7 +274,7 @@
                                                     :fontSize  (/ tffsz 0.85)
                                                     :padding   10
                                                     :textAlign "left"}}
-                                           (:with scenar)))))
+                                           (:with-label scenar)))))
 
                    (view {:key   4
                           :style {:position "absolute"
