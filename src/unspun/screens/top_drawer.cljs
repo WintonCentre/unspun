@@ -9,7 +9,7 @@
                                stack-navigation drawer-navigation-layout drawer-navigation drawer-navigation-item
                                ionicon]]
             [unspun.navigation.router :refer [Router]]
-            [unspun.screens.svg-test-page :refer [test-page]]
+    ;[unspun.screens.svg-test-page :refer [test-page]]
             [unspun.screens.rum-bars :as rum-bars]
             [unspun.screens.logo :as logo :refer [logo-page]]
             [unspun.common :refer [react-native ios?]]))

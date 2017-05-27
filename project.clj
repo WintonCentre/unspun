@@ -3,7 +3,7 @@
   :url "http://wintoncentre.maths.cam.ac.uk"
   :license {:name "MIT License"
             :url  "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.9.0-alpha15"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha16"]
                  [org.clojure/clojurescript "1.9.521"]
                  [org.clojure/core.async "0.3.442"]
                  [rum "0.10.8" :exclusions [cljsjs/react cljsjs/react-dom sablono]]

@@ -4,7 +4,7 @@
             [cljs-exponent.components :refer [text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [version app-state palette-index brand-title app-banner to-pc clamp winton-csv scenario-url]]
-            [graphics.svg :refer [svg circle rect]]))
+            ))
 
 ;(def logo-img (js/require "./assets/images/logo.png"))
 (def brand (js/require "./assets/images/brand.png"))
