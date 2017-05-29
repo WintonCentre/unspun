@@ -61,11 +61,13 @@
                                  :alignItems      "center"
                                  }}
                        (text-input {:style           {:flex            1
-                                                      :height          60
-                                                      ;:borderColor     'gray'
-                                                      ;:borderWidth     1
+                                                      :height          70
+                                                      :borderColor     (:accent palette)
+                                                      :borderWidth     1
                                                       :backgroundColor "#fff"
-                                                      :padding         0
+                                                      :padding         20
+                                                      :paddingTop      10
+                                                      :paddingBottom   15
                                                       :margin          0
                                                       :fontSize        16}
                                     :multiline       true
@@ -85,7 +87,23 @@
                                  :justifyContent  "flex-end"
                                  :alignItems      "flex-start"
                                  }}
-                       (button {:style   {:backgroundColor (:accent palette)}
+
+
+
+                       (button {:style   {;:backgroundColor (:text-icons palette)
+                                          :marginLeft      20
+                                          :marginRight     20
+                                          :height          50
+                                          :backgroundColor (:dark-primary palette)
+                                          :borderColor     (:accent palette)
+                                          :borderWidth     2
+                                          :borderRadius    30
+                                          :shadowColor     "#000"
+                                          :shadowOffset    {:width 1 :height 1}
+                                          :shadowRadius    1
+                                          :shadowOpacity   0.5
+                                          :alignItems      "center"
+                                          :justifyContent  "center"}
                                 :onPress #(reset! scenario-url winton-csv)}
                                (text {:style {:color (:text-icons palette)}
                                       :block true} "Revert to default setting"))

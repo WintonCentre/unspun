@@ -13,11 +13,7 @@
 (rum/defcs page < rum/reactive (add-page-title "Show") [state]
   (let [navigator (aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))]
-    (view {:style {
-                   :flex            1
-                   ;:backgroundColor "#CCF"
-                   :color "red"
-                   }}
+    (view {:style {:flex            1}}
           (sliding-tab-navigation
             {:flex               0.9
              :key                "tabs"
@@ -31,8 +27,7 @@
             (sliding-tab-navigation-item
               {:id         "stats"
                :key        "stats"
-               :title      "Numbers"
-               :style {:color "red"}}
+               :title      "Numbers"}
               (stats/page)
               )
             (sliding-tab-navigation-item

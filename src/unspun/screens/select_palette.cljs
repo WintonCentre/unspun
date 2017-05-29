@@ -55,29 +55,4 @@
                          :style {:flex 1}}]
                        [(map select-palette-item! (range palette-count))]))
 
-        )
-      #_(card {:key 2
-               ; :style {:flex    1
-               }
-              (card-item {:header true
-                          :key    1
-                          :style  {:backgroundColor "red"}
-                          }
-                         (txt {:style {:color "white"}} "Card Header"))
-              (card-item {:header false
-                          :key    2
-                          :style  {;:flex          1
-                                   ;:flexDirection "row"
-                                   ;:alignItems    "center"
-                                   }}
-                         (icon-example)
-                         #_(ionicon (clj->js {:name  "ios-home"
-                                              :style {:color        "red"
-                                                      :fontSize     20
-                                                      :paddingRight 16}}))
-                         (txt {:style {:color "black"}} "My text here"))
-
-              (card-item {:header true
-                          :key    3}
-                         (text {:style {:color "blue"}} "Footer"))
-              ))))
+        ))))

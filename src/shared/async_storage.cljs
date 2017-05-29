@@ -51,7 +51,7 @@
 (defn setup-watches!
   "Should be an idempotent call for figwheel reload purposes"
   []
-  (println "setting up use-cache watch")
+  ;(println "setting up use-cache watch")
   (remove-watch use-cache use-cache-key)
   (add-watch use-cache use-cache-key use-cache-changed))
 
@@ -89,8 +89,7 @@
   (reload-app-state!)
 
   (defn get-use-cache []
-    (go (let [rv (<! (get-item use-cache-key))]
-          (println rv))))
+    (go (let [rv (<! (get-item use-cache-key))])))
   (get-use-cache)
 
   (defn get-app-cache []
@@ -99,8 +98,7 @@
   (get-app-cache)
 
   (add-watch use-cache :unspun.db/use-cache
-             (fn [key use-cache old new]
-               (println key old "->" new)))
+             (fn [key use-cache old new]))
   (remove-watch use-cache :unspun.db/use-cache)
 
 
@@ -112,7 +110,7 @@
 
 
   (defn refresh-change [key refreshing old new]
-    (println key "changed from" old "to" new)
+    ;(println key "changed from" old "to" new)
     )
 
   (add-watch refreshing :unspun.db/refreshing refresh-change)
@@ -121,8 +119,9 @@
   (reset! refreshing false)
 
   (go
-    (<! (set-item ::foo {:bar "gooey"}))                       ;; => [nil], or [error]
-    (println (<! (get-item ::foo))))                        ;; => [nil {:bar "baz"}], or [error nil]
+    (<! (set-item ::foo {:bar "gooey"}))                    ;; => [nil], or [error]
+    (println (<! (get-item ::foo)))
+    )                                                       ;; => [nil {:bar "baz"}], or [error nil]
 
   (go
     (println (<! (get-item ::foo))))
@@ -169,7 +168,4 @@
   (defn remove-watch-and-clear-stories! []
     (println "removing stories watch")
     (remove-watch stories :unspun.db/stories)
-    (clear-scenarios))
-
-
-  )
+    (clear-scenarios)))
