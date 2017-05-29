@@ -34,7 +34,7 @@
                 :primary        "#37474f"
                 :light-primary  "#CFD8DC"
                 :text-icons     "#FFFFFF"
-                :accent         "#009688"
+                :accent         "#26a69a"
                 :light-accent   "#80cbc4"
                 :primary-text   "#212121"
                 :secondary-text "#757575"
@@ -53,12 +53,12 @@
                 :divider        "#BDBDBD"
                 :error          "#FF6688"}
 
-               :cyan-deep-orange
-               {:dark-primary   "#0097A7"
-                :primary        "#00BCD4"
+               :teal-orange
+               {:dark-primary   "#00838f"
+                :primary        "#004d40"
                 :light-primary  "#B2EBF2"
                 :text-icons     "#FEFEFE"
-                :accent         "#FF5722"
+                :accent         "#ff9100"
                 :light-accent   "#ffab91"
                 :primary-text   "#212121"
                 :secondary-text "#757575"
@@ -70,7 +70,7 @@
                 :primary        "#8BC34A"
                 :light-primary  "#DCEDC8"
                 :text-icons     "#FEFEFE"
-                :accent         "#009688"
+                :accent         "#004d40"
                 :light-accent   "#80cbc4"
                 :primary-text   "#212121"
                 :secondary-text "#757575"
@@ -105,3 +105,9 @@
 (defn get-palette [n]
   "get current palette"
   (palette-vals n))
+
+(comment
+  val
+  (mapv val palettes)
+  (mapv #(merge {:key val} (val %)) palettes)
+  )

@@ -284,7 +284,7 @@
                                   :right    0
                                   :flex     1
                                   :zIndex   1
-                                  :opacity  (if zooming 1 0.25)
+                                  :opacity  (if zooming 1 0.5)
                                   }}
                          (view {:style {:flex           1
                                         :flexDirection  "column"

@@ -18,7 +18,10 @@
   {:flex            1
    :flexDirection   "column"
    :justifyContent  "space-around"
-   :backgroundColor (:primary (get-palette @palette-index))})
+   :backgroundColor (if (= (:primary (get-palette @palette-index))
+                           (:primary (get-palette @palette-index)))
+                      (:primary (get-palette @palette-index))
+                      (:primary (get-palette @palette-index)))})
 
 (defn brand-style []
   {:fontSize   30
