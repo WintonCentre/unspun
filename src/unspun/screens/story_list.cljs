@@ -101,7 +101,10 @@
          :style card-style}
         (card-item {:header true
                     :key    1
-                    :style  card-item-style}
+                    :style  card-item-style
+                    :onPress   #(do (reset! story-index index)
+                                    (.push navigator "tabs"))
+                    }
                    (story-icon palette (:icon (@stories index)))
                    (txt {:key   1
                          :style {:flex       4

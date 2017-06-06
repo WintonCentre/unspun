@@ -7,7 +7,7 @@
             [shared.language :refer [present-participle]]
             ))
 
-(def version "v0.0.11")
+(def version "v0.0.12")
 
 (def flash-error-time 5000)                                 ; duration (ms) of flash error messages
 
