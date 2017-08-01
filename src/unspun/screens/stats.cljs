@@ -25,6 +25,9 @@
 (defn percentage [value]
   (str (to-pc value) "%"))
 
+(defn sigfigs [precision value]
+  (.toPrecision (js/Number. value) precision))
+
 (empty? "a")
 
 (defn show-sources [style sources]
@@ -57,6 +60,7 @@
 
     (let [text-style {:color (:text-icons palette)}
           small-text-style (merge text-style {:fontSize 14})
+          outcome-type (:outcome-type scenar)
           br-sources (parse-sources (:sources-baseline-risk scenar))
           rr-sources (parse-sources (:sources-relative-risk scenar))]
       (container
@@ -76,15 +80,15 @@
               {:key (gensym "item")}
               (txt {:key   1
                     :style text-style}
-                   (str "Background risk: " (percentage br) " (baseline risk: " br ")\n\n")
+                   (str "Background " outcome-type ": " (percentage br) " (baseline " outcome-type ": " (sigfigs 2 br) ")\n\n")
                    (show-sources small-text-style br-sources))
               )
             (n-list-item
               {:key (gensym "item")}
               (txt {:key   1
                     :style text-style}
-                   (str (if (> rr 1) (str "Increased risk: " (percentage (- rr 1)))
-                                     (str "Decreased risk: " (percentage (- 1 rr)))) " (relative risk: " rr ")\n\n")
+                   (str (if (> rr 1) (str "Increased " outcome-type ": " (percentage (- rr 1)))
+                                     (str "Decreased " outcome-type ": " (percentage (- 1 rr)))) " (relative " outcome-type ": " (sigfigs 2 rr) ")\n\n")
                    (show-sources small-text-style rr-sources)))
 
             (n-list-item

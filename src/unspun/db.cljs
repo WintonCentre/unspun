@@ -7,7 +7,7 @@
             [shared.language :refer [present-participle]]
             ))
 
-(def version "v0.0.13")
+(def version "v0.0.14")
 
 (def flash-error-time 5000)                                 ; duration (ms) of flash error messages
 
@@ -32,6 +32,7 @@
                     :without-label
                     :outcome-verb
                     :outcome
+                    :outcome-type
                     :relative-risk
                     :baseline-risk
                     :causative
@@ -44,76 +45,108 @@
 ;;;
 ;; Built in data
 ;;;
-(def scenarios {:bacon {:tags                  #{"food" "bowel" "cancer"}
-                        :icon                  "ios-man"
-                        :subject               "person"
-                        :subjects              "people"
-                        :exposure              "eating a bacon sandwich every day"
-                        :baseline-risk         0.06
-                        :relative-risk         1.18
-                        :outcome-verb          "develop"
-                        :outcome               "bowel cancer"
-                        :with-label            "Bacon every day"
-                        :without-label         "Normal"
-                        :causative             false
-                        :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
-                        :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
-                        }})
+(comment (def scenarios {:bacon {:tags                  #{"food" "bowel" "cancer"}
+                                 :icon                  "ios-man"
+                                 :subject               "person"
+                                 :subjects              "people"
+                                 :exposure              "eating a bacon sandwich every day"
+                                 :baseline-risk         0.06
+                                 :relative-risk         1.18
+                                 :outcome-verb          "develop"
+                                 :outcome               "bowel cancer"
+                                 :outcome-type          "risk"
+                                 :with-label            "Bacon every day"
+                                 :without-label         "Normal"
+                                 :causative             false
+                                 :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
+                                 :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+                                 }}))
 
-(comment
-  (def before
-    :hrt5 {:tags            #{"preventitive" "breast" "cancer" "osteoporosis"}
-           :icon            "ios-woman"
-           :subjects        ["woman" "women in their 50s"]
-           :exposure        "taking HRT for 5 years"
-           :baseline-risk   0.1
-           :relative-risk   1.05
-           :outcome-verb    "develop"
-           :outcome         "breast cancer"
-           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-           :with-label      "Taking HRT"
-           :without-label   "No HRT"
-           :causative       false
-           }
-    :wine {:tags            #{"alcohol" "breast" "cancer"}
-           :icon            "ios-wine"
-           :subjects        ["woman" "women"]
-           :exposure        "drinking half a bottle of wine a day"
-           :baseline-risk   0.12
-           :relative-risk   1.30
-           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-           :outcome-verb    "develop"
-           :outcome         "breast cancer"
-           :with-label      "Half a bottle a day"
-           :without-label   "Not drinking"
-           :causative       false
-           }
-    :wdoc {:tags            #{"gender" "care"}
-           :icon            "ios-person"
-           :subjects        ["person" "US people over 65 admitted to hospital under Medicare"]
-           :exposure        "being seen by a female doctor"
-           :baseline-risk   0.115
-           :relative-risk   0.96
-           :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-           :outcome-verb    "die"
-           :outcome         "within 30 days of admission"
-           :with-label      "Female doctor"
-           :without-label   "Male doctor"
-           :causative       false
-           }
-    :statins {:tags          #{"preventitive" "medication"}
-              :icon          "ios-contact"
-              :subjects      ["person" "people just within NICE guidelines for prescribing statins"]
-              :exposure      "taking statins each day"
-              :baseline-risk 0.1
-              :relative-risk 0.7
-              :outcome-verb  "have"
-              :outcome       "a heart attack or stroke within 10 years"
-              :sources       "https://wintoncentre.maths.cam.ac.uk/"
-              :with-label    "Taking statins"
-              :without-label "No statins"
-              :causative     true
-              }))
+
+(def scenarios
+  {:bacon   {:tags                  #{"food" "bowel" "cancer"}
+             :icon                  "ios-man"
+             :subject               "person"
+             :subjects              "people"
+             :exposure              "eating a bacon sandwich every day"
+             :baseline-risk         0.06
+             :relative-risk         1.18
+             :outcome-verb          "develop"
+             :outcome               "bowel cancer"
+             :outcome-type          "risk"
+             :with-label            "Bacon every day"
+             :without-label         "Normal"
+             :causative             false
+             :sources-relative-risk "[Risk per 50g of daily processed meat. IARC Monograph](http://www.thelancet.com/journals/lanonc/article/PIIS1470-2045%2815%2900444-1/abstract)"
+             :sources-baseline-risk "[Lifetime risk 7.3% for men, 5.5% for women](http://www.cancerresearchuk.org/health-professional/cancer-statistics/risk/lifetime-risk#heading-One)"
+             }
+   :hrt5    {:tags                  #{"preventitive" "breast" "cancer" "osteoporosis"}
+             :icon                  "ios-woman"
+             :subject               "woman"
+             :subjects              "women in their 50s"
+             :exposure              "taking HRT for 5 years"
+             :baseline-risk         0.1
+             :relative-risk         1.05
+             :outcome-verb          "develop"
+             :outcome               "breast cancer"
+             :outcome-type          "risk"
+             :with-label            "Taking HRT"
+             :without-label         "No HRT"
+             :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :causative             false
+             }
+   :wine    {:tags                  #{"alcohol" "breast" "cancer"}
+             :icon                  "ios-wine"
+             :subject               "woman"
+             :subjects              "women"
+             :exposure              "drinking half a bottle of wine a day"
+             :baseline-risk         0.12
+             :relative-risk         1.30
+             :evidence-source       "https://wintoncentre.maths.cam.ac.uk/"
+             :outcome-verb          "develop"
+             :outcome               "breast cancer"
+             :outcome-type          "risk"
+             :with-label            "Half a bottle a day"
+             :without-label         "Not drinking"
+             :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :causative             false
+             }
+   :wdoc    {:tags            #{"gender" "care"}
+             :icon            "ios-person"
+             :subject         "woman"
+             :subjects        "US people over 65 admitted to hospital under Medicare"
+             :exposure        "being seen by a female doctor"
+             :baseline-risk   0.115
+             :relative-risk   0.96
+             :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
+             :outcome-verb    "die"
+             :outcome         "within 30 days of admission"
+             :outcome-type    "risk"
+             :with-label      "Female doctor"
+             :without-label   "Male doctor"
+             :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :causative       false
+             }
+   :statins {:tags          #{"preventitive" "medication"}
+             :icon          "ios-contact"
+             :subject       "woman"
+             :subjects      ["person" "people just within NICE guidelines for prescribing statins"]
+             :exposure      "taking statins each day"
+             :baseline-risk 0.1
+             :relative-risk 0.7
+             :outcome-verb  "have"
+             :outcome       "a heart attack or stroke within 10 years"
+             :outcome-type  "risk"
+             :sources       "https://wintoncentre.maths.cam.ac.uk/"
+             :with-label    "Taking statins"
+             :without-label "No statins"
+             :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :causative     true
+             }})
 
 
 (defn scenarios-as-vec [m]
@@ -185,7 +218,7 @@
   (let [scenario (@stories index)]
     (str "How much does " (:exposure scenario) " "
          (if (> (:relative-risk scenario) 1) "increase" "decrease")
-         " the risk of "
+         " the " (:outcome-type scenario) " of "
          (present-participle (:outcome-verb scenario))
          " "
          (:outcome scenario)
@@ -252,12 +285,12 @@
 (defn compare-text-vector
   "Generate a vector of texts for compare screens. We return a vector rather than a single string to make
   it easy to apply different formatting to each element."
-  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome-verb outcome causative]}]
+  ([{:keys [subjects risk exposure baseline-risk relative-risk outcome-verb outcome outcome-type causative]}]
    (let [brpc (to-pc baseline-risk)
          erpc (to-pc (* baseline-risk relative-risk))]
-     [(str "The risk of " (present-participle outcome-verb) " " outcome " for " subjects " is ")
+     [(str "The " outcome-type " of " (present-participle outcome-verb) " " outcome " for " subjects " is ")
       (str brpc "%. ")
-      (str "The risk for those " exposure " is ")
+      (str "The " outcome-type " for those " exposure " is ")
       (str (increased? brpc erpc))
       " to "
       (str erpc "%.")])))
@@ -309,6 +342,8 @@
 ;; todo: copy these to test suite
 
 (comment
+
+  (def scenarios ())
 
   (nn-text-vector (:hrt5 scenarios))
   ;=>

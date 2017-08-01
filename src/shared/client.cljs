@@ -90,6 +90,7 @@
                   :relative-risk         #(in-range (make-valid-float %) 0)
                   :outcome-verb          #(make-valid-string % 1 64)
                   :outcome               #(make-valid-string % 1 128)
+                  :outcome-type          #(make-valid-string % 1 64)
                   :with-label            #(make-valid-string % 1 32)
                   :without-label         #(make-valid-string % 1 32)
                   :causative             make-valid-boolean
@@ -141,6 +142,8 @@
 ;;;
 
 (comment
+
+
 
   ;;;
   ;; See test profile version in shared.client

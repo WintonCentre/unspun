@@ -20,7 +20,7 @@
 
 (defn enable-source-maps
   []
-  (println "Source maps enabled.")
+  ;(println "Source maps enabled.")
   (let [path "node_modules/react-native/packager/src/Server/index.js"]
     (spit path
           (str/replace (slurp path) "/\\.map$/" "/main.map$/"))))
