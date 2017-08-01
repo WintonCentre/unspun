@@ -6,6 +6,7 @@
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item linking]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp parse-sources]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
+            [unspun.screens.mixins :refer [monitor]]
             ))
 
 (defn edit-icon [palette]
@@ -43,7 +44,7 @@
 
 (defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
-        db (rum/react app-state)
+        db (rum/react app-state) ; unused?
         br (:baseline-risk scenar)
         rr (:relative-risk scenar)
         brpc (to-pc br)
@@ -54,8 +55,7 @@
         page-style {:flex            1
                     :backgroundColor (:primary palette)}]
 
-    (let [palette (get-palette (rum/react palette-index))
-          text-style {:color (:text-icons palette)}
+    (let [text-style {:color (:text-icons palette)}
           small-text-style (merge text-style {:fontSize 14})
           br-sources (parse-sources (:sources-baseline-risk scenar))
           rr-sources (parse-sources (:sources-relative-risk scenar))]

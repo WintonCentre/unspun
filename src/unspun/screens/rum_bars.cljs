@@ -9,6 +9,7 @@
             [graphics.scales :refer [create-linear-scale bounded-ticks i->o o->i tick-format-specifier]]
             [unspun.gesture-responders :refer [pan-responder-mixin pan-logger]]
             [cljs.pprint :refer [cl-format]]
+            [unspun.screens.mixins :refer [monitor]]
             ))
 
 ;; vector-icons
@@ -126,7 +127,7 @@
               (pan-responder-mixin ::zoomer (:height (get-dimensions)))
   ([state]
    (let [scenar ((rum/react stories) (rum/react story-index))
-         db (rum/react app-state)
+         db (rum/react app-state) ;unused?
          br (:baseline-risk scenar)
          rr (:relative-risk scenar)
          brpc (to-pc br)

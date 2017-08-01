@@ -3,6 +3,7 @@
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [n-icon screen-width screen-w-h text-field-font-size]]
             [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
+            [unspun.screens.mixins :refer [monitor]]
             [rum.core :as rum]))
 
 
@@ -18,7 +19,7 @@
   (Math.ceil (Math.sqrt nn)))
 
 (defn col-blocks [nn]
-  (Math.round (/ (icon-square-size nn) 5)))
+  (max 1 (Math.round (/ (icon-square-size nn) 5))))
 
 (defn cols-rows-blocked [nn]
   (let [cols (* 5 (col-blocks nn))
@@ -43,6 +44,24 @@
          (if (picked-before? picked-set selection)
            (recur picked-set n-left)
            (recur (conj picked-set selection) (dec n-left))))))))
+
+#_(rum/defc page < rum/reactive []
+  (view {:style {:flex           1
+                 :flexDirection  "row"
+                 :alignItems     "center"
+                 :justifyContent "space-between"
+                 :maxHeight      100
+                 }}))
+
+(comment
+  ; testing for nn small
+  (def br 0.269)
+  (def rr 2.1)
+  (def nn 3)
+  (col-blocks 3)
+  (cols-rows-blocked 3)
+  (icon-square-size 3)
+  )
 
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))

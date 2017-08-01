@@ -8,6 +8,7 @@
             [unspun.screens.rum-bars :as bars]
             [unspun.screens.number-needed :as nn]
             [unspun.screens.stats :as stats]
+            [unspun.screens.mixins :refer [monitor]]
             [clojure.string :refer [upper-case]]))
 
 (rum/defcs page < rum/reactive (add-page-title "Show") [state]

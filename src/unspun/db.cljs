@@ -207,6 +207,11 @@
 (defn number-needed [rr br]
   (Math.round (number-needed* rr br)))
 
+(comment
+  (number-needed 2.1 0.269)
+  ; => 3
+  )
+
 (defn anyway [rr br]
   (Math.round (* br (number-needed* rr br))))
 
