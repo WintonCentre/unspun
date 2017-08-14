@@ -15,17 +15,17 @@
   (ionicon {:name  "ios-disc"
             :size  size
             :color "green"
-            :style {:position  "absolute"
-                    :left      (+ x (/ size 2))
-                    :top       (+ y (/ size 2))
+            :style {:position "absolute"
+                    :left     x
+                    :top      y
                     }
             #_:style #_{:color           white
                         :backgroundColor "rgba(0,0,0,0)"
                         ;:flex            -1
-                        :width           30                    ; the grid width - should be 30 for a packed icon whatever the scale
-                        :transform       [{:translateX 0}        ;(* 15 scale kk)
-                                          {:translateY 0}        ;(* 15 scale kk)
-                                          {:scale 1}]}}))        ; the scale. higher = denser, but on same centres.
+                        :width           30                 ; the grid width - should be 30 for a packed icon whatever the scale
+                        :transform       [{:translateX 0}   ;(* 15 scale kk)
+                                          {:translateY 0}   ;(* 15 scale kk)
+                                          {:scale 1}]}}))   ; the scale. higher = denser, but on same centres.
 
 
 #_(defn draw-icon [scenar color scale kk]
@@ -37,31 +37,40 @@
                      :transform       [{:translateX 0}      ;(* 15 scale kk)
                                        {:scale (* scale kk)}]}}))
 
+(defn grouper
+  [j]
+  (+ j (/ (js/Math.floor (/ j 5)) 3)))
 
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
+        palette (get-palette (rum/react palette-index))
         br (:baseline-risk scenar)
         rr (:relative-risk scenar)
         nn (number-needed rr br)
         [w h] (screen-w-h)
         w (- w 0)
-        h  (- h 168)                                        ; adjustment for existing header and footer
-        isz 30
+        h (- h 168)                                         ; adjustment for existing header and footer
+        isz 24
         row-n (dec (js/Math.floor (/ w isz)))
         col-n (dec (js/Math.floor (/ h isz)))
-        dw (- w (* row-n isz))
-        dh (- h (* col-n isz))]
+        dw (/ (- w (* row-n isz)) 2)
+        dh (/ (- h (* col-n isz)) 2)]
     (prn [w h])
-    (view {:style {:backgroundColor "black"
-                   :borderWidth "1"
-                   :borderColor "cyan"
-                   :width           w
-                   :height          h
-                   :position "relative"
-                   }}
-          (for [i (range row-n)]
-            (for [j (range col-n)]
-              (draw-circle scenar "red" isz (+ 10 (* i isz)) (+ 10 (* j isz))))))))
+    (scroll-view {:style {:flex            1
+                          :padding         0
+                          :backgroundColor (:primary palette)}}
+                 (view {:style {:backgroundColor "black"
+                                :borderWidth     1
+                                :borderColor     "cyan"
+                                :width           w
+                                :height          h
+                                :position        "relative"
+                                }}
+                       (for [i (range row-n)]
+                         (for [j (range col-n)]
+                           (draw-circle scenar "red" isz
+                                        (+ dw (* (grouper i) isz))
+                                        (+ dh (* (grouper j) isz)))))))))
 
 
 #_(rum/defc page < rum/reactive []
