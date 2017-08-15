@@ -157,7 +157,7 @@
              (view {:key   1
                     :style {:flex            0.3
                             :justifyContent  "center"
-                            :alignItems      "center"
+                            :alignItems      "stretch"
                             }}
                    (scroll-view {:style {:flex 1
                                          :backgroundColor (:dark-primary palette)}}

@@ -81,11 +81,11 @@
                    :justifyContent "flex-start"
                    :backgroundColor (:primary palette)
                    }}
-          (view {:style {:flex            0.32
+          (view {:style {:flex            0.3
                          :justifyContent  "center"
+                         :alignItems "stretch"
                          :backgroundColor (:dark-primary palette)}}
-                (scroll-view {:style {:flex      1
-                               :backgroundColor (:primary palette)}
+                (scroll-view {:style {:flex      1}
                        :key   1}
                       (text {:style {:padding  20
                                      :fontSize (text-field-font-size)}}
@@ -97,8 +97,9 @@
                             (text-field :accent "bold" nn-anyway)
                             (text-field :light-primary "normal" nn-tail)
                             )))
-          (scroll-view {:style {:flex 0.68}}
-                       (view {:style {:flexDirection "col" :justifyContent "space-around" :padding 20}}
+          (scroll-view {:style {:flex 0.7}}
+                       (view {:style {:flexDirection "col"
+                                      :justifyContent "flex-start"}}
                              (draw-square)
                              (draw-square))
                        #_(view {:style {:flexDirection "row"}}
