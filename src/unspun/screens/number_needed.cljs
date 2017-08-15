@@ -8,11 +8,21 @@
             [rum.core :as rum]))
 
 
-
+(defn draw-square
+  []
+  (view {:style {:backgroundColor "orange"
+                 :borderColor     "black"
+                 :borderWidth     1
+                 ;:height          a
+                 ;:width           a
+                 :flex            1
+                 :aspectRatio     1
+                 :marginBottom    20
+                 }}))
 
 (defn draw-circle [scenar color size x y]
   "draw a icon selected by scenario."
-  (ionicon {:name  "ios-disc"
+  (ionicon {:name  "ios-radio-button-on"
             :size  size
             :color "green"
             :style {:position "absolute"
@@ -39,7 +49,7 @@
 
 (defn grouper
   [j]
-  (+ j (/ (js/Math.floor (/ j 5)) 3)))
+  (+ j (/ (js/Math.floor (/ j 5)) 1)))
 
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
@@ -50,27 +60,62 @@
         [w h] (screen-w-h)
         w (- w 0)
         h (- h 168)                                         ; adjustment for existing header and footer
-        isz 24
-        row-n (dec (js/Math.floor (/ w isz)))
-        col-n (dec (js/Math.floor (/ h isz)))
-        dw (/ (- w (* row-n isz)) 2)
-        dh (/ (- h (* col-n isz)) 2)]
-    (prn [w h])
-    (scroll-view {:style {:flex            1
-                          :padding         0
-                          :backgroundColor (:primary palette)}}
-                 (view {:style {:backgroundColor "black"
-                                :borderWidth     1
-                                :borderColor     "cyan"
-                                :width           w
-                                :height          h
-                                :position        "relative"
-                                }}
-                       (for [i (range row-n)]
-                         (for [j (range col-n)]
-                           (draw-circle scenar "red" isz
-                                        (+ dw (* (grouper i) isz))
-                                        (+ dh (* (grouper j) isz)))))))))
+        isz 16
+        row-n (js/Math.floor (/ w isz))
+        col-n (js/Math.floor (/ h isz))
+        dw (- w (* row-n isz))
+        dh (- h (* col-n isz))
+
+        [nn-head nn-one nn-one-to-group nn-group nn-group-to-anyway nn-anyway nn-tail :as texts] (nn-text-vector scenar)
+
+        text-field (fn [palette-key weight content]
+                     (text {:key   (gensym "text-field")
+                            :style {:color      (palette-key palette)
+                                    :fontWeight weight
+                                    }} content))
+
+        ]
+    (prn [w h dw dh])
+    (view {:style {:flex 1
+                   :flexDirection "column"
+                   :justifyContent "flex-start"
+                   :backgroundColor (:primary palette)
+                   }}
+          (view {:style {:flex            0.32
+                         :justifyContent  "center"
+                         :backgroundColor (:dark-primary palette)}}
+                (scroll-view {:style {:flex      1
+                               :backgroundColor (:primary palette)}
+                       :key   1}
+                      (text {:style {:padding  20
+                                     :fontSize (text-field-font-size)}}
+                            (text-field :light-primary "normal" nn-head)
+                            (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
+                            (text-field :light-primary "normal" nn-one-to-group)
+                            (text-field :light-primary "bold" nn-group)
+                            (text-field :light-primary "normal" nn-group-to-anyway)
+                            (text-field :accent "bold" nn-anyway)
+                            (text-field :light-primary "normal" nn-tail)
+                            )))
+          (scroll-view {:style {:flex 0.68}}
+                       (view {:style {:flexDirection "col" :justifyContent "space-around" :padding 20}}
+                             (draw-square)
+                             (draw-square))
+                       #_(view {:style {:flexDirection "row"}}
+                               (draw-square)
+                               (draw-square)))
+          #_(view {:style {:backgroundColor "black"
+                           :borderWidth     1
+                           :borderColor     "cyan"
+                           :width           w
+                           :height          h
+                           :position        "relative"
+                           }}
+                  (for [i (range row-n)]
+                    (for [j (range col-n)]
+                      (draw-circle scenar "red" isz
+                                   (+ dw (* (grouper i) isz))
+                                   (+ dh (* (grouper j) isz)))))))))
 
 
 #_(rum/defc page < rum/reactive []

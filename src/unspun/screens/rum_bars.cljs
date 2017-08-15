@@ -2,7 +2,7 @@
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
             [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size]]
-            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view] :as rn]
+            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
@@ -158,15 +158,17 @@
                     :style {:flex            0.3
                             :justifyContent  "center"
                             :alignItems      "center"
-                            :backgroundColor (:dark-primary palette)}}
-                   (text {:style {:padding    20
-                                  :fontSize   tffsz}}
-                         (text-field :light-primary "normal" cmp-head)
-                         (text-field :text-icons "bold" cmp-brpc)
-                         (text-field :light-primary "normal" cmp-brpc-to-change)
-                         (text-field :light-primary "bold" cmp-change)
-                         (text-field :light-primary "normal" cmp-change-to-erpc)
-                         (text-field :text-icons "bold" cmp-erpc)))
+                            }}
+                   (scroll-view {:style {:flex 1
+                                         :backgroundColor (:dark-primary palette)}}
+                         (text {:style {:padding  20
+                                        :fontSize tffsz}}
+                               (text-field :light-primary "normal" cmp-head)
+                               (text-field :text-icons "bold" cmp-brpc)
+                               (text-field :light-primary "normal" cmp-brpc-to-change)
+                               (text-field :light-primary "bold" cmp-change)
+                               (text-field :light-primary "normal" cmp-change-to-erpc)
+                               (text-field :text-icons "bold" cmp-erpc))))
              (view {:key   2
                     :style {:flex 0.7}}
                    ;;;
