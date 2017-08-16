@@ -11,17 +11,21 @@
 (defn draw-square
   [size]
   (view {:style {:backgroundColor "orange"
-                 :flex            1
                  :aspectRatio     1
-                 :justifyContent "space-around"
-                 :alignItems "center"
-                 :width           size
-                 :height          size}}
-        (ionicon {:name  "ios-body"                         ;"ios-radio-button-on"
+                 :justifyContent  "space-around"
+                 :alignItems      "center"
+                 :width           size                       ;size
+                 ;:height                                    ;size
+                 :borderRadius    (/ size 2)
+                 }}
+        (ionicon {:name  "ios-wine"                         ;"ios-radio-button-on"
                   :size  100
-                  :style {:color     "white"
-                          :height    100
-                          :transform [{:scale (/ size 100)}]}})))
+                  :flex  1
+                  :style {:color           "white"
+                          :backgroundColor "rgba(0,0,0,0)"
+                          ;:height    100
+                          :transform [{:scale (/ size 100)}]
+                          }})))
 
 (defn draw-n-square
   [n]
@@ -166,11 +170,17 @@
                                    (text-field :light-primary "normal" nn-tail)
                                    )))
           (scroll-view {:style {:flex 1}}
-                       (view {:style {:flexDirection  "col"
+                       (view {:style {:flexDirection  "column"
                                       :justifyContent "flex-start"}}
-                             ;(nested-n-square [1])
-                             (draw-square 100)
-                             ;(draw-4-square)
+                             ;(nested-n-square [1]
+                             (view {:style {:flexDirection "row"
+                                            :justifyContent "space-around"}}
+                                   (draw-square 200)
+                                   (draw-square 200))
+                             (view {:style {:flexDirection "row"
+                                            :justifyContent "space-around"}}
+                                   (draw-square 200)
+                                   (draw-square 200))
                              )
                        #_(view {:style {:flexDirection "row"}}
                                (draw-square)
