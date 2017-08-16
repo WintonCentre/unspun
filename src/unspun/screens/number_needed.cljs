@@ -123,6 +123,17 @@
   [j]
   (+ j (/ (js/Math.floor (/ j 5)) 1)))
 
+(defn resize
+  [event]
+  (println "dim = " (screen-w-h)))
+
+#_(def resize-mixin {:did-mount    (fn [state]
+                                   (.addEventListener Dimensions "change" resize)
+                                   state)
+                   :will-unmount (fn [state]
+                                   (.removeEventListener Dimensions "change" resize)
+                                   state)})
+
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
         palette (get-palette (rum/react palette-index))
@@ -148,7 +159,8 @@
 
         ]
     (prn [w h dw dh])
-    (view {:style {:flex            1
+    (view {:onLayout        #(prn (screen-w-h))
+           :style {:flex            1
                    :flexDirection   "column"
                    :justifyContent  "flex-start"
                    :backgroundColor (:primary palette)
