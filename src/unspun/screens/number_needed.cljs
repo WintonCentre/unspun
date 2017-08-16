@@ -9,16 +9,84 @@
 
 
 (defn draw-square
-  []
+  [size]
   (view {:style {:backgroundColor "orange"
-                 :borderColor     "black"
-                 :borderWidth     1
-                 ;:height          a
-                 ;:width           a
                  :flex            1
                  :aspectRatio     1
-                 :marginBottom    20
-                 }}))
+                 :justifyContent "space-around"
+                 :alignItems "center"
+                 :width           size
+                 :height          size}}
+        (ionicon {:name  "ios-body"                         ;"ios-radio-button-on"
+                  :size  100
+                  :style {:color     "white"
+                          :height    100
+                          :transform [{:scale (/ size 100)}]}})))
+
+(defn draw-n-square
+  [n]
+  (view {:backgroundColor "blue"
+         :style           {:flex           1
+                           :flexDirection  "row"
+                           :alignItems     "center"
+                           :justifyContent "space-around"
+                           :aspectRatio    1
+                           :margin         2
+                           }
+         :aspectRatio     1
+         }
+        (for [k (range n)]
+
+          (view {:key   k
+                 :style {:flex           1
+                         :flexDirection  "column"
+                         :alignItems     "center"
+                         :justifyContent "space-around"}
+                 }
+
+                (for [sq (range n)]
+                  (draw-square 50))))
+        ))
+
+#_(defn nested-n-square
+    [path]
+    (when (seq path)
+      (let [[n & r] path]
+        (if r
+          (draw-n-square n (nested-n-square r))
+          (draw-n-square n draw-square 50)))))
+
+(defn draw-4-square
+  []
+  (view {
+         :style       {:flex            1
+                       :flexDirection   "row"
+                       :alignItems      "center"
+                       :justifyContent  "space-around"
+                       :backgroundColor "red"
+                       :paddingTop      0
+                       :aspectRatio     1}
+         :aspectRatio 1
+         }
+        (view {:key   (str "top")
+               :style {:flex           1
+                       :flexDirection  "column"
+                       :alignItems     "center"
+                       :justifyContent "space-around"}
+               }
+              (for [sq (range 2)]
+                (draw-n-square 3)))
+
+        (view {:key   (str "bot")
+               :style {:flex           1
+                       :flexDirection  "column"
+                       :alignItems     "center"
+                       :justifyContent "space-around"}
+               }
+
+              (for [sq (range 2)]
+                (draw-n-square 5)))
+        ))
 
 (defn draw-circle [scenar color size x y]
   "draw a icon selected by scenario."
@@ -76,32 +144,34 @@
 
         ]
     (prn [w h dw dh])
-    (view {:style {:flex 1
-                   :flexDirection "column"
-                   :justifyContent "flex-start"
+    (view {:style {:flex            1
+                   :flexDirection   "column"
+                   :justifyContent  "flex-start"
                    :backgroundColor (:primary palette)
                    }}
-          (view {:style {:flex            0.3
+          (view {:style {:flex            0.4
                          :justifyContent  "center"
-                         :alignItems "stretch"
+                         :alignItems      "stretch"
                          :backgroundColor (:dark-primary palette)}}
-                (scroll-view {:style {:flex      1}
-                       :key   1}
-                      (text {:style {:padding  20
-                                     :fontSize (text-field-font-size)}}
-                            (text-field :light-primary "normal" nn-head)
-                            (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
-                            (text-field :light-primary "normal" nn-one-to-group)
-                            (text-field :light-primary "bold" nn-group)
-                            (text-field :light-primary "normal" nn-group-to-anyway)
-                            (text-field :accent "bold" nn-anyway)
-                            (text-field :light-primary "normal" nn-tail)
-                            )))
-          (scroll-view {:style {:flex 0.7}}
-                       (view {:style {:flexDirection "col"
+                (scroll-view {:style {:flex 1}
+                              :key   1}
+                             (text {:style {:padding  20
+                                            :fontSize (text-field-font-size)}}
+                                   (text-field :light-primary "normal" nn-head)
+                                   (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
+                                   (text-field :light-primary "normal" nn-one-to-group)
+                                   (text-field :light-primary "bold" nn-group)
+                                   (text-field :light-primary "normal" nn-group-to-anyway)
+                                   (text-field :accent "bold" nn-anyway)
+                                   (text-field :light-primary "normal" nn-tail)
+                                   )))
+          (scroll-view {:style {:flex 1}}
+                       (view {:style {:flexDirection  "col"
                                       :justifyContent "flex-start"}}
-                             (draw-square)
-                             (draw-square))
+                             ;(nested-n-square [1])
+                             (draw-square 100)
+                             ;(draw-4-square)
+                             )
                        #_(view {:style {:flexDirection "row"}}
                                (draw-square)
                                (draw-square)))
