@@ -9,13 +9,15 @@
 
 
 (defn draw-square
-  [size]
-  (view {:style {:backgroundColor "orange"
+  [{:keys [size draw? key]
+    :or   {size 100 draw? true key nil}}]
+  (view {:key   key
+         :style {:backgroundColor "orange"
                  :aspectRatio     1
+                 :opacity         (if draw? 1 0)
                  :justifyContent  "space-around"
                  :alignItems      "center"
-                 :width           size                       ;size
-                 ;:height                                    ;size
+                 :width           size                      ;size
                  :borderRadius    (/ size 2)
                  }}
         (ionicon {:name  "ios-wine"                         ;"ios-radio-button-on"
@@ -23,8 +25,7 @@
                   :flex  1
                   :style {:color           "white"
                           :backgroundColor "rgba(0,0,0,0)"
-                          ;:height    100
-                          :transform [{:scale (/ size 100)}]
+                          :transform       [{:scale (/ size 100)}]
                           }})))
 
 (defn draw-n-square
@@ -40,7 +41,6 @@
          :aspectRatio     1
          }
         (for [k (range n)]
-
           (view {:key   k
                  :style {:flex           1
                          :flexDirection  "column"
@@ -49,16 +49,39 @@
                  }
 
                 (for [sq (range n)]
-                  (draw-square 50))))
+                  (draw-square {:size 50}))))
         ))
 
-#_(defn nested-n-square
-    [path]
-    (when (seq path)
-      (let [[n & r] path]
-        (if r
-          (draw-n-square n (nested-n-square r))
-          (draw-n-square n draw-square 50)))))
+(def domino [[]
+             [[0 0]]
+             [[0 0] [1 1]]
+             [[0 0] [0 1] [1 1]]
+             [[0 0] [0 1] [1 0] [1 1]]
+             [[1 1] [0 0] [0 2] [2 0] [2 2]]
+             [[0 1] [0 0] [0 2] [2 0] [2 1] [2 2]]
+             [[1 1] [0 0] [0 1] [1 0] [1 2] [2 1] [2 2]]
+             [[0 1] [0 2] [1 0] [1 2] [2 0] [2 1] [2 2] [0 0]]
+             [[1 1] [0 0] [0 1] [0 2] [1 0] [1 2] [2 0] [2 1] [2 2]]])
+
+(defn nested-n-square
+  [w n]
+  (let [a (Math.ceil (Math.sqrt n))]
+    (view {:style {:flexDirection     "column"
+                   :height            w
+                   :justifyContent    "space-around"
+                   :borderBottomWidth 1
+                   :borderBottomColor "black"}}
+          (for [row (range a)]
+            (view {:key   (str "osv" row)
+                   :style {:flexDirection  "row"
+                           :justifyContent "space-around"}}
+                  (for [col (range a)]
+                    (draw-square {:size  (/ (* 0.8 w) a)
+                                  :draw? (if (< a 4)
+                                           ((into #{} (domino n)) [row col])
+                                           (< (+ col (* a row)) n))
+                                  :key   (str "dsv" col)})))))))
+
 
 (defn draw-4-square
   []
@@ -128,11 +151,12 @@
   (println "dim = " (screen-w-h)))
 
 #_(def resize-mixin {:did-mount    (fn [state]
-                                   (.addEventListener Dimensions "change" resize)
-                                   state)
-                   :will-unmount (fn [state]
-                                   (.removeEventListener Dimensions "change" resize)
-                                   state)})
+                                     (.addEventListener Dimensions "change" resize)
+                                     state)
+                     :will-unmount (fn [state]
+                                     (.removeEventListener Dimensions "change" resize)
+                                     state)})
+
 
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
@@ -155,60 +179,110 @@
                      (text {:key   (gensym "text-field")
                             :style {:color      (palette-key palette)
                                     :fontWeight weight
-                                    }} content))
+                                    }} content))]
 
-        ]
-    (prn [w h dw dh])
-    (view {:onLayout        #(prn (screen-w-h))
-           :style {:flex            1
-                   :flexDirection   "column"
-                   :justifyContent  "flex-start"
-                   :backgroundColor (:primary palette)
-                   }}
-          (view {:style {:flex            0.4
-                         :justifyContent  "center"
-                         :alignItems      "stretch"
-                         :backgroundColor (:dark-primary palette)}}
-                (scroll-view {:style {:flex 1}
-                              :key   1}
-                             (text {:style {:padding  20
-                                            :fontSize (text-field-font-size)}}
-                                   (text-field :light-primary "normal" nn-head)
-                                   (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
-                                   (text-field :light-primary "normal" nn-one-to-group)
-                                   (text-field :light-primary "bold" nn-group)
-                                   (text-field :light-primary "normal" nn-group-to-anyway)
-                                   (text-field :accent "bold" nn-anyway)
-                                   (text-field :light-primary "normal" nn-tail)
-                                   )))
-          (scroll-view {:style {:flex 1}}
-                       (view {:style {:flexDirection  "column"
-                                      :justifyContent "flex-start"}}
-                             ;(nested-n-square [1]
-                             (view {:style {:flexDirection "row"
-                                            :justifyContent "space-around"}}
-                                   (draw-square 200)
-                                   (draw-square 200))
-                             (view {:style {:flexDirection "row"
-                                            :justifyContent "space-around"}}
-                                   (draw-square 200)
-                                   (draw-square 200))
-                             )
-                       #_(view {:style {:flexDirection "row"}}
-                               (draw-square)
-                               (draw-square)))
-          #_(view {:style {:backgroundColor "black"
-                           :borderWidth     1
-                           :borderColor     "cyan"
-                           :width           w
-                           :height          h
-                           :position        "relative"
-                           }}
-                  (for [i (range row-n)]
-                    (for [j (range col-n)]
-                      (draw-circle scenar "red" isz
-                                   (+ dw (* (grouper i) isz))
-                                   (+ dh (* (grouper j) isz)))))))))
+    (letfn [(handle-scroll [event]
+              (this-as this
+                (.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
+                ))
+            ]
+
+
+      (prn [w h dw dh])
+      (view {:onLayout #(prn (screen-w-h))
+             :style    {:flex            1
+                        :flexDirection   "column"
+                        :justifyContent  "flex-start"
+                        :backgroundColor (:primary palette)
+                        }}
+            (view {:style {:flex            0.4
+                           :justifyContent  "center"
+                           :alignItems      "stretch"
+                           :backgroundColor (:dark-primary palette)}}
+                  (scroll-view {:style {:flex 1}
+                                :key   1
+                                }
+                               (text {:style {:padding  20
+                                              :fontSize (text-field-font-size)}}
+                                     (text-field :light-primary "normal" nn-head)
+                                     (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
+                                     (text-field :light-primary "normal" nn-one-to-group)
+                                     (text-field :light-primary "bold" nn-group)
+                                     (text-field :light-primary "normal" nn-group-to-anyway)
+                                     (text-field :accent "bold" nn-anyway)
+                                     (text-field :light-primary "normal" nn-tail)
+                                     )))
+            (scroll-view {:onScroll            handle-scroll
+                          :scrollEventThrottle 16
+                          :style               {:flex          0.6
+                                                :flexDirection "column"}}
+
+                         (view {:style {:flex           1
+                                        :flexDirection  "column"
+                                        :justifyContent "flex-start"}}
+                               (nested-n-square w 9)
+                               #_(view {:style {:flexDirection     "column"
+                                                :height            w
+                                                :justifyContent    "space-around"
+                                                :borderBottomWidth 1
+                                                :borderBottomColor "black"}}
+                                       (view {:style {:flexDirection  "row"
+                                                      :justifyContent "space-around"}}
+                                             (draw-square (/ w 3))
+                                             (draw-square (/ w 3))
+                                             (draw-square (/ w 3))
+                                             )
+                                       (view {:style {:flexDirection  "row"
+                                                      :justifyContent "space-around"}}
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             )
+                                       (view {:style {:flexDirection  "row"
+                                                      :justifyContent "space-around"}}
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             ))
+
+                               #_(view {:style {:flexDirection  "column"
+                                                :height         w
+                                                :justifyContent "space-around"}}
+                                       ;(nested-n-square [1]
+                                       (view {:style {:flexDirection  "row"
+                                                      :justifyContent "space-around"}}
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             )
+                                       (view {:style {:flexDirection  "row"
+                                                      :justifyContent "space-around"}}
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             )
+                                       (view {:style {:flexDirection  "row"
+                                                      :justifyContent "space-around"}}
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             (draw-square 100)
+                                             )
+                                       )
+                               #_(view {:style {:flexDirection "row"}}
+                                       (draw-square)
+                                       (draw-square)))
+                         #_(view {:style {:backgroundColor "black"
+                                          :borderWidth     1
+                                          :borderColor     "cyan"
+                                          :width           w
+                                          :height          h
+                                          :position        "relative"
+                                          }}
+                                 (for [i (range row-n)]
+                                   (for [j (range col-n)]
+                                     (draw-circle scenar "red" isz
+                                                  (+ dw (* (grouper i) isz))
+                                                  (+ dh (* (grouper j) isz)))))))))))
 
 
 #_(rum/defc page < rum/reactive []

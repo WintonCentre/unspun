@@ -29,7 +29,7 @@
 (rum/defc bottom-button-bar < rum/reactive []
   (let [palette (get-palette (rum/react palette-index))
         margin (Math.round (* 4 font-scale))]
-    (view {:key "bottom-button-bar"
+    (view {:key   "bottom-button-bar"
            :style {:flex            0.5
                    :flexDirection   "row"
                    :justifyContent  "space-around"
@@ -39,12 +39,12 @@
                    :bordered  true
                    :small     (not (ios?))
                    :textStyle {:color (:text-icons palette)}
-                   :style     {:margin margin
+                   :style     {:margin      margin
                                :borderWidth 2
                                :borderColor (:text-icons palette)}
-                   :onPress next-story}
+                   :onPress   next-story}
                   (previous-icon palette)
-                  (txt {:key "prev-txt"
+                  (txt {:key   "prev-txt"
                         :style {:color (:text-icons palette)}} "Previous")
                   )
           (button {:key       "next-but"
