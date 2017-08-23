@@ -14,6 +14,7 @@
     :or   {size 100 draw? true key nil}}]
   (view {:key   key
          :style {:backgroundColor "orange"
+                 :paddingTop 1
                  :aspectRatio     1
                  :opacity         (if draw? 1 0)
                  :justifyContent  "space-around"
@@ -21,13 +22,20 @@
                  :width           size                      ;size
                  :borderRadius    (/ size 2)
                  }}
-        (ionicon {:name  "ios-wine"                         ;"ios-radio-button-on"
-                  :size  100
-                  :flex  1
-                  :style {:color           "white"
-                          :backgroundColor "rgba(0,0,0,0)"
-                          :transform       [{:scale (/ size 100)}]
-                          }})))
+        (view
+          {:style {:transform (clj->js [{:translateX 10}
+                                        {:translateY -99}
+                                        {:scale (/ size 100)}
+                                        {:translateX (/ (* -9 100) size)}
+                                        {:translateY (/ (* 100 100) size)}
+                                        ])}}
+          (ionicon {:name  "ios-wine"                      ;"ios-radio-button-on"
+                    :size  100
+                    :style {:width           100
+                            :textAlign       "center"
+                            :color           "white"
+                            :backgroundColor "rgba(0,0,0,0)"
+                            }}))))
 
 (defn draw-n-square
   [n]
@@ -53,20 +61,30 @@
                   (draw-square {:size 50}))))
         ))
 
+(def testn 40)
+
 (def row0 [0 0 0 0 0])
 (def row1 [0 0 1 0 0])
 (def row2 [0 1 0 1 0])
-(def row3 [0 1 1 1 0])
+(def row3 [1 0 1 0 1])
 (def row4 [1 1 0 1 1])
 (def row5 [1 1 1 1 1])
+(def row10 (vec (concat row5 [0] row5)))
 (def rown [row0 row1 row2 row3 row4 row5])
 (def block10 [row5 row5])
-(defn approw [b n] (if (< n 6)
-                     (conj b row0 (rown n))
-                     (conj (approw b 5) (rown (- n 5)))))
-(def block20 (approw block10 10))
-(def block30 (approw block20 10))
-(def block40 (approw block30 10))
+(defn append-block [b n] (if (< n 6)
+                           (conj b row0 (rown n))
+                           (conj (append-block b 5) (rown (- n 5)))))
+(def block20 (append-block block10 10))
+(def block30 (append-block block20 10))
+;(def block40 (append-block block30 10))
+
+(def block40 (into [] (-> nil
+                         (append-block 8)
+                         (append-block 10)
+                         (append-block 10)
+                         (append-block 10))))
+
 (def dice {1  [[1]]
            2  [[1 0]
                [0 1]]
@@ -90,44 +108,59 @@
                [1 1 1]
                [1 1 1]]
            10 block10
-           11 (approw block10 1)
-           12 (approw block10 2)
-           13 (approw block10 3)
-           14 (approw block10 4)
-           15 (approw block10 5)
-           16 (approw block10 6)
-           17 (approw block10 7)
-           18 (approw block10 8)
-           19 (approw block10 9)
+           11 (append-block block10 1)
+           12 (append-block block10 2)
+           13 (append-block block10 3)
+           14 (append-block block10 4)
+           15 (append-block block10 5)
+           16 (append-block block10 6)
+           17 (append-block block10 7)
+           18 (append-block block10 8)
+           19 (append-block block10 9)
            20 block20
-           21 (approw block20 1)
-           22 (approw block20 2)
-           23 (approw block20 3)
-           24 (approw block20 4)
-           25 (approw block20 5)
-           26 (approw block20 6)
-           27 (approw block20 7)
-           28 (approw block20 8)
-           29 (approw block20 9)
+           21 (append-block block20 1)
+           22 (append-block block20 2)
+           23 (append-block block20 3)
+           24 (append-block block20 4)
+           25 (append-block block20 5)
+           26 (append-block block20 6)
+           27 (append-block block20 7)
+           28 (append-block block20 8)
+           29 (append-block block20 9)
            30 block30
-           31 (approw block30 1)
-           32 (approw block30 2)
-           33 (approw block30 3)
-           34 (approw block30 4)
-           35 (approw block30 5)
-           36 (approw block30 6)
-           37 (approw block30 7)
-           38 (approw block30 8)
-           39 (approw block30 9)
+           31 (append-block block30 1)
+           32 (append-block block30 2)
+           33 (append-block block30 3)
+           34 (append-block block30 4)
+           35 (append-block block30 5)
+           36 (append-block block30 6)
+           37 (append-block block30 7)
+           38 (append-block block30 8)
+           39 (append-block block30 9)
            40 block40
            })
-(def dicen (partial get dice))
 
-(defn nested-n-square*
-  [w n]
-  (let [a (Math.ceil (Math.sqrt n))]
+(defn dicen
+  "layout n icons in an easy to count manner (dice-like for small n)"
+  [n]
+  (cond
+    (< n 10) (get dice n)
+    (< n 20) (append-block block10 n)
+    (< n 30) (append-block block20 n)
+    (< n 40) (append-block block30 n)
+    :else (append-block block40 0)
+    ))
+
+(rum/defc nested-n-square* < rum/static
+  [w h n]
+  (let [padding 20
+        cols (count ((dicen n) 0))
+        rows (count (dicen n))
+        a (/ (- w (* 2 padding)) cols)]
     (view {:style {:flexDirection     "column"
-                   :height            w
+                   :width             w
+                   :padding           padding
+                   ;:height
                    :justifyContent    "space-around"
                    :borderBottomWidth 1
                    :borderBottomColor "black"}}
@@ -136,7 +169,7 @@
                    :style {:flexDirection  "row"
                            :justifyContent "space-around"}}
                   (for [[j col] (zipmap (range) row)]
-                    (draw-square {:size  (/ (* 0.8 w) a)
+                    (draw-square {:size  (if (zero? col) (/ a 3) a)
                                   :draw? (not (zero? col))
                                   :key   (str "c" j)})))))))
 
@@ -246,7 +279,7 @@
                          (view {:style {:flex           1
                                         :flexDirection  "column"
                                         :justifyContent "flex-start"}}
-                               (nested-n-square* w 33)
+                               (nested-n-square* w h testn)
                                #_(view {:style {:flexDirection     "column"
                                                 :height            w
                                                 :justifyContent    "space-around"
