@@ -5,7 +5,8 @@
             [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
             [unspun.screens.mixins :refer [monitor]]
             [shared.icons :refer [ionicon]]
-            [rum.core :as rum]))
+            [rum.core :as rum]
+            [cljs.pprint :refer [pp]]))
 
 
 (defn draw-square
@@ -52,18 +53,77 @@
                   (draw-square {:size 50}))))
         ))
 
-(def domino [[]
-             [[0 0]]
-             [[0 0] [1 1]]
-             [[0 0] [0 1] [1 1]]
-             [[0 0] [0 1] [1 0] [1 1]]
-             [[1 1] [0 0] [0 2] [2 0] [2 2]]
-             [[0 1] [0 0] [0 2] [2 0] [2 1] [2 2]]
-             [[1 1] [0 0] [0 1] [1 0] [1 2] [2 1] [2 2]]
-             [[0 1] [0 2] [1 0] [1 2] [2 0] [2 1] [2 2] [0 0]]
-             [[1 1] [0 0] [0 1] [0 2] [1 0] [1 2] [2 0] [2 1] [2 2]]])
+(def row0 [0 0 0 0 0])
+(def row1 [0 0 1 0 0])
+(def row2 [0 1 0 1 0])
+(def row3 [0 1 1 1 0])
+(def row4 [1 1 0 1 1])
+(def row5 [1 1 1 1 1])
+(def rown [row0 row1 row2 row3 row4 row5])
+(def block10 [row5 row5])
+(defn approw [b n] (if (< n 6)
+                     (conj b row0 (rown n))
+                     (conj (approw b 5) (rown (- n 5)))))
+(def block20 (approw block10 10))
+(def block30 (approw block20 10))
+(def block40 (approw block30 10))
+(def dice {1  [[1]]
+           2  [[1 0]
+               [0 1]]
+           3  [[1 1]
+               [0 1]]
+           4  [[1 1]
+               [1 1]]
+           5  [[1 0 1]
+               [0 1 0]
+               [1 0 1]]
+           6  [[1 1 1]
+               [0 0 0]
+               [1 1 1]]
+           7  [[1 1 0]
+               [1 1 1]
+               [0 1 1]]
+           8  [[1 1 1]
+               [1 0 1]
+               [1 1 1]]
+           9  [[1 1 1]
+               [1 1 1]
+               [1 1 1]]
+           10 block10
+           11 (approw block10 1)
+           12 (approw block10 2)
+           13 (approw block10 3)
+           14 (approw block10 4)
+           15 (approw block10 5)
+           16 (approw block10 6)
+           17 (approw block10 7)
+           18 (approw block10 8)
+           19 (approw block10 9)
+           20 block20
+           21 (approw block20 1)
+           22 (approw block20 2)
+           23 (approw block20 3)
+           24 (approw block20 4)
+           25 (approw block20 5)
+           26 (approw block20 6)
+           27 (approw block20 7)
+           28 (approw block20 8)
+           29 (approw block20 9)
+           30 block30
+           31 (approw block30 1)
+           32 (approw block30 2)
+           33 (approw block30 3)
+           34 (approw block30 4)
+           35 (approw block30 5)
+           36 (approw block30 6)
+           37 (approw block30 7)
+           38 (approw block30 8)
+           39 (approw block30 9)
+           40 block40
+           })
+(def dicen (partial get dice))
 
-(defn nested-n-square
+(defn nested-n-square*
   [w n]
   (let [a (Math.ceil (Math.sqrt n))]
     (view {:style {:flexDirection     "column"
@@ -71,49 +131,15 @@
                    :justifyContent    "space-around"
                    :borderBottomWidth 1
                    :borderBottomColor "black"}}
-          (for [row (range a)]
-            (view {:key   (str "osv" row)
+          (for [[i row] (zipmap (range) (dicen n))]
+            (view {:key   (str "r" i)
                    :style {:flexDirection  "row"
                            :justifyContent "space-around"}}
-                  (for [col (range a)]
+                  (for [[j col] (zipmap (range) row)]
                     (draw-square {:size  (/ (* 0.8 w) a)
-                                  :draw? (if (< a 4)
-                                           ((into #{} (domino n)) [row col])
-                                           (< (+ col (* a row)) n))
-                                  :key   (str "dsv" col)})))))))
+                                  :draw? (not (zero? col))
+                                  :key   (str "c" j)})))))))
 
-
-(defn draw-4-square
-  []
-  (view {
-         :style       {:flex            1
-                       :flexDirection   "row"
-                       :alignItems      "center"
-                       :justifyContent  "space-around"
-                       :backgroundColor "red"
-                       :paddingTop      0
-                       :aspectRatio     1}
-         :aspectRatio 1
-         }
-        (view {:key   (str "top")
-               :style {:flex           1
-                       :flexDirection  "column"
-                       :alignItems     "center"
-                       :justifyContent "space-around"}
-               }
-              (for [sq (range 2)]
-                (draw-n-square 3)))
-
-        (view {:key   (str "bot")
-               :style {:flex           1
-                       :flexDirection  "column"
-                       :alignItems     "center"
-                       :justifyContent "space-around"}
-               }
-
-              (for [sq (range 2)]
-                (draw-n-square 5)))
-        ))
 
 (defn draw-circle [scenar color size x y]
   "draw a icon selected by scenario."
@@ -220,7 +246,7 @@
                          (view {:style {:flex           1
                                         :flexDirection  "column"
                                         :justifyContent "flex-start"}}
-                               (nested-n-square w 9)
+                               (nested-n-square* w 33)
                                #_(view {:style {:flexDirection     "column"
                                                 :height            w
                                                 :justifyContent    "space-around"
