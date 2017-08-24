@@ -167,132 +167,38 @@
      [1 1 1 1 1 0 1 1 1 1 1 0 1 1 1 0 0]]
   )
 
-(def block10 "two rows of 5" [row5 row5])
-
-(defn append-block [b n] (into [] (if (< n 6)
-                                    (conj b row0 (rown n))
-                                    (conj (append-block b 5) (rown (- n 5))))))
-
-(def block20 (append-block block10 10))
-(def block30 (append-block block20 10))
-;(def block40 (append-block block30 10))
-
-(def block40 (into [] (next (-> []
-                                (append-block 10)
-                                (append-block 10)
-                                (append-block 10)
-                                (append-block 8)))))
-
-
-(def dice {1  [[1]]
-           2  [[1 0]
-               [0 1]]
-           3   (blocks 500 20 5 5) #_[[1 1]
-               [0 1]]
-           4  [[1 1]
-               [1 1]]
-           5  [[1 0 1]
-               [0 1 0]
-               [1 0 1]]
-           6  [[1 1 1]
-               nil
-               [1 1 1]]
-           7  [[1 1 0]
-               [1 1 1]
-               [0 1 1]]
-           8  [[1 1 1]
-               [1 0 1]
-               [1 1 1]]
-           9  [[1 1 1]
-               [1 1 1]
-               [1 1 1]]
-           10 [row5
-               row5]
-           11 [row5
-               row5
-               nil
-               row1]
-           12 [row5
-               row5
-               nil
-               row2]
-           13 [row5
-               row5
-               nil
-               row3]
-           14 [row5
-               row5
-               nil
-               row4]
-           15 [row5
-               row5
-               nil
-               row5]
-           16 [row5
-               row5
-               nil
-               row5
-               row1]
-           17 [row5
-               row5
-               nil
-               row5
-               (row-n-m 2 5)]
-           18 [row5
-               row5
-               nil
-               row5
-               row3]
-           19 [row5
-               row5
-               nil
-               row5
-               row4]
-           20 [row5
-               row5
-               nil
-               row5
-               row5]
-           21 [row10 row10 nil row10 row10 nil [1 1 1 1 1 0 1 1 1 1 0]]
-           22 [row15 row15 nil row15 row15 nil row15 row15 nil row15 row15 nil row15 row15 nil row15 row15 nil row15 row15 nil row15 row15 nil row15 row15 nil row15 row15 nil row15 row15]
-           23 (append-block block20 3)
-           24 (append-block block20 4)
-           25 (append-block block20 5)
-           26 (append-block block20 6)
-           27 (append-block block20 7)
-           28 (append-block block20 8)
-           29 (append-block block20 9)
-           30 block30
-           31 (append-block block30 1)
-           32 (append-block block30 2)
-           33 (append-block block30 3)
-           34 (append-block block30 4)
-           35 (append-block block30 5)
-           36 (append-block block30 6)
-           37 (append-block block30 7)
-           38 (append-block block30 8)
-           39 (append-block block30 9)
-           40 block40
+(def dice {1 [[1]]
+           2 [[1 0]
+              [0 1]]
+           3 [[1 1]
+              [0 1]]
+           4 [[1 1]
+              [1 1]]
+           5 [[1 0 1]
+              [0 1 0]
+              [1 0 1]]
+           6 [[1 1 1]
+              nil
+              [1 1 1]]
+           7 [[1 1 0]
+              [1 1 1]
+              [0 1 1]]
+           8 [[1 1 1]
+              [1 0 1]
+              [1 1 1]]
+           9 [[1 1 1]
+              [1 1 1]
+              [1 1 1]]
            })
-
-(defn layout25
-  [n]
-  (let [kk (fn [k] (* 5 (inc k)))]
-    (map-indexed #(cond
-                    (< (kk %1) n) row5
-                    (and (= (kk %1) n) (< (kk %1) (inc n))) (row-n-m (mod %1 5) 5)
-                    :else [0 0 0 0 0]) (range 5))))
-
 
 (defn dicen
   "layout n icons in an easy to count manner (dice-like for small n)"
   [n]
   (cond
-    (< n 11) (get dice n)
-    ;(< n 24) (append-block block10 n)
-    ;(< n 30) (append-block block20 n)
-    ;(< n 40) (append-block block30 n)
-    :else (append-block block40 0)
+    (< n 10) (get dice n)
+    (<= n 20) (blocks n 5 5 2)
+    (<= n 100) (blocks n 10 5 2)
+    :else (blocks n 10 10 10)
     ))
 
 (defn icon-top
@@ -300,9 +206,6 @@
   and the row number i"
   [i a n]
   (- (* i a) (cond
-               (> n 9)
-               (* 2 (quot i 3) (/ a 3))
-
                (= n 6)
                (condp = i
                  0 (- (/ a 3))
@@ -317,12 +220,11 @@
         cols (count ((dicen n) 0))
         rows (count (dicen n))
         a (/ (- w (* 2 padding)) cols)]
-    (view {:style {;:flexDirection     "column"
-                   :flex    0
+    (view {:style {:flex    0
                    :width   w
                    :height  (+ (* 2 padding) (icon-top (count (dicen n)) a n))
                    :padding padding
-                   ;:justifyContent    "space-around"
+
                    }}
           (for [[i row] (zipmap (range) (dicen n))]
             (view {:key   (str "r" i)
@@ -330,38 +232,12 @@
                            :position "relative"}}
                   (when row
                     (for [[j col] (zipmap (range) row)]
-                      (view {:style {:position "absolute"
+                      (view {:key   (str "c" j)
+                             :style {:position "absolute"
                                      :top      (icon-top i a n)
                                      :left     (* j a)}}
                             (draw-square {:size  a
-                                          :draw? (not (zero? col))
-                                          :key   (str "c" j)})))
-                    )))))
-  )
-
-(rum/defc nested-n-square* < rum/static
-  [w h n]
-  (let [padding 10
-        cols (count ((dicen n) 0))
-        rows (count (dicen n))
-        a (/ (- w (* 2 padding)) cols)]
-    (view {:style {:flexDirection     "column"
-                   :width             w
-                   :padding           padding
-                   ;:height
-                   :justifyContent    "space-around"
-                   :borderBottomWidth 1
-                   :borderBottomColor "black"}}
-          (for [[i row] (zipmap (range) (dicen n))
-                :let [row (if (nil? row) [0 0 0 0 0] row)
-                      gap? (= row [0 0 0 0 0])]]
-            (view {:key   (str "r" i)
-                   :style {:flexDirection  "row"
-                           :justifyContent "space-around"}}
-                  (for [[j col] (zipmap (range) row)]
-                    (draw-square {:size  (if (or gap? (and (not (zero? j)) (zero? (mod j 5)) (zero? col))) (/ a 3) a)
-                                  :draw? (not (zero? col))
-                                  :key   (str "c" j)})))))))
+                                          :draw? (not (zero? col))})))))))))
 
 
 (defn draw-circle [scenar color size x y]
@@ -391,9 +267,6 @@
                      :transform       [{:translateX 0}      ;(* 15 scale kk)
                                        {:scale (* scale kk)}]}}))
 
-(defn grouper
-  [j]
-  (+ j (/ (js/Math.floor (/ j 5)) 1)))
 
 (defn resize
   [event]
@@ -428,7 +301,13 @@
                      (text {:key   (gensym "text-field")
                             :style {:color      (palette-key palette)
                                     :fontWeight weight
-                                    }} content))]
+                                    }} content))
+
+        padding 10
+        cols (count ((dicen nn) 0))
+        rows (count (dicen nn))
+        a (/ (- w (* 2 padding)) cols)
+        ]
 
     (letfn [(handle-scroll [event]
               (this-as this
@@ -437,14 +316,13 @@
             ]
 
 
-      (prn [w h dw dh])
       (view {:onLayout #(prn (screen-w-h))
              :style    {:flex            1
                         :flexDirection   "column"
                         :justifyContent  "flex-start"
                         :backgroundColor (:primary palette)
                         }}
-            (view {:style {:flex            0.4
+            (view {:style {:flex            0.3
                            :justifyContent  "center"
                            :alignItems      "stretch"
                            :backgroundColor (:dark-primary palette)}}
@@ -461,77 +339,51 @@
                                      (text-field :accent "bold" nn-anyway)
                                      (text-field :light-primary "normal" nn-tail)
                                      )))
-            (scroll-view {:onScroll            handle-scroll
-                          :scrollEventThrottle 16
-                          :style               {:flex          0.6
-                                                :flexDirection "column"}}
 
-                         (view {:style {:flex           1
-                                        :flexDirection  "column"
-                                        :justifyContent "flex-start"}}
-                               (nested-n-square** w h testn)
-                               #_(view {:style {:flexDirection     "column"
-                                                :height            w
-                                                :justifyContent    "space-around"
-                                                :borderBottomWidth 1
-                                                :borderBottomColor "black"}}
-                                       (view {:style {:flexDirection  "row"
-                                                      :justifyContent "space-around"}}
-                                             (draw-square (/ w 3))
-                                             (draw-square (/ w 3))
-                                             (draw-square (/ w 3))
-                                             )
-                                       (view {:style {:flexDirection  "row"
-                                                      :justifyContent "space-around"}}
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             )
-                                       (view {:style {:flexDirection  "row"
-                                                      :justifyContent "space-around"}}
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             ))
+            (view {:style {:flex          0.7
+                           :flexDirection "column"}}
 
-                               #_(view {:style {:flexDirection  "column"
-                                                :height         w
-                                                :justifyContent "space-around"}}
-                                       ;(nested-n-square [1]
-                                       (view {:style {:flexDirection  "row"
-                                                      :justifyContent "space-around"}}
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             )
-                                       (view {:style {:flexDirection  "row"
-                                                      :justifyContent "space-around"}}
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             )
-                                       (view {:style {:flexDirection  "row"
-                                                      :justifyContent "space-around"}}
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             (draw-square 100)
-                                             )
-                                       )
-                               #_(view {:style {:flexDirection "row"}}
-                                       (draw-square)
-                                       (draw-square)))
-                         #_(view {:style {:backgroundColor "black"
-                                          :borderWidth     1
-                                          :borderColor     "cyan"
-                                          :width           w
-                                          :height          h
-                                          :position        "relative"
-                                          }}
-                                 (for [i (range row-n)]
-                                   (for [j (range col-n)]
-                                     (draw-circle scenar "red" isz
-                                                  (+ dw (* (grouper i) isz))
-                                                  (+ dh (* (grouper j) isz)))))))))))
+                  (view {:key   1
+                         :style {:position "absolute"
+                                 :top      0
+                                 :bottom   0
+                                 :left     0
+                                 :right    0
+                                 :zIndex   1
+                                 :height   1000}}
+                        (scroll-view {:onScroll            handle-scroll
+                                      :scrollEventThrottle 16
+                                      :key                 1
+                                      :style               {:flex          1
+                                                            :flexDirection "column"
+                                                            :opacity 0.8}}
+
+                                     (nested-n-square** w h nn)))
+
+                  (view {:key   2
+                         :style {:position "absolute"
+                                 :top      0
+                                 :bottom   0
+                                 :left     0
+                                 :right    0
+                                 :zIndex   0}}
+                        (view {:style {:flex           1
+                                       :flexDirection  "column"
+                                       :justifyContent "center"
+                                       :alignItems     "center"}}
+                              (view {:style {:flex           1
+                                             :flexDirection  "row"
+                                             :justifyContent "center"
+                                             :alignItems     "center"}}
+                                    (text {:style {:fontSize        (* (text-field-font-size) 10)
+                                                   :color           (:light-primary palette)
+                                                   :backgroundColor "rgba(0,0,0,0)"
+                                                   :opacity         1
+                                                   }
+                                           }
+                                          (str nn)))))
+
+                  )))))
 
 
 #_(rum/defc page < rum/reactive []
