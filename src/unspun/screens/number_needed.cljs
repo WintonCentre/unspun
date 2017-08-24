@@ -57,7 +57,7 @@
                   (draw-square {:size 50}))))
         ))
 
-(def testn 6)
+(def testn 3)
 
 (def row0 [0 0 0 0 0])
 (def row1 [0 0 1 0 0])
@@ -68,7 +68,104 @@
 
 (def row10 "row of 10" (vec (concat row5 [0] row5)))
 (def row15 "row of 15" (vec (concat row5 [0] row5 [0] row5)))
-(def rown [row0 row1 row2 row3 row4 row5])
+(def rown "access row0..row5 by index" [row0 row1 row2 row3 row4 row5])
+
+(defn row-n-m*
+  "Layout for row of length m with n icons showing"
+  [n m k]
+  (->> (range m)
+       (map-indexed #(if (< %1 n) 1 0))
+       (partition k)
+       (interpose 0)
+       (flatten)
+       (into [])))
+
+(defn row-n-m
+  "Layout for row of length m with n icons showing"
+  [n m]
+  (->> (range m)
+       (map-indexed #(if (< %1 n) 1 0))
+       (partition 5)
+       (interpose 0)
+       (flatten)
+       (into [])))
+
+(defn block-n-k
+  [n k]
+  (->>                                                      ;(row-n-m* n 20 20)
+    (range (* k (Math.ceil (/ n k))))
+    (map-indexed #(if (< %1 n) 1 0))
+    (partition-all k)
+    (partition-all 2)
+    (interpose (repeat k 0))
+    (flatten)
+    (partition-all k)
+    (map (partial partition-all 5))
+    (map (partial interpose [0]))
+    (map flatten)
+    (mapv vec)))
+
+(defn block-k-n
+  [n k]
+  (->>                                                      ;(row-n-m* n 20 20)
+    (range (* k (Math.ceil (/ n k))))
+    (map-indexed #(if (< %1 n) 1 0))
+    (partition-all k)
+    (partition-all 5)
+    (interpose (repeat k 0))
+    (flatten)
+    (partition-all k)
+    (map (partial partition-all 2))
+    (map (partial interpose [0]))
+    (map flatten)
+    (mapv vec)))
+
+(defn blocks
+  [n cols w h]
+  (->>                                                      ;(row-n-m* n 20 20)
+    (range (* cols (Math.ceil (/ n cols))))
+    (map-indexed #(if (< %1 n) 1 0))
+    (partition-all cols)
+    (partition-all h)
+    (interpose (repeat cols 0))
+    (flatten)
+    (partition-all cols)
+    (map (partial partition-all w))
+    (map (partial interpose [0]))
+    (map flatten)
+    (mapv vec)))
+
+(comment
+  (blocks 500 20 5 5)
+  )
+
+#_(defn row-n-m
+    "Layout for row of length m with n icons showing"
+    [n m]
+    (let [row []]
+      (for [col (range m)]
+        (loop [row []
+               i 0]
+          (if (< i m)
+            (recur (conj row (if (and (pos? i) (mod i 6)) 1 0)) (inc i))
+            row)))))
+
+(comment
+  (row-n-m 3 5)
+  ; => [1 1 1 0 0]
+  (block-n-k 3 5)
+  ;=> [[1 1 1 0 0]]
+  (block-n-k 13 5)
+  ;=> [[1 1 1 1 1] [1 1 1 1 1] [0 0 0 0 0] [1 1 1 0 0]]
+  (block-n-k 13 10)
+  ;=> [[1 1 1 1 1 0 1 1 1 1 1] [1 1 1 0 0 0 0 0 0 0 0]]
+  (block-n-k 43 15)
+  ;=>
+  #_[[1 1 1 1 1 0 1 1 1 1 1 0 1 1 1 1 1]
+     [1 1 1 1 1 0 1 1 1 1 1 0 1 1 1 1 1]
+     [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+     [1 1 1 1 1 0 1 1 1 1 1 0 1 1 1 0 0]]
+  )
 
 (def block10 "two rows of 5" [row5 row5])
 
@@ -86,10 +183,11 @@
                                 (append-block 10)
                                 (append-block 8)))))
 
+
 (def dice {1  [[1]]
            2  [[1 0]
                [0 1]]
-           3  [[1 1]
+           3   (blocks 500 20 5 5) #_[[1 1]
                [0 1]]
            4  [[1 1]
                [1 1]]
@@ -139,7 +237,7 @@
                row5
                nil
                row5
-               row2]
+               (row-n-m 2 5)]
            18 [row5
                row5
                nil
@@ -177,14 +275,23 @@
            40 block40
            })
 
+(defn layout25
+  [n]
+  (let [kk (fn [k] (* 5 (inc k)))]
+    (map-indexed #(cond
+                    (< (kk %1) n) row5
+                    (and (= (kk %1) n) (< (kk %1) (inc n))) (row-n-m (mod %1 5) 5)
+                    :else [0 0 0 0 0]) (range 5))))
+
+
 (defn dicen
   "layout n icons in an easy to count manner (dice-like for small n)"
   [n]
   (cond
-    (< n 23) (get dice n)
-    (< n 24) (append-block block10 n)
-    (< n 30) (append-block block20 n)
-    (< n 40) (append-block block30 n)
+    (< n 11) (get dice n)
+    ;(< n 24) (append-block block10 n)
+    ;(< n 30) (append-block block20 n)
+    ;(< n 40) (append-block block30 n)
     :else (append-block block40 0)
     ))
 
@@ -247,7 +354,7 @@
                    :borderBottomColor "black"}}
           (for [[i row] (zipmap (range) (dicen n))
                 :let [row (if (nil? row) [0 0 0 0 0] row)
-                      gap? (or (nil? row) (= row [0 0 0 0 0]))]]
+                      gap? (= row [0 0 0 0 0])]]
             (view {:key   (str "r" i)
                    :style {:flexDirection  "row"
                            :justifyContent "space-around"}}
