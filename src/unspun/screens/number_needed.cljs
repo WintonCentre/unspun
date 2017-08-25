@@ -1,7 +1,7 @@
 (ns unspun.screens.number-needed
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [n-icon screen-width screen-w-h text-field-font-size]]
+            [shared.ui :refer [n-icon screen-width screen-w-h text-field-font-size Dimensions]]
             [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
             [unspun.screens.mixins :refer [monitor]]
             [shared.icons :refer [ionicon]]
@@ -259,73 +259,60 @@
 
 (rum/defc nested-n-square** < rum/static
   [scenar palette rr w h n highlight]
-  (let [padding 10
+  (let [w (min w h)
+        padding 10
         cols (count ((dicen n highlight) 0))
         rows (count (dicen n highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
     (prn highlight)
-    (view {:style {:flex    0
-                   :width   w
-                   :height  (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n))
-                   :padding padding
-                   }}
-          (for [[i row] (zipmap (range) (dicen n highlight))]
-            (view {:key   (str "r" i)
-                   :style {:flex     0
-                           :position "relative"}}
-                  (when row
-                    (for [[j col] (zipmap (range) row)]
-                      (view {:key   (str "c" j)
-                             :style {:position "absolute"
-                                     :top      (icon-top i a n)
-                                     :left     (* j a)}}
-                            (draw-icon {:scenar scenar
-                                        :size   a
-                                        :draw?  (not (zero? col))
-                                        :back   (if (and (zero? i) (zero? j))
-                                                  ((if (> rr 1) :accent :text-icons) palette)
-                                                  "rgb(0,0,0,0)")
-                                        :color  (if (and (zero? i) (zero? j))
-                                                  ((if (> rr 1) :text-icons :dark-primary) palette)
-                                                  (if (pos? col)
-                                                    (:light-primary palette)
-                                                    (:accent palette)
-                                                    ))  ; (if (highlight (+ j (* i rows))) "black" "white")
-                                        })))))))))
+    (view {:style {:flex          1
+                   :flexDirection "column"
+                   :alignItems    "center"}}
+          (view {:style {:flex    0
+                         :width   w
+                         :height  (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n))
+                         :padding padding
+                         ;:transform [{:scale (/ h (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n)))}]
+                         }}
+                (for [[i row] (zipmap (range) (dicen n highlight))]
+                  (view {:key   (str "r" i)
+                         :style {:flex     0
+                                 :position "relative"}}
+                        (when row
+                          (for [[j col] (zipmap (range) row)]
+                            (view {:key   (str "c" j)
+                                   :style {:position "absolute"
+                                           :top      (icon-top i a n)
+                                           :left     (* j a)}}
+                                  (draw-icon {:scenar scenar
+                                              :size   a
+                                              :draw?  (not (zero? col))
+                                              :back   (if (and (zero? i) (zero? j))
+                                                        ((if (> rr 1) :accent :text-icons) palette)
+                                                        "rgba(0,0,0,0)")
+                                              :color  (if (and (zero? i) (zero? j))
+                                                        ((if (> rr 1) :text-icons :dark-primary) palette)
+                                                        (if (pos? col)
+                                                          (:light-primary palette)
+                                                          (:accent palette)
+                                                          )) ; (if (highlight (+ j (* i rows))) "black" "white")
+                                              }))))))))))
 
 
-(defn draw-circle [scenar color size x y]
-  "draw a icon selected by scenario."
-  (ionicon {:name  "ios-radio-button-on"
-            :size  size
-            :color "green"
-            :style {:position "absolute"
-                    :left     x
-                    :top      y
-                    }
-            #_:style #_{:color           white
-                        :backgroundColor "rgba(0,0,0,0)"
-                        ;:flex            -1
-                        :width           30                 ; the grid width - should be 30 for a packed icon whatever the scale
-                        :transform       [{:translateX 0}   ;(* 15 scale kk)
-                                          {:translateY 0}   ;(* 15 scale kk)
-                                          {:scale 1}]}}))   ; the scale. higher = denser, but on same centres.
 
 
-(comment
-  (defn resize
-    [event]
-    (println "dim = " (screen-w-h)))
+(defn resize
+  [event]
+  (.log js/console "dim = " event))
 
-  (def resize-mixin {:did-mount    (fn [state]
-                                     (.addEventListener Dimensions "change" resize)
-                                     state)
-                     :will-unmount (fn [state]
-                                     (.removeEventListener Dimensions "change" resize)
-                                     state)}))
-
-
+(def resize-mixin {:before-render (fn [state]
+                                    ;This should work but currently doesn't. May have been introduced in a a later
+                                    ; version of react?
+                                    ; (.get Dimensions "window") is fine.
+                                    (println "w-h = " (screen-w-h))
+                                    state)
+                   })
 
 
 (rum/defc page < rum/reactive []
@@ -338,7 +325,6 @@
         highlight (into #{} (map inc (ffloyd-sample (- nn 2)
                                                     (max 0 ((if (> rr 1) identity dec) (anyway rr br))))))
         [w h] (screen-w-h)
-        w (- w 0)
         h (- h 168)                                         ; adjustment for existing header and footer
         isz 16
         row-n (js/Math.floor (/ w isz))
@@ -366,9 +352,8 @@
                 ))
             ]
 
-
-      (view {:onLayout #(prn (screen-w-h))
-             :style    {:flex            1
+      (println "w,h=" [w h])
+      (view {:style    {:flex            1
                         :flexDirection   "column"
                         :justifyContent  "flex-start"
                         :backgroundColor (:primary palette)
