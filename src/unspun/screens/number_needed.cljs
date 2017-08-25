@@ -259,7 +259,7 @@
 
 (rum/defc nested-n-square** < rum/static
   [scenar palette rr w h n highlight]
-  (let [w (min w h)
+  (let [w (min w (- h 50))
         padding 10
         cols (count ((dicen n highlight) 0))
         rows (count (dicen n highlight))
