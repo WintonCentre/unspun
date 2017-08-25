@@ -87,7 +87,7 @@
   [n cols w h]
   (->>
     (range (* cols (Math.ceil (/ n cols))))
-    (map-indexed #(if (< %1 n) 1 0))
+    (map-indexed #(if (< %1 n) (inc %2) 0))
     (partition-all cols)
     (partition-all h)
     (interpose (repeat cols 0))
@@ -156,37 +156,46 @@
 
 (def dice {1 [[1]]
            2 [[1 0]
-              [0 1]]
-           3 [[1 1]
-              [0 1]]
-           4 [[1 1]
-              [1 1]]
-           5 [[1 0 1]
-              [0 1 0]
-              [1 0 1]]
-           6 [[1 1 1]
+              [0 2]]
+           3 [[1 2]
+              [0 3]]
+           4 [[1 2]
+              [3 4]]
+           5 [[1 0 2]
+              [0 3 0]
+              [4 0 5]]
+           6 [[1 2 3]
               nil
-              [1 1 1]]
-           7 [[1 1 0]
-              [1 1 1]
-              [0 1 1]]
-           8 [[1 1 1]
-              [1 0 1]
-              [1 1 1]]
-           9 [[1 1 1]
-              [1 1 1]
-              [1 1 1]]
+              [4 5 6]]
+           7 [[1 2 0]
+              [3 4 5]
+              [0 6 7]]
+           8 [[1 2 3]
+              [4 0 5]
+              [6 7 8]]
+           9 [[1 2 3]
+              [4 5 6]
+              [7 8 9]]
            })
 
 (defn dicen
-  "layout n icons in an easy to count manner (dice-like for small n)"
+  "layout n icons in an easy to count manner (dice-like for small n).
+  Full cells are represented by a non-zero value. Positive for a normal
+  cell, and negative for a highlighted cell. A cell is highlighted if its
+  index (in 0..(n-1)) is in the highlight set."
   [n highlight]
-  (cond
-    (< n 10) (get dice n)
-    (<= n 20) (blocks n 5 5 2)
-    (<= n 100) (blocks n 10 5 2)
-    :else (blocks n 10 10 10)
-    ))
+  (mapv
+    #(mapv (fn [k] (if (highlight (dec k)) (- k) k)) %)
+    (cond
+      (< n 10) (get dice n)
+      (<= n 20) (blocks n 5 5 2)
+      (<= n 100) (blocks n 10 5 2)
+      :else (blocks n 10 10 10))))
+
+(comment
+  (dicen 5 #{0 1 3})
+  => [[-1 0 -2] [0 3 0] [-4 0 5]]
+  )
 
 (defn icon-top
   "Determine vertical position of icons, taking account of their size a, the layout for the number n,
@@ -279,7 +288,10 @@
                                                   "rgb(0,0,0,0)")
                                         :color  (if (and (zero? i) (zero? j))
                                                   ((if (> rr 1) :text-icons :dark-primary) palette)
-                                                  "white")     ; (if (highlight (+ j (* i rows))) "black" "white")
+                                                  (if (pos? col)
+                                                    (:light-primary palette)
+                                                    (:accent palette)
+                                                    ))  ; (if (highlight (+ j (* i rows))) "black" "white")
                                         })))))))))
 
 
@@ -316,13 +328,15 @@
 
 
 
-(rum/defc page < rum/reactive (rum/local 0 ::icon-index) []
+(rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
         palette (get-palette (rum/react palette-index))
         br (:baseline-risk scenar)
         rr (:relative-risk scenar)
         nn (number-needed rr br)
-        highlight (ffloyd-sample nn (max 0 ((if (> rr 1) identity dec) (anyway rr br))))
+        ; we don't want to highlight the first icon - as that is already allocated to be the 'one'.
+        highlight (into #{} (map inc (ffloyd-sample (- nn 2)
+                                                    (max 0 ((if (> rr 1) identity dec) (anyway rr br))))))
         [w h] (screen-w-h)
         w (- w 0)
         h (- h 168)                                         ; adjustment for existing header and footer
