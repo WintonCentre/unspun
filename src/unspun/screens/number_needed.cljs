@@ -313,17 +313,17 @@
                                           {:scale 1}]}}))   ; the scale. higher = denser, but on same centres.
 
 
+(comment
+  (defn resize
+    [event]
+    (println "dim = " (screen-w-h)))
 
-(defn resize
-  [event]
-  (println "dim = " (screen-w-h)))
-
-#_(def resize-mixin {:did-mount    (fn [state]
+  (def resize-mixin {:did-mount    (fn [state]
                                      (.addEventListener Dimensions "change" resize)
                                      state)
                      :will-unmount (fn [state]
                                      (.removeEventListener Dimensions "change" resize)
-                                     state)})
+                                     state)}))
 
 
 

@@ -92,7 +92,7 @@
 (def pixel-ratio (.get PixelRatio))
 (def font-scale (.getFontScale PixelRatio))
 
-(def Dimensions (oget react-native "Dimensions"))
+;(def Dimensions (oget react-native "Dimensions"))
 (defn get-dimensions [] (into {} (map (fn [[k, v]] [(keyword k), v]) (js->clj (.get Dimensions "window")))))
 (defn status-bar-height [] (if (ios?) 20 25))
 (defn tab-bar-height [] 56)
