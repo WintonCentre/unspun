@@ -33,29 +33,7 @@
                             :backgroundColor "rgba(0,0,0,0)"
                             }}))))
 
-(defn draw-n-square
-  [n]
-  (view {:backgroundColor "blue"
-         :style           {:flex           1
-                           :flexDirection  "row"
-                           :alignItems     "center"
-                           :justifyContent "space-around"
-                           :aspectRatio    1
-                           :margin         2
-                           }
-         :aspectRatio     1
-         }
-        (for [k (range n)]
-          (view {:key   k
-                 :style {:flex           1
-                         :flexDirection  "column"
-                         :alignItems     "center"
-                         :justifyContent "space-around"}
-                 }
 
-                (for [sq (range n)]
-                  (draw-square {:size 50}))))
-        ))
 
 (def testn 3)
 
@@ -105,24 +83,9 @@
     (map flatten)
     (mapv vec)))
 
-(defn block-k-n
-  [n k]
-  (->>                                                      ;(row-n-m* n 20 20)
-    (range (* k (Math.ceil (/ n k))))
-    (map-indexed #(if (< %1 n) 1 0))
-    (partition-all k)
-    (partition-all 5)
-    (interpose (repeat k 0))
-    (flatten)
-    (partition-all k)
-    (map (partial partition-all 2))
-    (map (partial interpose [0]))
-    (map flatten)
-    (mapv vec)))
-
 (defn blocks
   [n cols w h]
-  (->>                                                      ;(row-n-m* n 20 20)
+  (->>
     (range (* cols (Math.ceil (/ n cols))))
     (map-indexed #(if (< %1 n) 1 0))
     (partition-all cols)
@@ -135,22 +98,46 @@
     (map flatten)
     (mapv vec)))
 
-(comment
-  (blocks 500 20 5 5)
+(defn blocks*
+  "Create a layout for n icons, in cols columns, organised into blocks of w width and h height. Blocks are separated
+  by rows or columns of zeroes. Full cells are indicated by non-sero entries (mostly 1s)."
+  [n cols w h]
+  (let [blocks-per-row (Math.ceil (/ cols w))
+        block-size (* w h)
+        full-block-count (quot n block-size)
+        remainder (rem n block-size)
+        row-blocks-capacity (* cols h)
+        rows-of-full-blocks (quot n row-blocks-capacity)
+        partial-row-full-blocks (rem n row-blocks-capacity)
+        full-blocks-in-partial-row (quot partial-row-full-blocks block-size)
+        empty-row (->> (repeat cols 0)
+                       (partition w)
+                       (interpose 0)
+                       (flatten))
+        full-row-of-blocks (->> (repeat cols 1)
+                                (partition w)
+                                (interpose 0)
+                                (flatten)
+                                (repeat h)
+                                (repeat rows-of-full-blocks)
+                                (interpose empty-row))
+        last-block-count (- n (* rows-of-full-blocks row-blocks-capacity) (* full-blocks-in-partial-row block-size))]
+    [rows-of-full-blocks
+     full-row-of-blocks
+     "Unfinished"]
+
+    )
   )
 
-#_(defn row-n-m
-    "Layout for row of length m with n icons showing"
-    [n m]
-    (let [row []]
-      (for [col (range m)]
-        (loop [row []
-               i 0]
-          (if (< i m)
-            (recur (conj row (if (and (pos? i) (mod i 6)) 1 0)) (inc i))
-            row)))))
+(comment
+  (blocks 500 20 5 5)
+  (blocks* 500 20 5 5)
+  )
 
 (comment
+  (blocks 33 10 5 2)
+  (blocks* 33 10 5 2)
+
   (row-n-m 3 5)
   ; => [1 1 1 0 0]
   (block-n-k 3 5)
@@ -193,7 +180,7 @@
 
 (defn dicen
   "layout n icons in an easy to count manner (dice-like for small n)"
-  [n]
+  [n highlight]
   (cond
     (< n 10) (get dice n)
     (<= n 20) (blocks n 5 5 2)
@@ -214,19 +201,67 @@
                  3 0)
                :else 0)))
 
+(defn ffloyd-sample
+  "Pick n random different integers from 0..nn"
+  [nn n]
+  (let [count (inc nn)]
+    (loop [i (- count n)
+           res #{}]
+      (if (< i count)
+        (let [j (inc i)
+              k (rand-int j)]
+          (if (res k)
+            (recur j (conj res i))
+            (recur j (conj res k))))
+        res))))
+(comment
+  (ffloyd-sample 10 3)
+  ; => #{7 1 8} for example
+  (ffloyd-sample 10 9)
+  ; => #{0 1 2 5 6 7 8 9 10} for example
+  )
+
+(rum/defc draw-icon
+  [{:keys [scenar size draw? key color back]
+    :or   {size 100 draw? true key nil color "white" back "black"}}]
+  "draw a icon selected by scenario."
+  (view {:key   key
+         :style {:backgroundColor back
+                 :paddingTop      1
+                 :aspectRatio     1
+                 :opacity         (if draw? 1 0)
+                 :flexDirection   "column"
+                 :justifyContent  "center"
+                 :alignItems      "center"
+                 :width           size                      ;size
+                 :borderRadius    (/ size 2)
+                 }}
+        (view
+          {:style {:transform (clj->js [{:scale (/ size 100)}])}}
+          (ionicon {:name  (:icon scenar)                   ;"ios-radio-button-on"
+                    :size  100
+                    :style {:width           100
+                            :textAlign       "center"
+                            :color           color
+                            :backgroundColor "rgba(0,0,0,0)"
+                            }})))
+  )
+
+
 (rum/defc nested-n-square** < rum/static
-  [w h n]
+  [scenar palette rr w h n highlight]
   (let [padding 10
-        cols (count ((dicen n) 0))
-        rows (count (dicen n))
-        a (/ (- w (* 2 padding)) cols)]
+        cols (count ((dicen n highlight) 0))
+        rows (count (dicen n highlight))
+        a (/ (- w (* 2 padding)) cols)
+        ]
+    (prn highlight)
     (view {:style {:flex    0
                    :width   w
-                   :height  (+ (* 2 padding) (icon-top (count (dicen n)) a n))
+                   :height  (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n))
                    :padding padding
-
                    }}
-          (for [[i row] (zipmap (range) (dicen n))]
+          (for [[i row] (zipmap (range) (dicen n highlight))]
             (view {:key   (str "r" i)
                    :style {:flex     0
                            :position "relative"}}
@@ -236,8 +271,16 @@
                              :style {:position "absolute"
                                      :top      (icon-top i a n)
                                      :left     (* j a)}}
-                            (draw-square {:size  a
-                                          :draw? (not (zero? col))})))))))))
+                            (draw-icon {:scenar scenar
+                                        :size   a
+                                        :draw?  (not (zero? col))
+                                        :back   (if (and (zero? i) (zero? j))
+                                                  ((if (> rr 1) :accent :text-icons) palette)
+                                                  "rgb(0,0,0,0)")
+                                        :color  (if (and (zero? i) (zero? j))
+                                                  ((if (> rr 1) :text-icons :dark-primary) palette)
+                                                  "white")     ; (if (highlight (+ j (* i rows))) "black" "white")
+                                        })))))))))
 
 
 (defn draw-circle [scenar color size x y]
@@ -258,15 +301,6 @@
                                           {:scale 1}]}}))   ; the scale. higher = denser, but on same centres.
 
 
-#_(defn draw-icon [scenar color scale kk]
-    "draw a icon selected by scenario."
-    (n-icon {:name  (:icon scenar)
-             :style {:color           color
-                     :backgroundColor "rgba(0,0,0,0)"
-                     :width           30                    ;(* 30 scale kk)
-                     :transform       [{:translateX 0}      ;(* 15 scale kk)
-                                       {:scale (* scale kk)}]}}))
-
 
 (defn resize
   [event]
@@ -280,12 +314,15 @@
                                      state)})
 
 
-(rum/defc page < rum/reactive []
+
+
+(rum/defc page < rum/reactive (rum/local 0 ::icon-index) []
   (let [scenar ((rum/react stories) (rum/react story-index))
         palette (get-palette (rum/react palette-index))
         br (:baseline-risk scenar)
         rr (:relative-risk scenar)
         nn (number-needed rr br)
+        highlight (ffloyd-sample nn (max 0 ((if (> rr 1) identity dec) (anyway rr br))))
         [w h] (screen-w-h)
         w (- w 0)
         h (- h 168)                                         ; adjustment for existing header and footer
@@ -304,8 +341,8 @@
                                     }} content))
 
         padding 10
-        cols (count ((dicen nn) 0))
-        rows (count (dicen nn))
+        cols (count ((dicen nn highlight) 0))
+        rows (count (dicen nn highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
 
@@ -350,15 +387,15 @@
                                  :left     0
                                  :right    0
                                  :zIndex   1
-                                 :height   1000}}
+                                 }}
                         (scroll-view {:onScroll            handle-scroll
                                       :scrollEventThrottle 16
                                       :key                 1
                                       :style               {:flex          1
                                                             :flexDirection "column"
-                                                            :opacity 0.8}}
+                                                            :opacity       1}}
 
-                                     (nested-n-square** w h nn)))
+                                     (nested-n-square** scenar palette rr w h nn highlight)))
 
                   (view {:key   2
                          :style {:position "absolute"
@@ -378,7 +415,7 @@
                                     (text {:style {:fontSize        (* (text-field-font-size) 10)
                                                    :color           (:light-primary palette)
                                                    :backgroundColor "rgba(0,0,0,0)"
-                                                   :opacity         1
+                                                   :opacity         0.7
                                                    }
                                            }
                                           (str nn)))))
@@ -549,6 +586,20 @@
                      :justifyContent "space-between"
                      :maxHeight      100
                      }}))
+
+  (defn ffloyd-sample
+    "Pick n random integers in 0..nn"
+    [nn n]
+    (let [count (inc nn)]
+      (loop [i (- count n)
+             res #{}]
+        (if (< i count)
+          (let [j (inc i)
+                k (rand-int j)]
+            (if (res k)
+              (recur j (conj res i))
+              (recur j (conj res k))))
+          res))))
 
   (comment
     ; testing for nn small
