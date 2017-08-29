@@ -45,8 +45,7 @@
                    :onPress   next-story}
                   (previous-icon palette)
                   (txt {:key   "prev-txt"
-                        :style {:color (:text-icons palette)}} "Previous")
-                  )
+                        :style {:color (:text-icons palette)}} "Previous"))
           (button {:key       "next-but"
                    :bordered  true
                    :small     (not (ios?))
@@ -60,5 +59,4 @@
                   (txt {:key   "next-txt"
                         :style {:color (:text-icons palette)
                                 ;:fontSize (text-field-font-size)
-                                }} "Next")
-                  ))))
+                                }} "Next")))))

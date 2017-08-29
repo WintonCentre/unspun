@@ -1,8 +1,8 @@
 (ns unspun.screens.rum-bars
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
-            [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size]]
-            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view scroll-view] :as rn]
+            [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size ios? button]]
+            [cljs-exponent.components :refer [element text view image status-bar animated-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
@@ -127,7 +127,7 @@
               (pan-responder-mixin ::zoomer (:height (get-dimensions)))
   ([state]
    (let [scenar ((rum/react stories) (rum/react story-index))
-         db (rum/react app-state) ;unused?
+         db (rum/react app-state)                           ;unused?
          br (:baseline-risk scenar)
          rr (:relative-risk scenar)
          brpc (to-pc br)
@@ -155,20 +155,26 @@
 
        (view {:style page-style}
              (view {:key   1
-                    :style {:flex            0.3
-                            :justifyContent  "center"
-                            :alignItems      "stretch"
+                    :style {:flex           0.3
+                            :justifyContent "center"
+                            :alignItems     "stretch"
                             }}
-                   (scroll-view {:style {:flex 1
+                   (scroll-view {:style {:flex            1
                                          :backgroundColor (:dark-primary palette)}}
-                         (text {:style {:padding  20
-                                        :fontSize tffsz}}
-                               (text-field :light-primary "normal" cmp-head)
-                               (text-field :text-icons "bold" cmp-brpc)
-                               (text-field :light-primary "normal" cmp-brpc-to-change)
-                               (text-field :light-primary "bold" cmp-change)
-                               (text-field :light-primary "normal" cmp-change-to-erpc)
-                               (text-field :text-icons "bold" cmp-erpc))))
+                                (view {:style {:flex 0.7}}
+                                      (text {:style {:padding  20
+                                                     :fontSize tffsz}}
+                                            (text-field :light-primary "normal" cmp-head)
+                                            (text-field :text-icons "bold" cmp-brpc)
+                                            (text-field :light-primary "normal" cmp-brpc-to-change)
+                                            (text-field :light-primary "bold" cmp-change)
+                                            (text-field :light-primary "normal" cmp-change-to-erpc)
+                                            (text-field :text-icons "bold" cmp-erpc))
+                                      (if (ios?)
+                                        (button (clj->js {:onPress #(prn "Hi")
+                                                          :title   "Hello - this long"
+                                                          :color   "white"
+                                                          }))))))
              (view {:key   2
                     :style {:flex 0.7}}
                    ;;;

@@ -11,7 +11,7 @@
             [unspun.screens.mixins :refer [monitor]]
             [clojure.string :refer [upper-case]]))
 
-(def ios false)
+(def ios (ios?))
 
 (rum/defc button-bar
   [palette]
@@ -24,7 +24,6 @@
   (let [navigator (aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))]
     (view {:style {:flex 1}}
-          (when ios (button-bar palette))
           (sliding-tab-navigation
             {:flex               0.9
              :key                "tabs"
