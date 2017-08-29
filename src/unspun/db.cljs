@@ -11,7 +11,7 @@
 
 (def flash-error-time 5000)                                 ; duration (ms) of flash error messages
 
-(def max-nn 1000)                                           ; maximum number needed to treat
+(def max-nn 2000)                                           ; maximum number needed to treat
 
 (def max-id-length 100)                                     ; maximum length of a csv column id
 
