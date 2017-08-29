@@ -2,7 +2,7 @@
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
             [unspun.navigation.bottom-nav :refer [bottom-button-bar next-story previous-icon]]
-            [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size ios? button txt]]
+            [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size ios? button txt rn-button]]
             [cljs-exponent.components :refer [element text view image status-bar animated-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
@@ -173,7 +173,15 @@
                                             (text-field :text-icons "bold" cmp-erpc)))
                                 )
                    (if (ios?)
-                     (button {:key       "prev-but"
+                     (if (ios?)
+                       (view {:style {:flex 0.3}}
+                             (rn-button {:key     "prev-but"
+                                         :title   "Next"
+                                         :color (:accent palette)
+                                         :onPress next-story}
+                                        )
+                             ))
+                     #_(button {:key       "prev-but"
                               :bordered  true
                               :small     (not (ios?))
                               :textStyle {:color (:accent palette)}

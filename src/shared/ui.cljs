@@ -5,7 +5,8 @@
 
 (def oget gobj/get)
 
-(def platform (aget react-native "Platform"))
+(def platform (oget react-native "Platform"))
+(def rn-button (partial element (oget react-native "Button")))
 
 (defn get-platform
   []
