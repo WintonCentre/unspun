@@ -73,7 +73,7 @@
               (formatter value))))
 
 (defn percentage [value]
-  (str (to-pc value) "%"))
+  (str (.toPrecision (js/Number. (* 100 value)) 2) "%"))
 
 (def inner-top-label (partial bar-value-label {:font-size   (/ tffsz 0.6)
                                                :font-weight "400"
