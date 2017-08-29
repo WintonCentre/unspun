@@ -1,7 +1,8 @@
 (ns unspun.screens.rum-bars
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
-            [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size ios? button]]
+            [unspun.navigation.bottom-nav :refer [bottom-button-bar next-story previous-icon]]
+            [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size ios? button txt]]
             [cljs-exponent.components :refer [element text view image status-bar animated-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
@@ -159,7 +160,7 @@
                             :justifyContent "center"
                             :alignItems     "stretch"
                             }}
-                   (scroll-view {:style {:flex            1
+                   (scroll-view {:style {:flex            0.7
                                          :backgroundColor (:dark-primary palette)}}
                                 (view {:style {:flex 0.7}}
                                       (text {:style {:padding  20
@@ -169,12 +170,21 @@
                                             (text-field :light-primary "normal" cmp-brpc-to-change)
                                             (text-field :light-primary "bold" cmp-change)
                                             (text-field :light-primary "normal" cmp-change-to-erpc)
-                                            (text-field :text-icons "bold" cmp-erpc))
-                                      (if (ios?)
-                                        (button (clj->js {:onPress #(prn "Hi")
-                                                          :title   "Hello - this long"
-                                                          :color   "white"
-                                                          }))))))
+                                            (text-field :text-icons "bold" cmp-erpc)))
+                                )
+                   (if (ios?)
+                     (button {:key       "prev-but"
+                              :bordered  true
+                              :small     (not (ios?))
+                              :textStyle {:color (:accent palette)}
+                              :style     {:margin      10
+                                          :borderWidth 2
+                                          :borderColor (:text-icons palette)}
+                              :onPress   next-story}
+                             (previous-icon palette)
+                             (txt {:key   "prev-txt"
+                                   :style {:color (:accent palette)}} "Previous"))
+                     ))
              (view {:key   2
                     :style {:flex 0.7}}
                    ;;;
