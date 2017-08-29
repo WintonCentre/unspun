@@ -326,8 +326,6 @@
                                      state)}))
 
 
-
-
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
         palette (get-palette (rum/react palette-index))
@@ -363,9 +361,7 @@
     (letfn [(handle-scroll [event]
               (this-as this
                 (.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
-                ))
-            ]
-
+                ))]
 
       (view {:onLayout #(prn (screen-w-h))
              :style    {:flex            1
@@ -388,8 +384,7 @@
                                      (text-field :light-primary "bold" nn-group)
                                      (text-field :light-primary "normal" nn-group-to-anyway)
                                      (text-field :accent "bold" nn-anyway)
-                                     (text-field :light-primary "normal" nn-tail)
-                                     )))
+                                     (text-field :light-primary "normal" nn-tail))))
 
             (view {:style {:flex          0.7
                            :flexDirection "column"}}
