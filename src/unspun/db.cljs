@@ -295,13 +295,20 @@
 (def compare2 "The risk for those ~a is ~a to ~d%.")
 
 (defn two-sf
-  "Return x as a string to precision n (2 by default)"
+  "Return x as a string to precision n (2 by default, but if 1 < x < 10 then 1sf)"
   [x & [n]]
-  (.toPrecision (js/Number. x) (if n n 2)))
+  (.toPrecision (js/Number. x) (if n
+                                 n
+                                 (if (< 1 x 10)
+                                   1
+                                   2))
+                ))
 
 (comment
+  (two-sf 23.2)
+  ; => "23
   (two-sf 2.32)
-  ; => "2.3"
+  ; => "2"
   (two-sf 2.32 5)
   ; => "2.3200"
   (two-sf 2.32 1)
@@ -312,12 +319,14 @@
   "Generate a vector of texts for compare screens. We return a vector rather than a single string to make
   it easy to apply different formatting to each element."
   ([{:keys [subjects risk exposure baseline-risk relative-risk outcome-verb outcome outcome-type causative]}]
-   (let [brpc (two-sf (* 100 baseline-risk))
-         erpc (two-sf (* 100 baseline-risk relative-risk))]
+   (let [br (* 100 baseline-risk)
+         er (* 100 baseline-risk relative-risk)
+         brpc (two-sf br)
+         erpc (two-sf er)]
      [(str "The " outcome-type " of " (present-participle outcome-verb) " " outcome " for " subjects " is ")
       (str brpc "%. ")
       (str "The " outcome-type " for those " exposure " is ")
-      (str (increased? brpc erpc))
+      (str (increased? (Math.round br) (Math.round er)))
       " "
       (str erpc "%.")])))
 
@@ -341,7 +350,7 @@
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " subject " ")  ; mark-one
         (format "to ~a, " outcome-inf)                      ; one-to-group
-        (format  nn*)                              ; group
+        (format nn*)                                        ; group
         (format (str (n-plural-form [subject subjects]) " would need to be ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count)                         ;anyway
         outcome-text
@@ -349,7 +358,7 @@
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " subject " ")  ; mark-one
         (format "to ~a, we would need " outcome-inf)        ; one-to-group
-        (format "a group of ~d more " nn*)                   ; group
+        (format (str "a group of " nn*))                    ; group
         (format (str (n-plural-form [subject subjects]) " ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count)                         ;anyway
         outcome-text
