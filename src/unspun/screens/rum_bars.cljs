@@ -1,14 +1,15 @@
 (ns unspun.screens.rum-bars
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
-            [shared.ui :refer [font-scale pixel-ratio get-dimensions text-field-font-size]]
-            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view scroll-view] :as rn]
+            [shared.ui :refer [font-scale pixel-ratio get-dimensions tffsz ios? button txt rn-button]]
+            [cljs-exponent.components :refer [element text view image status-bar animated-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
-            [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
+            [unspun.navigation.bottom-nav :refer [story-links]]
             [graphics.scales :refer [create-linear-scale bounded-ticks i->o o->i tick-format-specifier]]
             [unspun.gesture-responders :refer [pan-responder-mixin pan-logger]]
             [cljs.pprint :refer [cl-format]]
+            [unspun.screens.scenario-title-view :refer [scenario-title]]
             [unspun.screens.mixins :refer [monitor]]
             ))
 
@@ -24,8 +25,6 @@
 
 (def header-height 23)
 ;(def react-native (js/require "react-native"))
-
-(def tffsz (text-field-font-size))
 
 (defn easeOutQuad
   [elapsed-t duration]
@@ -73,7 +72,7 @@
               (formatter value))))
 
 (defn percentage [value]
-  (str (to-pc value) "%"))
+  (str (.toPrecision (js/Number. (* 100 value)) 2) "%"))
 
 (def inner-top-label (partial bar-value-label {:font-size   (/ tffsz 0.6)
                                                :font-weight "400"
@@ -127,7 +126,7 @@
               (pan-responder-mixin ::zoomer (:height (get-dimensions)))
   ([state]
    (let [scenar ((rum/react stories) (rum/react story-index))
-         db (rum/react app-state) ;unused?
+         db (rum/react app-state)                           ;unused?
          br (:baseline-risk scenar)
          rr (:relative-risk scenar)
          brpc (to-pc br)
@@ -155,20 +154,63 @@
 
        (view {:style page-style}
              (view {:key   1
-                    :style {:flex            0.3
-                            :justifyContent  "center"
-                            :alignItems      "stretch"
+                    :style {:flex           0.3
+                            :justifyContent "center"
+                            :alignItems     "stretch"
                             }}
-                   (scroll-view {:style {:flex 1
-                                         :backgroundColor (:dark-primary palette)}}
-                         (text {:style {:padding  20
-                                        :fontSize tffsz}}
-                               (text-field :light-primary "normal" cmp-head)
-                               (text-field :text-icons "bold" cmp-brpc)
-                               (text-field :light-primary "normal" cmp-brpc-to-change)
-                               (text-field :light-primary "bold" cmp-change)
-                               (text-field :light-primary "normal" cmp-change-to-erpc)
-                               (text-field :text-icons "bold" cmp-erpc))))
+                   (scroll-view {:style {:backgroundColor (:dark-primary palette)
+                                         :flex            0.7}}
+
+                                (scenario-title (:title scenar) text-field (:qoe scenar))
+                                #_(text {:style {:paddingLeft   20
+                                                 :paddingRight  20
+                                                 :paddingTop    5
+                                                 :paddingBottom 0
+                                                 :textAlign     "center"
+                                                 :fontSize      (* 1.2 tffsz)}}
+                                        (text-field :text-icons "bold" (:title scenar)))
+                                (text {:style {:padding    20
+                                               :paddingTop 5
+                                               :fontSize   tffsz}}
+                                      (text-field :light-primary "normal" cmp-head)
+                                      (text-field :text-icons "bold" cmp-brpc)
+                                      (text-field :light-primary "normal" cmp-brpc-to-change)
+                                      (text-field :light-primary "bold" cmp-change)
+                                      (text-field :light-primary "normal" cmp-change-to-erpc)
+                                      (text-field :text-icons "bold" cmp-erpc))
+                                )
+
+                   (view {:style {:flex            0.3}}
+                         (story-links palette)
+                         #_(view {:style {:flex            1
+                                        :justifyContent  "space-around"
+                                        :alignItems      "center"
+                                        :flexDirection   "row"
+                                        :backgroundColor (:dark-primary palette)
+                                        }}
+                               (rn-button {:key          "prev-but"
+                                           :title        "< Previous"
+                                           :color        (:accent palette)
+                                           :onPress      previous-story}
+                                          )
+                               (rn-button {:key     "next-but"
+                                           :title   "Next >"
+                                           :color   (:accent palette)
+                                           :onPress next-story}
+                                          )
+                               ))
+                   #_(button {:key       "prev-but"
+                              :bordered  true
+                              :small     (not (ios?))
+                              :textStyle {:color (:accent palette)}
+                              :style     {:margin      10
+                                          :borderWidth 2
+                                          :borderColor (:text-icons palette)}
+                              :onPress   next-story}
+                             (previous-icon palette)
+                             (txt {:key   "prev-txt"
+                                   :style {:color (:accent palette)}} "Previous"))
+                   )
              (view {:key   2
                     :style {:flex 0.7}}
                    ;;;

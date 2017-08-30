@@ -2,7 +2,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [button n-icon pixel-ratio font-scale txt text-field-font-size ios? screen-w-h]]
+            [shared.ui :refer [button n-icon pixel-ratio font-scale txt text-field-font-size ios? rn-button]]
             [unspun.db :refer [app-state palette-index stories story-index]]
             ))
 
@@ -26,14 +26,30 @@
 (defn previous-story []
   (reset! story-index (mod (dec @story-index) (count @stories))))
 
-(rum/defc bottom-button-bar < rum/reactive []
+
+(rum/defc story-links < rum/reactive []
   (let [palette (get-palette (rum/react palette-index))
-        margin (Math.round (* 4 font-scale))
-        [w h] (screen-w-h)
-        landscape? (> w h)]
-    (view {:key   "bottom-button-bar"
+        margin (Math.round (* 4 font-scale))]
+    (view {:style {:flex            1
+                   :justifyContent  "space-around"
+                   :alignItems      "center"
+                   :flexDirection   "row"
+                   :backgroundColor (:dark-primary palette)
+                   }}
+          (rn-button {:key          "prev-but"
+                      :title        "< Previous"
+                      :color        (:accent palette)
+                      :onPress      previous-story}
+                     )
+          (rn-button {:key     "next-but"
+                      :title   "Next >"
+                      :color   (:accent palette)
+                      :onPress next-story}
+                     )
+          )
+    #_(view {:key   "story-links"
            :style {:flex            0.5
-                   :flexDirection   (if landscape? "column" "row")
+                   :flexDirection   "row"
                    :justifyContent  "space-around"
                    :alignItems      "center"
                    :backgroundColor (:dark-primary palette)}}
@@ -42,20 +58,17 @@
                    :small     (not (ios?))
                    :textStyle {:color (:text-icons palette)}
                    :style     {:margin      margin
-                               :width       (if landscape? "80%" nil)
                                :borderWidth 2
                                :borderColor (:text-icons palette)}
                    :onPress   next-story}
                   (previous-icon palette)
                   (txt {:key   "prev-txt"
-                        :style {:color (:text-icons palette)}} "Previous")
-                  )
+                        :style {:color (:text-icons palette)}} "Previous"))
           (button {:key       "next-but"
                    :bordered  true
                    :small     (not (ios?))
                    :textStyle {:color (:text-icons palette)}
                    :style     {:margin      margin
-                               :width       (if landscape? "80%" nil)
                                :borderWidth 2
                                :borderColor (:text-icons palette)}
                    :onPress   previous-story
@@ -64,5 +77,4 @@
                   (txt {:key   "next-txt"
                         :style {:color (:text-icons palette)
                                 ;:fontSize (text-field-font-size)
-                                }} "Next")
-                  ))))
+                                }} "Next")))))

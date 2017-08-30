@@ -23,9 +23,12 @@
 ;;;
 
 (def valid-field? #{:scenario
+                    :groupings
                     :tags
                     :subject
                     :subjects
+                    :title
+                    :qoe
                     :icon
                     :exposure
                     :with-label
@@ -68,6 +71,7 @@
              :icon                  "ios-man"
              :subject               "person"
              :subjects              "people"
+             :title                 "Bacon and Bowel Cancer"
              :exposure              "eating a bacon sandwich every day"
              :baseline-risk         0.06
              :relative-risk         1.18
@@ -84,6 +88,7 @@
              :icon                  "ios-woman"
              :subject               "woman"
              :subjects              "women in their 50s"
+             :title                 "HRT and breast cancer"
              :exposure              "taking HRT for 5 years"
              :baseline-risk         0.1
              :relative-risk         1.05
@@ -100,6 +105,7 @@
              :icon                  "ios-wine"
              :subject               "woman"
              :subjects              "women"
+             :title                 "Alcohol and Breast Cancer"
              :exposure              "drinking half a bottle of wine a day"
              :baseline-risk         0.12
              :relative-risk         1.30
@@ -113,39 +119,41 @@
              :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
              :causative             false
              }
-   :wdoc    {:tags            #{"gender" "care"}
-             :icon            "ios-person"
-             :subject         "woman"
-             :subjects        "US people over 65 admitted to hospital under Medicare"
-             :exposure        "being seen by a female doctor"
-             :baseline-risk   0.115
-             :relative-risk   0.96
-             :evidence-source "https://wintoncentre.maths.cam.ac.uk/"
-             :outcome-verb    "die"
-             :outcome         "within 30 days of admission"
-             :outcome-type    "risk"
-             :with-label      "Female doctor"
-             :without-label   "Male doctor"
+   :wdoc    {:tags                  #{"gender" "care"}
+             :icon                  "ios-person"
+             :subject               "woman"
+             :subjects              "US people over 65 admitted to hospital under Medicare"
+             :title                 "Gender of doctor"
+             :exposure              "being seen by a female doctor"
+             :baseline-risk         0.115
+             :relative-risk         0.96
+             :evidence-source       "https://wintoncentre.maths.cam.ac.uk/"
+             :outcome-verb          "die"
+             :outcome               "within 30 days of admission"
+             :outcome-type          "risk"
+             :with-label            "Female doctor"
+             :without-label         "Male doctor"
              :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
              :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
-             :causative       false
+             :causative             false
              }
-   :statins {:tags          #{"preventitive" "medication"}
-             :icon          "ios-contact"
-             :subject       "woman"
-             :subjects      ["person" "people just within NICE guidelines for prescribing statins"]
-             :exposure      "taking statins each day"
-             :baseline-risk 0.1
-             :relative-risk 0.7
-             :outcome-verb  "have"
-             :outcome       "a heart attack or stroke within 10 years"
-             :outcome-type  "risk"
-             :sources       "https://wintoncentre.maths.cam.ac.uk/"
-             :with-label    "Taking statins"
-             :without-label "No statins"
+   :statins {:tags                  #{"preventitive" "medication"}
+             :icon                  "ios-contact"
+             :subject               "person"
+             :subjects              "people just within NICE guidelines for prescribing statins"
+             :title                 "Statins and heart disease"
+             :exposure              "taking statins each day"
+             :baseline-risk         0.1
+             :relative-risk         0.7
+             :outcome-verb          "have"
+             :outcome               "a heart attack or stroke within 10 years"
+             :outcome-type          "risk"
+             :sources               "https://wintoncentre.maths.cam.ac.uk/"
+             :with-label            "Taking statins"
+             :without-label         "No statins"
              :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
              :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
-             :causative     true
+             :causative             true
              }})
 
 
@@ -217,8 +225,9 @@
 (defn story [index]
   (let [scenario (@stories index)]
     (str "How much does " (:exposure scenario) " "
-         (if (> (:relative-risk scenario) 1) "increase" "decrease")
-         " the " (:outcome-type scenario) " of "
+         ;(if (> (:relative-risk scenario) 1) "increase" "decrease")
+         "change"
+         " the " (if-let [risk (:outcome-type scenario)] risk "risk") " of "
          (present-participle (:outcome-verb scenario))
          " "
          (:outcome scenario)
@@ -271,7 +280,10 @@
 
 (def format (partial cl-format nil))
 
-(defn increased? [a b] (if (> a b) "decreased" "increased"))
+(defn increased? [a b] (cond
+                         (> a b) "decreased to"
+                         (< a b) "increased to"
+                         (= a b) "similar at"))
 
 (defn extra [rr] (if (> rr 1) "extra" "fewer"))
 
@@ -282,17 +294,31 @@
   "The risk of ~a for ~a is ~d%. ")
 (def compare2 "The risk for those ~a is ~a to ~d%.")
 
+(defn two-sf
+  "Return x as a string to precision n (2 by default)"
+  [x & [n]]
+  (.toPrecision (js/Number. x) (if n n 2)))
+
+(comment
+  (two-sf 2.32)
+  ; => "2.3"
+  (two-sf 2.32 5)
+  ; => "2.3200"
+  (two-sf 2.32 1)
+  ; => "2"
+  )
+
 (defn compare-text-vector
   "Generate a vector of texts for compare screens. We return a vector rather than a single string to make
   it easy to apply different formatting to each element."
   ([{:keys [subjects risk exposure baseline-risk relative-risk outcome-verb outcome outcome-type causative]}]
-   (let [brpc (to-pc baseline-risk)
-         erpc (to-pc (* baseline-risk relative-risk))]
+   (let [brpc (two-sf (* 100 baseline-risk))
+         erpc (two-sf (* 100 baseline-risk relative-risk))]
      [(str "The " outcome-type " of " (present-participle outcome-verb) " " outcome " for " subjects " is ")
       (str brpc "%. ")
       (str "The " outcome-type " for those " exposure " is ")
       (str (increased? brpc erpc))
-      " to "
+      " "
       (str erpc "%.")])))
 
 (defn nn-text-vector
@@ -302,6 +328,7 @@
    (let [brpc (to-pc baseline-risk)
          erpc (to-pc (* baseline-risk relative-risk))
          nn (number-needed relative-risk baseline-risk)
+         nn* (if (< nn 1000) (str nn " more ") "more than 1000 ")
          anyway-count ((if (> relative-risk 1) identity dec)
                         (anyway relative-risk baseline-risk))
          outcome-inf (str outcome-verb " " outcome)
@@ -314,7 +341,7 @@
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " subject " ")  ; mark-one
         (format "to ~a, " outcome-inf)                      ; one-to-group
-        (format "~d more " nn)                              ; group
+        (format  nn*)                              ; group
         (format (str (n-plural-form [subject subjects]) " would need to be ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count)                         ;anyway
         outcome-text
@@ -322,7 +349,7 @@
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " subject " ")  ; mark-one
         (format "to ~a, we would need " outcome-inf)        ; one-to-group
-        (format "a group of ~d more " nn)                   ; group
+        (format "a group of ~d more " nn*)                   ; group
         (format (str (n-plural-form [subject subjects]) " ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count)                         ;anyway
         outcome-text

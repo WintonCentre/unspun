@@ -5,7 +5,8 @@
 
 (def oget gobj/get)
 
-(def platform (aget react-native "Platform"))
+(def platform (oget react-native "Platform"))
+(def rn-button (partial element (oget react-native "Button")))
 
 (defn get-platform
   []
@@ -116,6 +117,8 @@
 (defn text-field-font-size []
   (let [{:keys [width height scale]} (get-dimensions)]
     (Math.sqrt (/ (* width height) 1300))))
+
+(def tffsz (text-field-font-size))
 
 (defn view-flex-area [content-flex view-flex]
   (let [{:keys [width height]} (get-dimensions)
