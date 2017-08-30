@@ -1,8 +1,9 @@
 (ns unspun.screens.story-list
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view refresh-control] :as rn]
-            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title tffsz]]
             [unspun.db :refer [app-state refreshing palette-index stories story-index story caps-tidy scenario-url flash-error]]
+            [unspun.screens.scenario-title-view :refer [scenario-title]]
             [themes.palettes :refer [palettes get-palette]]
             [shared.non-phantom :refer [slurp-csv]]
             [shared.client :refer [store-csv]]
@@ -97,27 +98,42 @@
                            (refresh-icon palette)))))
 
 (defn story-card! [navigator palette index]
-  (card {:key   (gensym "story-card")
-         :style card-style}
-        (card-item {:header true
-                    :key    1
-                    :style  card-item-style
-                    :onPress   #(do (reset! story-index index)
+  (let [scenar (@stories index)
+        text-field (fn [palette-key weight content]
+                     (text {:key   (gensym "text-field")
+                            :style {:color      (palette-key palette)
+                                    :fontWeight weight
+                                    }} content))]
+    (card {:key   (gensym "story-card")
+           :style card-style}
+          (card-item {:header  true
+                      :key     1
+                      :style   card-item-style
+                      :onPress #(do (reset! story-index index)
                                     (.push navigator "tabs"))
-                    }
-                   (story-icon palette (:icon (@stories index)))
-                   (txt {:key   1
-                         :style {:flex       4
-                                 :fontWeight "normal"
-                                 :color      (:secondary-text palette)}}
-                        (caps-tidy (story index)))
-                   (button {:key       2
-                            :bordered  true
-                            :style     {:borderWidth 0
-                                        :borderColor "white"}
-                            :onPress   #(do (reset! story-index index)
-                                            (.push navigator "tabs"))}
-                           (show-icon palette)))))
+                      }
+                     (story-icon palette (:icon scenar))
+                     (view {:flex          4
+                            :flexDirection "column"}
+                           (view {:flex 1}
+                                 (txt {:key   1
+                                       :style {:flex       0.5
+                                               :fontWeight "bold"
+                                               :color      (:secondary-text palette)}}
+                                      (:title scenar))
+                                 (txt {:key   2
+                                       :style {:flex       4
+                                               :fontWeight "normal"
+                                               :fontSize   tffsz
+                                               :color      (:secondary-text palette)}}
+                                      (caps-tidy (story index)))))
+                     (button {:key      2
+                              :bordered true
+                              :style    {:borderWidth 0
+                                         :borderColor "white"}
+                              :onPress  #(do (reset! story-index index)
+                                             (.push navigator "tabs"))}
+                             (show-icon palette))))))
 
 (rum/defcs page < rum/reactive
                   (rum/local 0 ::selection)

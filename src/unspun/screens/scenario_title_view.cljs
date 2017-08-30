@@ -29,12 +29,12 @@
                        :justifyContent "flex-end"
                        :paddingLeft    20
                        :paddingRight   20
-                       :paddingTop     0
+                       :paddingTop     5
                        :paddingBottom  0
                        :textAlign      "center"
-                       :fontSize       (* 1.2 tffsz)}}
+                       :fontSize       (* (if qoe 1.2 1) tffsz)}}
               (text-field :text-icons "bold" title))
-        (when (pos? qoe)
+        (when (and qoe (pos? qoe))
           (view {:style {:flex           0.1
                          :flexDirection  "row"
                          :height         tffsz
