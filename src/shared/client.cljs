@@ -64,6 +64,16 @@
 (defn make-valid-boolean [value]
   (if (#{"true" "t" "yes" "y"} (lower-case (trim value))) true false))
 
+(defn make-valid-qoe
+  "parse qoe"
+  [value]
+  (condp = (trim value)
+    "NOT GIVEN" 0
+    "LOW" 1
+    "MODERATE" 2
+    "HIGH" 3)
+  )
+
 ;;
 ;;
 ;;
@@ -82,9 +92,12 @@
 (defn valid-value? [field value]
   (let [f (field {:scenario              identity
                   :tags                  make-valid-tags
+                  :groupings             make-valid-tags
                   :icon                  make-valid-icon
                   :subject               #(make-valid-string % 1 64)
                   :subjects              #(make-valid-string % 1 128)
+                  :title                 #(make-valid-string % 1 64)
+                  :qoe                   make-valid-qoe
                   :exposure              #(make-valid-string % 1 228)
                   :baseline-risk         #(in-range (make-valid-float %) 0 1)
                   :relative-risk         #(in-range (make-valid-float %) 0)

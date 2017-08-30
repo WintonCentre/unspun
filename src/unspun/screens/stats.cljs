@@ -5,7 +5,7 @@
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item linking]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp parse-sources]]
-            [unspun.navigation.bottom-nav :refer [bottom-button-bar]]
+            [unspun.navigation.bottom-nav :refer [story-links]]
             [unspun.screens.mixins :refer [monitor]]
             ))
 

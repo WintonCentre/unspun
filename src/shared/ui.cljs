@@ -118,6 +118,8 @@
   (let [{:keys [width height scale]} (get-dimensions)]
     (Math.sqrt (/ (* width height) 1300))))
 
+(def tffsz (text-field-font-size))
+
 (defn view-flex-area [content-flex view-flex]
   (let [{:keys [width height]} (get-dimensions)
         area (* content-flex view-flex width height)]

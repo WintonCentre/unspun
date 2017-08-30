@@ -1,13 +1,14 @@
 (ns unspun.screens.number-needed
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [n-icon screen-width screen-w-h text-field-font-size]]
+            [shared.ui :refer [n-icon screen-width screen-w-h tffsz]]
             [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
             [unspun.screens.mixins :refer [monitor]]
+            [unspun.screens.scenario-title-view :refer [scenario-title]]
+            [unspun.navigation.bottom-nav :refer [story-links]]
             [shared.icons :refer [ionicon]]
             [rum.core :as rum]
             [cljs.pprint :refer [pp]]))
-
 
 (defn draw-square
   [{:keys [size draw? key]
@@ -361,18 +362,23 @@
                            :justifyContent  "center"
                            :alignItems      "stretch"
                            :backgroundColor (:dark-primary palette)}}
-                  (scroll-view {:style {:flex 1}
+                  (scroll-view {:style {:flex 0.7}
                                 :key   1
+                                :backgroundColor (:dark-primary palette)
                                 }
+                               (scenario-title (:title scenar) text-field (:qoe scenar))
                                (text {:style {:padding  20
-                                              :fontSize (text-field-font-size)}}
+                                              :fontSize tffsz}}
                                      (text-field :light-primary "normal" nn-head)
                                      (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
                                      (text-field :light-primary "normal" nn-one-to-group)
                                      (text-field :light-primary "bold" nn-group)
                                      (text-field :light-primary "normal" nn-group-to-anyway)
                                      (text-field :accent "bold" nn-anyway)
-                                     (text-field :light-primary "normal" nn-tail))))
+                                     (text-field :light-primary "normal" nn-tail)))
+                  (view {:style {:flex 0.3}}
+                        (story-links palette))
+                  )
 
             (view {:style {:flex          0.7
                            :flexDirection "column"}}
@@ -409,7 +415,7 @@
                                              :flexDirection  "row"
                                              :justifyContent "center"
                                              :alignItems     "center"}}
-                                    (text {:style {:fontSize        (* (text-field-font-size) 10)
+                                    (text {:style {:fontSize        (* tffsz 10)
                                                    :color           (:light-primary palette)
                                                    :backgroundColor "rgba(0,0,0,0)"
                                                    :opacity         0.7
@@ -482,7 +488,7 @@
                              :alignItems      "center"
                              :backgroundColor (:dark-primary palette)}}
                     (text {:style {:padding  20
-                                   :fontSize (text-field-font-size)}}
+                                   :fontSize tffsz}}
                           (text-field :light-primary "normal" nn-head)
                           (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
                           (text-field :light-primary "normal" nn-one-to-group)
@@ -510,7 +516,7 @@
                                                :flexDirection  "row"
                                                :justifyContent "center"
                                                :alignItems     "center"}}
-                                      (text {:style {:fontSize        (* (text-field-font-size) 10)
+                                      (text {:style {:fontSize        (* tffsz 10)
                                                      :color           (:light-primary palette)
                                                      :backgroundColor "rgba(0,0,0,0)"
                                                      :opacity         0.5

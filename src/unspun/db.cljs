@@ -11,7 +11,7 @@
 
 (def flash-error-time 5000)                                 ; duration (ms) of flash error messages
 
-(def max-nn 2000)                                           ; maximum number needed to treat
+(def max-nn 1000)                                           ; maximum number needed to treat
 
 (def max-id-length 100)                                     ; maximum length of a csv column id
 
@@ -23,9 +23,12 @@
 ;;;
 
 (def valid-field? #{:scenario
+                    :groupings
                     :tags
                     :subject
                     :subjects
+                    :title
+                    :qoe
                     :icon
                     :exposure
                     :with-label
@@ -68,6 +71,7 @@
              :icon                  "ios-man"
              :subject               "person"
              :subjects              "people"
+             :title                 "Bacon and Bowel Cancer"
              :exposure              "eating a bacon sandwich every day"
              :baseline-risk         0.06
              :relative-risk         1.18
@@ -84,6 +88,7 @@
              :icon                  "ios-woman"
              :subject               "woman"
              :subjects              "women in their 50s"
+             :title                 "HRT and breast cancer"
              :exposure              "taking HRT for 5 years"
              :baseline-risk         0.1
              :relative-risk         1.05
@@ -100,6 +105,7 @@
              :icon                  "ios-wine"
              :subject               "woman"
              :subjects              "women"
+             :title                 "Alcohol and Breast Cancer"
              :exposure              "drinking half a bottle of wine a day"
              :baseline-risk         0.12
              :relative-risk         1.30
@@ -117,6 +123,7 @@
              :icon                  "ios-person"
              :subject               "woman"
              :subjects              "US people over 65 admitted to hospital under Medicare"
+             :title                 "Gender of doctor"
              :exposure              "being seen by a female doctor"
              :baseline-risk         0.115
              :relative-risk         0.96
@@ -134,6 +141,7 @@
              :icon                  "ios-contact"
              :subject               "person"
              :subjects              "people just within NICE guidelines for prescribing statins"
+             :title                 "Statins and heart disease"
              :exposure              "taking statins each day"
              :baseline-risk         0.1
              :relative-risk         0.7
@@ -289,7 +297,7 @@
 (defn two-sf
   "Return x as a string to precision n (2 by default)"
   [x & [n]]
-  (.toPrecision (js/Number. x)  (if n n 2)))
+  (.toPrecision (js/Number. x) (if n n 2)))
 
 (comment
   (two-sf 2.32)
@@ -320,6 +328,7 @@
    (let [brpc (to-pc baseline-risk)
          erpc (to-pc (* baseline-risk relative-risk))
          nn (number-needed relative-risk baseline-risk)
+         nn* (if (< nn 1000) (str nn " more ") "more than 1000 ")
          anyway-count ((if (> relative-risk 1) identity dec)
                         (anyway relative-risk baseline-risk))
          outcome-inf (str outcome-verb " " outcome)
@@ -332,7 +341,7 @@
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " subject " ")  ; mark-one
         (format "to ~a, " outcome-inf)                      ; one-to-group
-        (format "~d more " nn)                              ; group
+        (format  nn*)                              ; group
         (format (str (n-plural-form [subject subjects]) " would need to be ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count)                         ;anyway
         outcome-text
@@ -340,7 +349,7 @@
        ["On average, for "                                  ; head
         (str "one " (extra relative-risk) " " subject " ")  ; mark-one
         (format "to ~a, we would need " outcome-inf)        ; one-to-group
-        (format "a group of ~d more " nn)                   ; group
+        (format "a group of ~d more " nn*)                   ; group
         (format (str (n-plural-form [subject subjects]) " ~a. Of these, ") nn exposure) ; group-to-anyway
         (format "~d " anyway-count)                         ;anyway
         outcome-text
