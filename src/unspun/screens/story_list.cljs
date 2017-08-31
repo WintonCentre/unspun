@@ -71,17 +71,17 @@
                       :padding         10})
 
 (defn refresh-list []
-  (slurp-csv @scenario-url
-             (fn [csv]
-               (store-csv {:creator @scenario-url} csv)
-               (swap! app-state assoc :refreshing false))
-             flash-error)
-  (swap! app-state assoc :refreshing true)
+  (do
+    (swap! app-state assoc :refreshing true)
+    (slurp-csv @scenario-url
+               (fn [csv]
+                 (store-csv {:creator @scenario-url} csv)
+                 (swap! app-state assoc :refreshing false))
+               flash-error))
   )
 
-(defn add-card! [navigator palette]
-  (card {:key   (gensym "add-card")
-         :style card-style}
+(rum/defc add-card! [navigator palette]
+  (card {:style card-style}
         (card-item {:header  false
                     :key     1
                     :onPress refresh-list
@@ -111,15 +111,14 @@
                             :onPress  refresh-list}
                            (refresh-icon palette)))))
 
-(defn story-card! [navigator palette index]
-  (let [scenar (@stories index)
+(rum/defc story-card! < rum/reactive [navigator palette index]
+  (let [scenar ((rum/react stories) index)
         text-field (fn [palette-key weight content]
                      (text {:key   (gensym "text-field")
                             :style {:color      (palette-key palette)
                                     :fontWeight weight
                                     }} content))]
-    (card {:key   (gensym "story-card")
-           :style card-style}
+    (card {:style card-style}
           (card-item {:header  true
                       :key     1
                       :style   card-item-style
@@ -141,8 +140,8 @@
                                                :fontSize   tffsz
                                                :color      (:secondary-text palette)}}
                                       (caps-tidy (story index)))))
-                     (button {:key      2
-                              :bordered true
+                     #_(show-icon palette)
+                     (button {:bordered true
                               :style    {:borderWidth 0
                                          :borderColor "white"}
                               :onPress  #(do (reset! story-index index)
@@ -158,6 +157,7 @@
         story-count (count stories)
         palette-count (count palettes)
         navigator (aget (:rum/react-component state) "props" "navigator")]
+    (println "new stories")
     (container
       {:style {:flex 1}}
       (content
@@ -173,10 +173,16 @@
                      :hidden   false
                      :barStyle "light-content"})
 
+
         (apply n-list
-               (concat [{:key   1
+               (->> [(map-indexed #(rum/with-key (story-card! navigator palette %2) %1) (range story-count))]
+                   (cons (rum/with-key (add-card! navigator palette) "refresher"))
+                   (cons {:key   1 :style {:flex 1}}))
+
+
+               #_(concat [{:key   1
                          :style {:flex 1}
                          }]
-                       [(add-card! navigator palette)]
+                       [(rum/with-key (add-card! navigator palette) "refresher")]
                        ;[(story-card! navigator palette 0)]
-                       [(map (partial story-card! navigator palette) (range story-count))]))))))
+                       [(map-indexed #(rum/with-key (story-card! navigator palette %2) %1) (range story-count))]))))))

@@ -7,6 +7,7 @@
 
 (def platform (oget react-native "Platform"))
 (def rn-button (partial element (oget react-native "Button")))
+(def flat-list (partial element (oget react-native "FlatList")))
 
 (defn get-platform
   []
