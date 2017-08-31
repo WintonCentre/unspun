@@ -266,7 +266,6 @@
         rows (count (dicen n highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
-    (prn highlight)
     (view {:style {:flex          1
                    :flexDirection "column"
                    :alignItems    "center"}}
@@ -352,7 +351,7 @@
                 (.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
                 ))]
 
-      (println "w,h=" [w h])
+
       (view {:style    {:flex            1
                         :flexDirection   "column"
                         :justifyContent  "flex-start"
