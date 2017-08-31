@@ -2,11 +2,11 @@
   "name": "unspun",
   "description": "relative risks unspun",
   "slug": "unspun",
-  "sdkVersion": "15.0.0",
+  "sdkVersion": "16.0.0",
   "version": "1.0.0",
   "orientation": "default",
   "primaryColor": "#cccccc",
-  "icon": "https://s3.amazonaws.com/exp-brand-assets/ExponentEmptyManifest_192.png",
+  "icon": "./assets/images/app.png",
   "notification": {
     "icon": "https://s3.amazonaws.com/exp-us-standard/placeholder-push-icon-blue-circle.png",
     "color": "#000000"

@@ -4,7 +4,7 @@
             [shared.ui :refer [font-scale pixel-ratio get-dimensions tffsz ios? button txt rn-button]]
             [cljs-exponent.components :refer [element text view image status-bar animated-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp]]
+            [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp two-sf]]
             [unspun.navigation.bottom-nav :refer [story-links]]
             [graphics.scales :refer [create-linear-scale bounded-ticks i->o o->i tick-format-specifier]]
             [unspun.gesture-responders :refer [pan-responder-mixin pan-logger]]
@@ -71,8 +71,11 @@
                        :fontWeight font-weight}}
               (formatter value))))
 
-(defn percentage [value]
+#_(defn percentage [value]
   (str (.toPrecision (js/Number. (* 100 value)) 2) "%"))
+
+(defn percentage [value]
+  (str (two-sf (* 100 value)) "%"))
 
 (def inner-top-label (partial bar-value-label {:font-size   (/ tffsz 0.6)
                                                :font-weight "400"
