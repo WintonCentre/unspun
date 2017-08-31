@@ -80,23 +80,22 @@
   )
 
 (defn add-card! [navigator palette]
-  (card {:key     (gensym "add-card")
-         :style   card-style
-         :onPress refresh-list}
+  (card {:key   (gensym "add-card")
+         :style card-style}
         (card-item {:header  false
                     :key     1
                     :onPress refresh-list
                     :style   (merge card-item-style {:flexDirection   "row"
                                                      :justifyContent  "space-between"
                                                      :height          40
-                                                     :width           "101%"
+                                                     :width           "100%"
                                                      :marginLeft -1
-                                                     :marginTop -1
-                                                     :marginRight -3
-                                                     :marginBottom -1
+                                                     ;:marginTop -1
+                                                     :marginRight -1
+                                                     ;:marginBottom -1
                                                      :padding         0
-                                                     :borderWidth     0
-                                                     :borderColor     "rgba(0,0,0,0)"
+                                                     :borderWidth     5
+                                                     :borderColor     (:accent palette) ;"rgba(0,0,0,0)"
                                                      :backgroundColor (:accent palette)})}
                    (txt {:key   1
                          :style {:fontWeight "bold"
@@ -173,6 +172,7 @@
         (status-bar {:key      (gensym "stories")
                      :hidden   false
                      :barStyle "light-content"})
+
         (apply n-list
                (concat [{:key   1
                          :style {:flex 1}
