@@ -13,13 +13,13 @@
   (mapv name (keys palettes)))
 
 #_(rum/defc icon-example [name]
-  (content {:theme (aget my-theme "default")}
-           (n-icon {:name  name
-                    :style {:color (:dark-primary (get-palette @palette-index))}})))
+    (content {:theme (aget my-theme "default")}
+             (n-icon {:name  name
+                      :style {:color (:dark-primary (get-palette @palette-index))}})))
 
 (defn refresh-icon [palette]
-  (n-icon {:name "ios-cloud-download"
-           :style {:color (:primary palette)
+  (n-icon {:name  "ios-cloud-download"
+           :style {:color    "white"
                    :fontSize 30}}))
 
 (defn story-icon [palette name]
@@ -66,6 +66,8 @@
                       :justifyContent  "flex-start"
                       :flexDirection   "row"
                       :alignItems      "center"
+                      :borderWidth     0
+                      :borderColor     "rgba(0,0,0,0)"
                       :padding         10})
 
 (defn refresh-list []
@@ -78,22 +80,35 @@
   )
 
 (defn add-card! [navigator palette]
-  (card {:key   (gensym "add-card")
-         :style card-style}
-        (card-item {:header true
-                    :key    1
+  (card {:key     (gensym "add-card")
+         :style   card-style
+         :onPress refresh-list}
+        (card-item {:header  false
+                    :key     1
                     :onPress refresh-list
-                    :style  (merge card-item-style {:height 40 :padding 0 :backgroundColor (:light-primary palette)})}
+                    :style   (merge card-item-style {:flexDirection   "row"
+                                                     :justifyContent  "space-between"
+                                                     :height          40
+                                                     :width           "101%"
+                                                     :marginLeft -1
+                                                     :marginTop -1
+                                                     :marginRight -3
+                                                     :marginBottom -1
+                                                     :padding         0
+                                                     :borderWidth     0
+                                                     :borderColor     "rgba(0,0,0,0)"
+                                                     :backgroundColor (:accent palette)})}
                    (txt {:key   1
-                         :style {:flex       4
-                                 :marginLeft 34
-                                 :fontWeight "normal"
-                                 :color      (:primary palette)}}
-                        "Refresh")
+                         :style {:fontWeight "bold"
+                                 :marginLeft 35
+                                 :color      "white"}}
+                        "Refresh List")
                    (button {:key      2
                             :bordered true
-                            :style    {:borderWidth 0
-                                       :borderColor "white"}
+                            :style    {;:flex 1
+                                       :height      20
+                                       :borderWidth 0
+                                       :borderColor "rgba(0,0,0,0)"}
                             :onPress  refresh-list}
                            (refresh-icon palette)))))
 
