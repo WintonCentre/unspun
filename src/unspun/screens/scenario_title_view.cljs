@@ -4,19 +4,21 @@
             [shared.ui :refer [tffsz n-icon]]
             ))
 
-(rum/defc star []
-  (n-icon {:name  "ios-star"
-           :style {:color     "orange"
-                   :transform [{:scale 1}]}}))
+(rum/defc star
+  [filled]
+  (n-icon {:name  (if filled "ios-star" "ios-star-outline")
+           :style {:color "orange"}}
+          ))
 
-(rum/defc stars [n]
+(rum/defc stars [r n]
+  "Render r full stars out of n"
   (view {:style {:flex           0.5
                  :justifyContent "flex-start"
                  :flexDirection  "row"
-                 :transform      [{:translateX -35}
-                                  {:scale 0.5}
+                 :transform      [{:translateX 0}
+                                  {:scale (/ tffsz 24)}
                                   ]}}
-        (map-indexed #(rum/with-key (star) %1) (range n))))
+        (map-indexed #(rum/with-key (star (< %1 r)) %1) (range n))))
 
 (rum/defc scenario-title [title text-field qoe]
 
@@ -31,7 +33,7 @@
                        :paddingRight   20
                        :paddingTop     5
                        :paddingBottom  0
-                       :textAlign      "center"
+                       :alignItems      "center"
                        :fontSize       (* (if qoe 1.2 1) tffsz)}}
               (text-field :text-icons "bold" title))
         (when (and qoe (pos? qoe))
@@ -49,6 +51,6 @@
                 (view {:style {:flex           0.5
                                :flexDirection  "row"
                                :justifyContent "flex-start"}}
-                      (stars qoe)
+                      (stars qoe 3)
                       )))
         ))

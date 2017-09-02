@@ -85,7 +85,7 @@
              :sources-relative-risk "[Risk per 50g of daily processed meat. IARC Monograph](http://www.thelancet.com/journals/lanonc/article/PIIS1470-2045%2815%2900444-1/abstract)"
              :sources-baseline-risk "[Lifetime risk 7.3% for men, 5.5% for women](http://www.cancerresearchuk.org/health-professional/cancer-statistics/risk/lifetime-risk#heading-One)"
              }
-   :hrt5    {:tags                  #{"preventitive" "breast" "cancer" "osteoporosis"}
+   :hrt    {:tags                  #{"preventitive" "breast" "cancer" "osteoporosis"}
              :icon                  "ios-woman"
              :subject               "woman"
              :subjects              "women in their 50s"
@@ -172,7 +172,7 @@
 (def app-state (atom {:palette-index 0
                       :brand-title   "Winton Centre"
                       :app-banner    "Risk Checker"
-                      :scenario      :hrt5
+                      :scenario      nil                    ;:hrt
                       :stories       (initial-stories)
                       :story-index   0
                       :notifications true
@@ -385,7 +385,7 @@
 
   (def scenarios ())
 
-  (nn-text-vector (:hrt5 scenarios))
+  (nn-text-vector (:hrt scenarios))
   ;=>
   ;["On average, for "
   ; "one extra woman "
@@ -395,7 +395,7 @@
   ; "20 "
   ; "would develop breast cancer anyway. "]
 
-  (compare-text-vector (:hrt5 scenarios))
+  (compare-text-vector (:hrt scenarios))
   ;=>
   ;["The risk of developing breast cancer for women in their 50s is "
   ; "10%. "
