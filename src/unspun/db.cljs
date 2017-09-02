@@ -5,6 +5,7 @@
             [clojure.pprint :refer [cl-format]]
             [clojure.string :refer [capitalize replace trim split]]
             [shared.language :refer [present-participle]]
+            [shared.ui :refer [get-dimensions]]
             ))
 
 (def version "v0.0.15")
@@ -180,7 +181,10 @@
                       :error         nil
                       :refreshing    false
                       :scenario-url  winton-csv
+                      :dimensions    (get-dimensions)
                       }))
+
+(def dimensions (rum/cursor app-state :dimensions))
 
 (defn parse-source [source]
   (let [[link1 url1] (split (trim source) #"\s*\]\s*\(\s*")

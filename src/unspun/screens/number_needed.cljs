@@ -1,8 +1,8 @@
 (ns unspun.screens.number-needed
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [n-icon screen-width screen-w-h tffsz]]
-            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
+            [shared.ui :refer [n-icon screen-w-h tffsz]]
+            [unspun.db :refer [app-state dimensions palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
             [unspun.screens.mixins :refer [monitor]]
             [unspun.screens.scenario-title-view :refer [scenario-title]]
             [unspun.navigation.bottom-nav :refer [story-links]]
@@ -300,21 +300,6 @@
                                               }))))))))))
 
 
-
-
-(comment
-  (defn resize
-    [event]
-    (println "dim = " (screen-w-h)))
-
-  (def resize-mixin {:did-mount    (fn [state]
-                                     (.addEventListener Dimensions "change" resize)
-                                     state)
-                     :will-unmount (fn [state]
-                                     (.removeEventListener Dimensions "change" resize)
-                                     state)}))
-
-
 (rum/defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
         palette (get-palette (rum/react palette-index))
@@ -324,7 +309,7 @@
         ; we don't want to highlight the first icon - as that is already allocated to be the 'one'.
         highlight (into #{} (map inc (ffloyd-sample (- nn 2)
                                                     (max 0 ((if (> rr 1) identity dec) (anyway rr br))))))
-        [w h] (screen-w-h)
+        {w :width h :height} (rum/react dimensions)
         h (- h 168)                                         ; adjustment for existing header and footer
         isz 16
         row-n (js/Math.floor (/ w isz))

@@ -95,7 +95,9 @@
 (def font-scale (.getFontScale PixelRatio))
 
 (def Dimensions (oget react-native "Dimensions"))
-(defn get-dimensions [] (into {} (map (fn [[k, v]] [(keyword k), v]) (js->clj (.get Dimensions "window")))))
+(defn raw-dimensions [] (.get Dimensions "window"))
+(defn get-dimensions* [raw-dims] (into {} (map (fn [[k, v]] [(keyword k), v]) (js->clj raw-dims))))
+(defn get-dimensions [] (get-dimensions* (raw-dimensions)))
 (defn status-bar-height [] (if (ios?) 20 25))
 (defn tab-bar-height [] 56)
 (defn tab-content-height [screen-height content-flex]
@@ -110,10 +112,6 @@
   (let [{:keys [width height]} (get-dimensions)]
     [width height]
     ))
-
-(defn screen-width []
-  (:width (get-dimensions)))
-
 
 (defn text-field-font-size []
   (let [{:keys [width height scale]} (get-dimensions)]
