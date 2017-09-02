@@ -7,6 +7,7 @@
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp parse-sources]]
             [unspun.navigation.bottom-nav :refer [story-links]]
             [unspun.screens.mixins :refer [monitor]]
+            [unspun.screens.scenario-title-view :refer [scenario-title]]
             ))
 
 (defn edit-icon [palette]
@@ -47,7 +48,7 @@
 
 (defc page < rum/reactive []
   (let [scenar ((rum/react stories) (rum/react story-index))
-        db (rum/react app-state) ; unused?
+        db (rum/react app-state)                            ; unused?
         br (:baseline-risk scenar)
         rr (:relative-risk scenar)
         brpc (to-pc br)
@@ -56,46 +57,56 @@
         erpc (to-pc (clamp [0 1] er))
         palette (get-palette (rum/react palette-index))
         page-style {:flex            1
-                    :backgroundColor (:primary palette)}]
+                    :backgroundColor (:primary palette)}
 
-    (let [text-style {:color (:text-icons palette)
-                      :fontSize tffsz}
-          small-text-style (merge text-style {:fontSize (* 0.8 tffsz)})
-          outcome-type (:outcome-type scenar)
-          br-sources (parse-sources (:sources-baseline-risk scenar))
-          rr-sources (parse-sources (:sources-relative-risk scenar))]
-      (container
-        {:key   "stats-container"
-         :style {:flex            1
-                 :backgroundColor (:primary palette)
-                }}
-        (content
-          {:key   "stats-content"
-           :theme (aget my-theme "default")
+        text-field (fn [palette-key weight content]
+                     (text {:key   (gensym "text-field")
+                            :style {:color      (palette-key palette)
+                                    :fontWeight weight
+                                    }} content))
+
+        text-style {:color    (:text-icons palette)
+                    :fontSize tffsz}
+        small-text-style (merge text-style {:fontSize (* 0.8 tffsz)})
+        outcome-type (:outcome-type scenar)
+        br-sources (parse-sources (:sources-baseline-risk scenar))
+        rr-sources (parse-sources (:sources-relative-risk scenar))]
+
+    (container
+      {:key   "stats-container"
+       :style {:flex            1
+               :backgroundColor (:primary palette)
+               }}
+      (content
+        {:key   "stats-content"
+         :theme (aget my-theme "default")
+         :style {:flex 1}}
+
+        (scenario-title (:title scenar) text-field (:qoe scenar))
+
+        (n-list
+          {:key   "stats-list"
            :style {:flex 1}}
 
-          (n-list
-            {:key   "stats-list"
-             :style {:flex 1}}
-            (n-list-item
-              {:key (gensym "item")}
-              (txt {:key   1
-                    :style text-style}
-                   (str "Background " outcome-type ": " (percentage br) " (baseline " outcome-type ": " (sigfigs 2 br) ")\n\n")
-                   (show-sources small-text-style br-sources))
-              )
-            (n-list-item
-              {:key (gensym "item")}
-              (txt {:key   1
-                    :style text-style}
-                   (str (if (> rr 1) (str "Increased " outcome-type ": " (percentage (- rr 1)))
-                                     (str "Decreased " outcome-type ": " (percentage (- 1 rr)))) " (relative " outcome-type ": " (sigfigs 2 rr) ")\n\n")
-                   (show-sources small-text-style rr-sources)))
+          (n-list-item
+            {:key (gensym "item")}
+            (txt {:key   1
+                  :style text-style}
+                 (str "Background " outcome-type ": " (percentage br) " (baseline " outcome-type ": " (sigfigs 2 br) ")\n\n")
+                 (show-sources small-text-style br-sources))
+            )
+          (n-list-item
+            {:key (gensym "item")}
+            (txt {:key   1
+                  :style text-style}
+                 (str (if (> rr 1) (str "Increased " outcome-type ": " (percentage (- rr 1)))
+                                   (str "Decreased " outcome-type ": " (percentage (- 1 rr)))) " (relative " outcome-type ": " (sigfigs 2 rr) ")\n\n")
+                 (show-sources small-text-style rr-sources)))
 
-            (n-list-item
-              {:key (gensym "item")}
-              (txt {:style text-style} (compare-text-vector scenar)))
+          (n-list-item
+            {:key (gensym "item")}
+            (txt {:style text-style} (compare-text-vector scenar)))
 
-            (n-list-item
-              {:key (gensym "item")}
-              (txt {:style text-style} (nn-text-vector scenar)))))))))
+          (n-list-item
+            {:key (gensym "item")}
+            (txt {:style text-style} (nn-text-vector scenar))))))))
