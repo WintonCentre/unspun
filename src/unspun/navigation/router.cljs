@@ -35,7 +35,7 @@
                                   :rum-bars       (wrap rum-bars/page)
                                   :number-needed  (wrap number-needed/page)
 
-                                  :theming        (wrap palette/page)
+                                  ;:theming        (wrap palette/page)
                                   :settings       (wrap settings/page)
                                   :not-yet        (wrap not-yet/page)
                                   :select-palette (wrap select-palette/page)

@@ -33,7 +33,7 @@
            :key   (gensym "story")
            :style {:flex 0
                    :width 30
-                   :marginLeft 10
+                   :marginLeft 0
                    :borderWidth 1
                    :borderColor "red"
                    :color (:dark-primary palette)
@@ -92,10 +92,11 @@
                       :justifyContent  "flex-start"
                       :flexDirection   "row"
                       :alignItems      "center"
-                      :borderWidth     0
-                      :borderColor     "rgba(0,0,0,0)"
+                      :borderWidth     1
+                      :borderColor     "orange"
                       :width           "100%"
-                      :padding         10})
+                      :margin 0
+                      :padding         0})
 
 (defn refresh-list []
   (do
@@ -149,13 +150,15 @@
 
     (card {:style card-style}
           (card-item {:header  true
+                      :flex 1
                       :key     1
                       :style   card-item-style
                       :onPress #(do (reset! story-index index)
                                     (.push navigator "tabs"))
+                      :button true
                       }
                      (story-icon palette (:icon scenar))
-                     (view {:style {:width (- w icon-offset 20)
+                     (view {:style {:width (- w icon-offset 50)
                                     :padding 10
                                     :borderWidth 1
                                     :borderColor "red"}}
