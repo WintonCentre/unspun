@@ -98,6 +98,7 @@
 (defn raw-dimensions [] (.get Dimensions "window"))
 (defn get-dimensions* [raw-dims] (into {} (map (fn [[k, v]] [(keyword k), v]) (js->clj raw-dims))))
 (defn get-dimensions [] (get-dimensions* (raw-dimensions)))
+
 (defn status-bar-height [] (if (ios?) 20 25))
 (defn tab-bar-height [] 56)
 (defn tab-content-height [screen-height content-flex]

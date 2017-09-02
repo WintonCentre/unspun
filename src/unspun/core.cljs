@@ -8,7 +8,7 @@
             [shared.async-storage :refer [reload-app-state!]]
             [unspun.navigation.router :refer [Router]]
             [unspun.screens.top-drawer :refer [drawer]]
-            [shared.ui :refer [navigation-provider]]
+            [shared.ui :refer [navigation-provider get-dimensions]]
             [unspun.screens.top-drawer :refer [drawer]]
             [unspun.screens.mixins :refer [resize-mixin]]
             ))
@@ -20,8 +20,9 @@
 (defn resizer
   "Resize handler which responds to screen orientation changes"
   [event]
-  (println (js->clj event))
-  (reset! dimensions (get (js->clj event) "window")))
+  (println (get-dimensions))
+  (println (get-dimensions))
+  (reset! dimensions (get-dimensions)))
 
 (defc AppRoot < rum/reactive (resize-mixin resizer) [state]
   "Root of app is a sliding drawer component wrapped in an ex-navigation provider.
