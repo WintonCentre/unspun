@@ -268,7 +268,8 @@
         ]
     (view {:style {:flex          1
                    :flexDirection "column"
-                   :alignItems    "center"}}
+                   :alignItems    "center"
+                   :opacity 0.8}}
           (view {:style {:flex    0
                          :width   w
                          :height  (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n))
@@ -375,7 +376,7 @@
                                  :right    0
                                  :zIndex   1
                                  }}
-                        (scroll-view {:onScroll            handle-scroll
+                        (scroll-view {                      ;:onScroll            handle-scroll
                                       :scrollEventThrottle 16
                                       :key                 1
                                       :style               {:flex          1
@@ -434,7 +435,7 @@
           sw (min w (* (- h 210) 0.9 0.7))
           kk (/ sw 500 (Math.pow (/ nn 225) 0.4))
           ]
-      ;(prn (str "kk = " kk))
+
       (letfn [(draw-block [block count]
 
                 (for [r (range block-height)]

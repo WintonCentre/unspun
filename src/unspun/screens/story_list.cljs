@@ -1,6 +1,6 @@
 (ns unspun.screens.story-list
   (:require [rum.core :as rum]
-            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view refresh-control] :as rn]
+            [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view refresh-control touchable-highlight] :as rn]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title tffsz]]
             [unspun.db :refer [app-state dimensions refreshing palette-index stories story-index story caps-tidy scenario-url flash-error]]
             [unspun.screens.scenario-title-view :refer [scenario-title]]
@@ -19,25 +19,32 @@
 
 (defn refresh-icon [palette]
   (n-icon {:name  "ios-cloud-download"
-           :style {:color    "white"
-                   :fontSize 30}}))
+           :style {:color       "white"
+                   :width       tffsz
+                   :fontSize    tffsz
+                   ;:borderColor "black"
+                   ;:borderWidth 1
+                   :transform   [{:scale 2                  ;(/ 16 tffsz)
+                                  }]
+                   }}))
 
 (defn iscale
   [w]
   (/ (* w tffsz) 16))
 
-(def icon-offset (+ (iscale 30) (* 1.67 (iscale 25))))
+(def icon-offset (iscale 70)                                ;(+ (iscale 30) (* 1.67 (iscale 25)))
+  )
 
 (defn story-icon [palette name]
   (n-icon {:name  name
            :key   (gensym "story")
-           :style {:flex 0
-                   :width 30
-                   :marginLeft 0
-                   :borderWidth 1
-                   :borderColor "red"
-                   :color (:dark-primary palette)
-                   :transform [{:scale (iscale 1)}]}
+           :style {:flex        0
+                   :width       30
+                   :marginLeft  0
+                   ;:borderWidth 1
+                   ;:borderColor "red"
+                   :color       (:dark-primary palette)
+                   :transform   [{:scale (iscale 1.5)}]}
            }))
 
 (defn edit-icon [palette]
@@ -51,17 +58,17 @@
   [palette]
   (n-icon {:name  "ios-arrow-dropright-outline"
            :key   (gensym "icon-foo")
-           :style {:width           25
+           :style {:width           30
                    :flex            0
                    ;:flex 1
                    ;:justifyContent "flex-end"
                    :marginLeft      0
                    :paddingLeft     0
                    :paddingRight    0
-                   :textAlign       "right"
+                   :textAlign       "left"
                    :backgroundColor "rgba(0,0,0,0)"
-                   :borderWidth     1
-                   :borderColor     "red"
+                   ;:borderWidth     1
+                   ;:borderColor     "red"
                    :color           (:accent palette)
                    :transform       [{:scale (iscale 1.67)}]}
            }))
@@ -88,15 +95,10 @@
                  :marginTop    5
                  :marginBottom 0})
 
-(def card-item-style {                                      ;:backgroundColor "blue"
-                      :justifyContent  "flex-start"
-                      :flexDirection   "row"
-                      :alignItems      "center"
-                      :borderWidth     1
-                      :borderColor     "orange"
-                      :width           "100%"
-                      :margin 0
-                      :padding         0})
+(def card-item-style {:justifyContent "flex-start"
+                      :flexDirection  "row"
+                      :alignItems     "center"
+                      })
 
 (defn refresh-list []
   (do
@@ -109,35 +111,26 @@
   )
 
 (rum/defc add-card! [navigator palette]
-  (card {:style card-style}
-        (card-item {:header  false
-                    :key     1
-                    :onPress refresh-list
-                    :style   (merge card-item-style {:flexDirection   "row"
-                                                     :justifyContent  "space-between"
-                                                     :height          40
-                                                     :width           "100%"
-                                                     :marginLeft      -1
-                                                     ;:marginTop -1
-                                                     :marginRight     -1
-                                                     ;:marginBottom -1
-                                                     :padding         0
-                                                     :borderWidth     5
-                                                     :borderColor     (:accent palette) ;"rgba(0,0,0,0)"
-                                                     :backgroundColor (:accent palette)})}
-                   (txt {:key   1
-                         :style {:fontWeight "bold"
-                                 :marginLeft 35
-                                 :color      "white"}}
-                        "Refresh List")
-                   (button {:key      2
-                            :bordered true
-                            :style    {;:flex 1
-                                       :height      20
-                                       :borderWidth 0
-                                       :borderColor "rgba(0,0,0,0)"}
-                            :onPress  refresh-list}
-                           (refresh-icon palette)))))
+  (touchable-highlight
+    {:style   card-style
+     ;:button  true
+     :onPress refresh-list}
+    (view {:header false
+           :key    1
+           :style  (merge card-item-style {:flexDirection   "row"
+                                           :justifyContent  "space-around"
+                                           :alignItems      "center"
+                                           :height          (* tffsz 3)
+                                           :backgroundColor (:accent palette)})}
+          (txt {:key   1
+                :style {:flex       1
+                        :marginLeft tffsz
+                        :fontWeight "bold"
+                        :fontSize   tffsz
+                        :color      "white"}}
+               "Pull to refresh")
+          (view {:flex 0.1}
+                (refresh-icon palette)))))
 
 (rum/defc story-card! < rum/reactive [navigator palette index]
   (let [scenar ((rum/react stories) index)
@@ -148,20 +141,28 @@
                                     :fontWeight weight
                                     }} content))]
 
-    (card {:style card-style}
+    (view {:style card-style}
           (card-item {:header  true
-                      :flex 1
+                      :flex    1
                       :key     1
-                      :style   card-item-style
+                      :style   (merge card-item-style {:flexDirection  "row"
+                                                       :flex           1
+                                                       :justifyContent "space-between"
+                                                       :alignItems     "center"
+                                                       })
                       :onPress #(do (reset! story-index index)
                                     (.push navigator "tabs"))
-                      :button true
+                      :button  true
                       }
-                     (story-icon palette (:icon scenar))
-                     (view {:style {:width (- w icon-offset 50)
-                                    :padding 10
-                                    :borderWidth 1
-                                    :borderColor "red"}}
+                     (view {:style {:flex 0.2
+                                    :marginLeft     tffsz}}
+                           (story-icon palette (:icon scenar)))
+                     (view {:style {:flex        1
+                                    :width       (- w icon-offset 60)
+                                    :padding     0
+                                    ;:borderWidth 1
+                                    ;:borderColor "red"
+                                    }}
                            (txt {:key   1
                                  :style {;:flex       0.5
                                          :fontWeight "bold"
@@ -169,18 +170,13 @@
                                          :color      (:secondary-text palette)}}
                                 (:title scenar))
                            (txt {:key   2
-                                 :style {;:flex       4
-                                         :fontWeight "normal"
+                                 :style {:fontWeight "normal"
                                          :fontSize   tffsz
                                          :color      (:secondary-text palette)}}
                                 (caps-tidy (story index))))
-                     (show-icon palette)
-                     #_(button {:bordered true
-                                :style    {:borderWidth 0
-                                           :borderColor "white"}
-                                :onPress  #(do (reset! story-index index)
-                                               (.push navigator "tabs"))}
-                               (show-icon palette))))))
+                     (view {:style {:flex       0.1
+                                    :marginLeft tffsz}} (show-icon palette))
+                     ))))
 
 (rum/defcs page < rum/reactive
                   (rum/local 0 ::selection)
@@ -191,7 +187,7 @@
         story-count (count stories)
         palette-count (count palettes)
         navigator (aget (:rum/react-component state) "props" "navigator")]
-    (println "new stories")
+    ;    (println "new stories")
     (container
       {:style {:flex 1}}
       (content

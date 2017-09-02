@@ -303,7 +303,7 @@
                                       :style {:flex           0.3
                                               :justifyContent "center"}}
                                      (text {:style {:color        (:text-icons palette)
-                                                    :fontSize     (/ tffsz 0.85)
+                                                    :fontSize     (/ tffsz 1)
                                                     :textAlign    "right"
                                                     :paddingRight 10}}
                                            (:without-label scenar)))
@@ -319,7 +319,7 @@
                                       :style {:flex           0.3
                                               :justifyContent "center"}}
                                      (text {:style {:color     (:text-icons palette)
-                                                    :fontSize  (/ tffsz 0.85)
+                                                    :fontSize  (/ tffsz 1)
                                                     :padding   10
                                                     :textAlign "left"}}
                                            (:with-label scenar)))))

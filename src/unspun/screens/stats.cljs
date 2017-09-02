@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar list-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item linking]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item linking tffsz]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp parse-sources]]
             [unspun.navigation.bottom-nav :refer [story-links]]
             [unspun.screens.mixins :refer [monitor]]
@@ -58,8 +58,9 @@
         page-style {:flex            1
                     :backgroundColor (:primary palette)}]
 
-    (let [text-style {:color (:text-icons palette)}
-          small-text-style (merge text-style {:fontSize 14})
+    (let [text-style {:color (:text-icons palette)
+                      :fontSize tffsz}
+          small-text-style (merge text-style {:fontSize (* 0.8 tffsz)})
           outcome-type (:outcome-type scenar)
           br-sources (parse-sources (:sources-baseline-risk scenar))
           rr-sources (parse-sources (:sources-relative-risk scenar))]
