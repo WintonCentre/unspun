@@ -1,7 +1,8 @@
 (ns shared.async-storage
   (:require [glittershark.core-async-storage :refer [get-item set-item remove-item]]
             [cljs.core.async :refer [<!]]
-            [unspun.db :refer [app-state use-cache stories refreshing flash-error]])
+            [unspun.db :refer [app-state use-cache stories refreshing flash-error]]
+            [shared.ui :refer [legacy-async-storage]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def use-cache-key :unspun.db/use-cache)

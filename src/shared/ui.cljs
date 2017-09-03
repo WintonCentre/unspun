@@ -1,6 +1,6 @@
 (ns shared.ui
   (:require [goog.object :as gobj]
-            [cljs-exponent.core :refer [react-native]]
+            [cljs-exponent.core :refer [react-native expo]]
             [cljs-exponent.components :refer [element text text-input view image touchable-highlight status-bar refresh-control] :as rn]))
 
 (def oget gobj/get)
@@ -26,6 +26,8 @@
 (def async-storage (oget react-native "AsyncStorage"))
 (def store-set-item (oget async-storage "setItem"))
 (def store-get-item (oget async-storage "getItem"))
+(def legacy-async-storage (oget expo "LegacyAsyncStorage"))
+(def secure-store (oget expo "SecureStore"))
 
 ;; ex-navigation
 (def ex-navigation (js/require "@expo/ex-navigation"))
