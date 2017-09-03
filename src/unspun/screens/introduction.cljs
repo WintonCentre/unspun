@@ -1,8 +1,8 @@
 (ns unspun.screens.introduction
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [n-icon]]
-            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index]]
+            [shared.ui :refer [n-icon tffsz]]
+            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index ]]
             [rum.core :as rum]))
 
 (def shadow-size 1)
@@ -16,16 +16,17 @@
         page-style {:flex            0.8
                     :padding         20
                     :backgroundColor (:primary palette)}
-        header-style {:fontSize 24
-                      :color    (:text-icons palette)
+        header-style {:fontSize     (* 1.2 tffsz)
+                      :fontWeight "bold"
+                      :color        (:text-icons palette)
                       :marginBottom 20}
-        text-style {:fontSize 18
-                    :color    (:text-icons palette)
+        text-style {:fontSize     tffsz
+                    :color        (:text-icons palette)
                     :marginBottom 15}
-        quote-style {:fontSize 20
-                     :fontStyle "italic"
-                    :color    (:text-icons palette)
-                    :marginBottom 15}]
+        quote-style {:fontSize     (* 1.2 tffsz)
+                     :fontStyle    "italic"
+                     :color        (:text-icons palette)
+                     :marginBottom 15}]
     (letfn [(jumpToDrawer [drawerId route]
               (let [navigation (aget (:rum/react-component state) "props" "navigation")]
                 (.performAction navigation (fn [stateUtils]
@@ -33,8 +34,6 @@
                 ))]
 
       (view {:style {:flex 1}}
-
-
             (scroll-view {:style page-style
                           :key   1}
                          (text {:style header-style}
@@ -54,45 +53,34 @@
                          (text {:style text-style}
                                "It looks quite different when you put it like that!\n\nRefresh the list of scenarios to see our latest.\n\n See Settings to hook up your own data source.")
                          #_(text {:style text-style}
-                               "Turn on notifications if you want to know when we add more examples.")
+                                 "Turn on notifications if you want to know when we add more examples.")
                          )
-            (view {:style {:flex            0.18
+            (view {:style {:flex            0.2
+                           :justifyContent  "center"
                            :backgroundColor (:dark-primary palette)
                            }}
-                  (touchable-highlight {:style   {:flex            1
-                                                  :margin      20
-                                                  :height          50
-                                                  :borderColor    (:accent (get-palette (rum/react palette-index)))
-                                                  :borderWidth    2
-                                                  :borderRadius    30
-                                                  :shadowColor     "#000"
-                                                  :shadowOffset    {:width shadow-size :height shadow-size}
-                                                  :shadowRadius    shadow-size
-                                                  :shadowOpacity   0.5
-                                                  :alignItems      "center"
-                                                  :justifyContent  "center"
+                  (touchable-highlight {:style   {:flex           0
+                                                  :marginLeft     20
+                                                  :marginRight    20
+                                                  :height         (* tffsz 3)
+                                                  :borderColor    (:accent palette)
+                                                  :borderWidth    (* tffsz 0.2)
+                                                  :borderRadius   (* tffsz 1.5)
+                                                  :shadowColor    "#000"
+                                                  :shadowOffset   {:width shadow-size :height shadow-size}
+                                                  :shadowRadius   shadow-size
+                                                  :shadowOpacity  0.5
+                                                  :alignItems     "center"
+                                                  :justifyContent "center"
                                                   }
                                         :onPress #(jumpToDrawer "scenarios" "stories")}
 
-                                       (text {:style {:color      (:text-icons (get-palette (rum/react palette-index)))
+                                       (text {:style {:color      (:text-icons palette)
                                                       :textAlign  "center"
+                                                      :fontSize   tffsz
                                                       :fontWeight "bold"}}
                                              "Start"))
 
-                  #_(touchable-highlight {:style {:flex            1
-                                                :margin          20
-                                                :backgroundColor (:accent (get-palette (rum/react palette-index)))
-                                                :borderRadius    30
-                                                :shadowColor     "#000"
-                                                :shadowOffset    {:width shadow-size :height shadow-size}
-                                                :shadowRadius    shadow-size
-                                                :shadowOpacity   0.5
-                                                :alignItems      "center"
-                                                :justifyContent  "center"
-                                                }
-                                        :onPress #(jumpToDrawer "scenarios" "stories")
-                                        ;#(.push (aget (:rum/react-component state) "props" "navigator") "stories")
-                                        }
-                                       (text {:style {:color (:text-icons (get-palette (rum/react palette-index))) :textAlign "center" :fontWeight "bold" :width 55}} "Start")))))))
+                  )))))
 
 
