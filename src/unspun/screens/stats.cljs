@@ -41,18 +41,18 @@
 (defn story-icon [palette name]
   (n-icon {:name  name
            :key   (gensym "story")
-           :style {:flex       0
-                   :width      50
-                   :marginLeft 20
+           :style {:flex  0
+                   :width 30
                    ;:borderWidth 1
                    ;:borderColor "red"
-                   :color      (:text-icons palette)
-                   :transform  [{:scale (iscale 1.5)}]}
+                   :color (:text-icons palette)
+                   ;:transform  [{:scale (iscale 1.5)}]
+                   }
            }))
 
 (defn show-icon
   [palette]
-  (n-icon {:name  "ios-arrow-forward"
+  (n-icon {:name  "ios-open-outline"
            :key   (gensym "icon-foo")
            :style {:width           30
                    :flex            0
@@ -147,8 +147,6 @@
                                             :alignItems     "center"
                                             :padding        0}}
                                    (view {:style {:flex        0
-                                                  :borderColor "red"
-                                                  :borderWidth 1
                                                   :marginLeft  tffsz}}
                                          (story-icon palette (:icon scenar)))
                                    (view {:style {:flex         1
