@@ -81,6 +81,7 @@
                    :borderWidth   1
                    :borderColor   (:color style)}}
           (view {:style {:paddingRight tffsz
+                         :flex 0.8
                          :left         (* 0.5 tffsz)}}
                 (let [small-link-style style]
                   (txt {:key "first"
@@ -96,8 +97,7 @@
                                               :onPress #(.openURL linking (:url source))}
                                              (str " " (:link source))))))
                        sources)))
-          (view {:style {:position "relative"
-                         :right    0}} (show-icon palette)))))
+          (view {:style {:flex 0.2}} (show-icon palette)))))
 
 
 (defc page < rum/reactive []

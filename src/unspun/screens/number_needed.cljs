@@ -275,7 +275,6 @@
                          :width   w
                          :height  (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n))
                          :padding padding
-                         ;:transform [{:scale (/ h (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n)))}]
                          }}
                 (for [[i row] (zipmap (range) (dicen n highlight))]
                   (view {:key   (str "r" i)
@@ -345,9 +344,9 @@
                      :justifyContent  "flex-start"
                      :backgroundColor (:primary palette)
                      }}
-            (view {:style {:flex           0.3
-                           :justifyContent "center"
-                           :alignItems     "stretch"
+            (view {:style {:flex            0.3
+                           :justifyContent  "center"
+                           :alignItems      "stretch"
                            :backgroundColor (:dark-primary palette)
                            }}
 
@@ -358,9 +357,9 @@
                                 :backgroundColor (:dark-primary palette)
                                 }
                                (scenario-title (:title scenar) text-field (:qoe scenar))
-                               (text {:style {:padding  20
+                               (text {:style {:padding    20
                                               :paddingTop 5
-                                              :fontSize tffsz}}
+                                              :fontSize   tffsz}}
                                      (text-field :light-primary "normal" nn-head)
                                      (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
                                      (text-field :light-primary "normal" nn-one-to-group)
@@ -412,6 +411,29 @@
                                                    }
                                            }
                                           (str nn)))))
+                  (view {:key   3
+                         :style {:position "absolute"
+                                 :top      0
+                                 :bottom   0
+                                 :left     0
+                                 :right    0
+                                 :zIndex   0}}
+                        (view {:style          {:flex 1}
+                               :flexDirection  "column"
+                               :justifyContent "flex-end"
+                               :alignItems     "center"
+
+                               }
+
+                              (ionicon {:name  "ios-arrow-down" ;"ios-radio-button-on"
+                                        :size  50
+                                        :style {:width           50
+                                                :textAlign       "center"
+                                                :opacity 0.7
+                                                :color           (:text-icons palette)
+                                                :backgroundColor "rgba(0,0,0,0)"
+                                                }}))
+                        )
 
                   )))))
 
