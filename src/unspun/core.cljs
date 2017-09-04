@@ -21,7 +21,6 @@
   "Resize handler which responds to screen orientation changes"
   [event]
   (println (get-dimensions))
-  (println (get-dimensions))
   (reset! dimensions (get-dimensions)))
 
 (defc AppRoot < rum/reactive (resize-mixin resizer) [state]

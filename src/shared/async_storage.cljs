@@ -10,26 +10,27 @@
 
 
 (defn save-app-state! [new-state]
-  ;(println "saved app-state")
-  (go (let [[error] (<! (set-item app-cache-key new-state))]
+  (println "saved app-state")
+  #_(go (let [[error] (<! (set-item app-cache-key new-state))]
         (when-not (nil? error) (flash-error error)))))
 
 (defn save-use-cache! [new-state]
-  ;(println "save-use-cache!")
-  (go (let [[error] (<! (set-item use-cache-key new-state))]
+  (println "save-use-cache!")
+  #_(go (let [[error] (<! (set-item use-cache-key new-state))]
         (when-not (nil? error) (flash-error error)))))
 
 
 (defn add-app-state-watch []
-  (add-watch app-state app-cache-key
+  (println "add--app-state-watch")
+  #_(add-watch app-state app-cache-key
              (fn [key app-state old-state new-state]
                ;(println "app-state  -> " new-state)
                (save-app-state! new-state)
                )))
 
 (defn use-cache-changed [key use-cache old new]
-  ;(println key old "->" new)
-  (if new
+  (println "use-cache-changed " key old "->" new)
+  #_(if new
     (do
       ;; use-cache is on. Save app-state and arrange to resave it on change
       ;(println "cache on")
@@ -52,12 +53,12 @@
 (defn setup-watches!
   "Should be an idempotent call for figwheel reload purposes"
   []
-  ;(println "setting up use-cache watch")
-  (remove-watch use-cache use-cache-key)
-  (add-watch use-cache use-cache-key use-cache-changed))
+  (println "setting up use-cache watch")
+  #_(remove-watch use-cache use-cache-key)
+  #_(add-watch use-cache use-cache-key use-cache-changed))
 
 (defn reload-app-state! []
-  (go
+  #_(go
     ;; avoid interference from active watches by removing them.
     ;; necessary for a figwheel reload
     ;(println "reloading-app-state")
