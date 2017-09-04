@@ -172,7 +172,7 @@
 (def app-state (atom {:palette-index 0
                       :brand-title   "Winton Centre"
                       :app-banner    "Risk Checker"
-                      :scenario      nil                    ;:hrt
+                      ;:scenario      nil                    ;:hrt
                       :stories       (initial-stories)
                       :story-index   0
                       :notifications true
@@ -217,7 +217,6 @@
 (def palette-index (rum/cursor-in app-state [:palette-index]))
 (def brand-title (rum/cursor-in app-state [:brand-title]))
 (def app-banner (rum/cursor-in app-state [:app-banner]))
-(def scenario (rum/cursor-in app-state [:scenario]))
 (def story-index (rum/cursor-in app-state [:story-index]))
 (def stories (rum/cursor-in app-state [:stories]))
 (def notifications (rum/cursor-in app-state [:notifications]))

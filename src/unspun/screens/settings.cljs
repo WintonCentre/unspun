@@ -1,7 +1,7 @@
 (ns unspun.screens.settings
   (:require [cljs-exponent.components :refer [element text text-input view image touchable-highlight status-bar] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index scenario scenario-url notifications use-cache]]
+            [unspun.db :refer [app-state palette-index scenario-url notifications use-cache]]
             [shared.ui :refer [settings-list settings-list-header settings-list-item
                                ionicon entypo]]
             [rum.core :as rum]))

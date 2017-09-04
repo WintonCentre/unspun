@@ -6,8 +6,6 @@
             [unspun.screens.introduction :as intro]
             [unspun.screens.number-needed :as number-needed]
             [unspun.screens.rum-bars :as rum-bars]
-
-            [unspun.screens.old-palette :as palette]
             [unspun.screens.settings :as settings]
             [unspun.screens.not-yet :as not-yet]
             [unspun.screens.story-list :as story-list]

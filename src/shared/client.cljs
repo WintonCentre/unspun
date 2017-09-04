@@ -1,7 +1,6 @@
 (ns shared.client
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [unspun.db :refer [scenario-url winton-csv app-state scenarios-as-map scenarios-as-vec with-additions flash-error flash-error-time max-id-length valid-field?]]
-            [shared.schema :refer [db-schema scenario-keys]]
             [clojure.data.csv :refer [read-csv]]
             [clojure.core.async :refer [timeout <!]]
             [clojure.string :refer [starts-with? ends-with? trim triml split lower-case]]

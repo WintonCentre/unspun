@@ -266,10 +266,11 @@
         rows (count (dicen n highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
+
     (view {:style {:flex          1
                    :flexDirection "column"
                    :alignItems    "center"
-                   :opacity 0.8}}
+                   :opacity       0.8}}
           (view {:style {:flex    0
                          :width   w
                          :height  (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n))
@@ -302,6 +303,7 @@
 
 
 (rum/defc page < rum/reactive []
+
   (let [scenar ((rum/react stories) (rum/react story-index))
         palette (get-palette (rum/react palette-index))
         br (:baseline-risk scenar)
@@ -331,24 +333,24 @@
         rows (count (dicen nn highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
-
+    (println "nn-rerender")
     (letfn [(handle-scroll [event]
               (this-as this
                 (.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
                 ))]
 
 
-      (view {:style    {:flex            1
-                        :flexDirection   "column"
-                        :justifyContent  "flex-start"
-                        :backgroundColor (:primary palette)
-                        }}
+      (view {:style {:flex            1
+                     :flexDirection   "column"
+                     :justifyContent  "flex-start"
+                     :backgroundColor (:primary palette)
+                     }}
             (view {:style {:flex            0.3
                            :justifyContent  "center"
                            :alignItems      "stretch"
                            :backgroundColor (:dark-primary palette)}}
-                  (scroll-view {:style {:flex 0.7}
-                                :key   1
+                  (scroll-view {:style           {:flex 0.7}
+                                :key             1
                                 :backgroundColor (:dark-primary palette)
                                 }
                                (scenario-title (:title scenar) text-field (:qoe scenar))
@@ -376,7 +378,7 @@
                                  :right    0
                                  :zIndex   1
                                  }}
-                        (scroll-view {                      ;:onScroll            handle-scroll
+                        (scroll-view {;:onScroll            handle-scroll
                                       :scrollEventThrottle 16
                                       :key                 1
                                       :style               {:flex          1
