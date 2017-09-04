@@ -28,12 +28,12 @@
                                   }]
                    }}))
 
+;; todo: refactor
 (defn iscale
   [w]
   (/ (* w tffsz) 16))
 
-(def icon-offset (iscale 70)                                ;(+ (iscale 30) (* 1.67 (iscale 25)))
-  )
+(def icon-offset (iscale 70)    )
 
 (defn story-icon [palette name]
   (n-icon {:name  name
@@ -52,7 +52,7 @@
            :key   (gensym "edit")
            :style {:color (:dark-primary palette)}
            }))
-
+;; end duplicate
 
 (defn show-icon
   [palette]

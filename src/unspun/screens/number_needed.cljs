@@ -333,7 +333,7 @@
         rows (count (dicen nn highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
-    (println "nn-rerender")
+    ;(println "nn-rerender")
     (letfn [(handle-scroll [event]
               (this-as this
                 (.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
@@ -345,16 +345,21 @@
                      :justifyContent  "flex-start"
                      :backgroundColor (:primary palette)
                      }}
-            (view {:style {:flex            0.3
-                           :justifyContent  "center"
-                           :alignItems      "stretch"
-                           :backgroundColor (:dark-primary palette)}}
-                  (scroll-view {:style           {:flex 0.7}
+            (view {:style {:flex           0.3
+                           :justifyContent "center"
+                           :alignItems     "stretch"
+                           :backgroundColor (:dark-primary palette)
+                           }}
+
+                  (story-links palette)
+
+                  (scroll-view {:style           {:flex 0.6}
                                 :key             1
                                 :backgroundColor (:dark-primary palette)
                                 }
                                (scenario-title (:title scenar) text-field (:qoe scenar))
                                (text {:style {:padding  20
+                                              :paddingTop 5
                                               :fontSize tffsz}}
                                      (text-field :light-primary "normal" nn-head)
                                      (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
@@ -363,8 +368,6 @@
                                      (text-field :light-primary "normal" nn-group-to-anyway)
                                      (text-field :accent "bold" nn-anyway)
                                      (text-field :light-primary "normal" nn-tail)))
-                  (view {:style {:flex 0.3}}
-                        (story-links palette))
                   )
 
             (view {:style {:flex          0.7

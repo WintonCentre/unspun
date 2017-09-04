@@ -158,20 +158,17 @@
        (view {:style page-style}
              (view {:key   1
                     :style {:flex           0.3
+                            :flexDirection "column"
                             :justifyContent "center"
                             :alignItems     "stretch"
+                            :backgroundColor (:dark-primary palette)
                             }}
-                   (scroll-view {:style {:backgroundColor (:dark-primary palette)
-                                         :flex            0.7}}
 
+                   (story-links palette)
+
+                   (scroll-view {:style {:backgroundColor (:dark-primary palette)
+                                         :flex            0.6}}
                                 (scenario-title (:title scenar) text-field (:qoe scenar))
-                                #_(text {:style {:paddingLeft   20
-                                                 :paddingRight  20
-                                                 :paddingTop    5
-                                                 :paddingBottom 0
-                                                 :textAlign     "center"
-                                                 :fontSize      (* 1.2 tffsz)}}
-                                        (text-field :text-icons "bold" (:title scenar)))
                                 (text {:style {:padding    20
                                                :paddingTop 5
                                                :fontSize   tffsz}}
@@ -182,37 +179,6 @@
                                       (text-field :light-primary "normal" cmp-change-to-erpc)
                                       (text-field :text-icons "bold" cmp-erpc))
                                 )
-
-                   (view {:style {:flex            0.3}}
-                         (story-links palette)
-                         #_(view {:style {:flex            1
-                                        :justifyContent  "space-around"
-                                        :alignItems      "center"
-                                        :flexDirection   "row"
-                                        :backgroundColor (:dark-primary palette)
-                                        }}
-                               (rn-button {:key          "prev-but"
-                                           :title        "< Previous"
-                                           :color        (:accent palette)
-                                           :onPress      previous-story}
-                                          )
-                               (rn-button {:key     "next-but"
-                                           :title   "Next >"
-                                           :color   (:accent palette)
-                                           :onPress next-story}
-                                          )
-                               ))
-                   #_(button {:key       "prev-but"
-                              :bordered  true
-                              :small     (not (ios?))
-                              :textStyle {:color (:accent palette)}
-                              :style     {:margin      10
-                                          :borderWidth 2
-                                          :borderColor (:text-icons palette)}
-                              :onPress   next-story}
-                             (previous-icon palette)
-                             (txt {:key   "prev-txt"
-                                   :style {:color (:accent palette)}} "Previous"))
                    )
              (view {:key   2
                     :style {:flex 0.7}}
@@ -324,7 +290,7 @@
                                                     :textAlign "left"}}
                                            (:with-label scenar)))))
 
-                   (view {:key   4
+                   #_(view {:key   4
                           :style {:position "absolute"
                                   :top      0
                                   :bottom   0

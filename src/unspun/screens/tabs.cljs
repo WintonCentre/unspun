@@ -13,13 +13,6 @@
 
 (def ios (ios?))
 
-(rum/defc button-bar
-  [palette]
-  (view {:key   "bottom-bar"
-         :style {:flex            0.1
-                 :backgroundColor (:dark-primary palette)}}
-        (story-links)))
-
 (rum/defcs page < rum/reactive (add-page-title "Scenario") [state]
   (let [navigator (aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))]
