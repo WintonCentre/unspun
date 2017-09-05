@@ -4,7 +4,7 @@
             [shared.ui :refer [font-scale pixel-ratio get-dimensions tffsz ios? button txt rn-button]]
             [cljs-exponent.components :refer [element text view image status-bar animated-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp two-sf]]
+            [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp two-sf dimensions]]
             [unspun.navigation.bottom-nav :refer [story-links]]
             [graphics.scales :refer [create-linear-scale bounded-ticks i->o o->i tick-format-specifier]]
             [unspun.gesture-responders :refer [pan-responder-mixin pan-logger]]
@@ -128,6 +128,7 @@
               (rum/local nil :rescaler)
               (pan-responder-mixin ::zoomer (:height (get-dimensions)))
   ([state]
+   (println "bars dim check: " (= (get-dimensions) (rum/react dimensions)))
    (let [scenar ((rum/react stories) (rum/react story-index))
          db (rum/react app-state)                           ;unused?
          br (:baseline-risk scenar)
@@ -151,7 +152,7 @@
                                      :fontWeight weight
                                      }} content))
          ]
-
+     (println "bars")
      (view
        {:style {:flex 1}}
 

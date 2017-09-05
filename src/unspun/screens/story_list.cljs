@@ -1,7 +1,7 @@
 (ns unspun.screens.story-list
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view refresh-control touchable-highlight] :as rn]
-            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title tffsz]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title tffsz get-dimensions]]
             [unspun.db :refer [app-state dimensions refreshing palette-index stories story-index story caps-tidy scenario-url flash-error]]
             [unspun.screens.scenario-title-view :refer [scenario-title]]
             [themes.palettes :refer [palettes get-palette]]
@@ -187,7 +187,7 @@
         story-count (count stories)
         palette-count (count palettes)
         navigator (aget (:rum/react-component state) "props" "navigator")]
-    ;    (println "new stories")
+    (println "new stories")
     (container
       {:style {:flex 1}}
       (content

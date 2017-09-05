@@ -8,14 +8,15 @@ var CLOSURE_UNCOMPILED_DEFINES = null;
 var debugEnabled = false;
 
 var config = {
-    basePath: "target/",
+    basePath: "target",
     googBasePath: 'goog/',
-    serverPort: 8081
+    serverPort: 19001
 };
 
 var React = require('react');
 var ReactNative = require('react-native');
 var WebSocket = require('WebSocket');
+var createReactClass = require('create-react-class');
 var self;
 var scriptQueue = [];
 var serverHost = null; // will be set dynamically
@@ -35,7 +36,7 @@ var evalListeners = [ // Functions to be called after each js file is loaded and
     }];
 
 var figwheelApp = function (platform, devHost) {
-    return React.createClass({
+    return createReactClass({
         getInitialState: function () {
             return {loaded: false}
         },
@@ -57,7 +58,11 @@ var figwheelApp = function (platform, devHost) {
                           this.props.exp.manifest.bundleUrl;
                 var hostPort = url.split('/')[2].split(':');
                 devHost = hostPort[0];
-                config.serverPort = hostPort[1];
+
+                if (hostPort[1]) {
+                  config.serverPort = hostPort[1];
+                }
+
                 loadApp(platform, devHost, function (appRoot) {
                     app.setState({root: appRoot, loaded: true})
                 });
@@ -147,11 +152,11 @@ function importJs(src, success, error) {
     var file = fileBasePath + '/' + src;
 
     logDebug('(importJs) Importing: ' + file);
-    //if (isChrome()) {
-    //    syncImportScripts(serverBaseUrl("localhost") + '/' + file, success, error);
-    //} else {
+    if (isChrome()) {
+        syncImportScripts(serverBaseUrl("localhost") + '/' + file, success, error);
+    } else {
         asyncImportScripts(serverBaseUrl(serverHost) + '/' + file, success, error);
-    //}
+    }
 }
 
 function interceptRequire() {

@@ -20,12 +20,13 @@
 (comment
   (defn resize-handler
     [event]
-    (println "dimensions = " (js->clj event)))
+    ;(println "dimensions = " (js->clj event))
+    )
   ;=> nil
   ; {window {:width w :scale s :height h}}
   )
 
-()
+
 (defn resize-mixin
   [handler]
   {:did-mount    (fn [state]

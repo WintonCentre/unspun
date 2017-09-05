@@ -21,6 +21,8 @@
   []
   (= "android" (get-platform)))
 
+(def permissions (oget expo "Permissions"))
+
 ;; AsyncStorage
 ;; see https://github.com/glittershark/core-async-storage
 (def async-storage (oget react-native "AsyncStorage"))
@@ -43,6 +45,7 @@
 (def tab-navigation-item (partial element (oget ex-navigation "TabNavigationItem")))
 (def sliding-tab-navigation (partial element (oget ex-navigation "SlidingTabNavigation")))
 (def sliding-tab-navigation-item (partial element (oget ex-navigation "SlidingTabNavigationItem")))
+
 
 ;; Hyperlinks
 (def linking (oget react-native "Linking"))

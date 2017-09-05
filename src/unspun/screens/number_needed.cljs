@@ -1,7 +1,7 @@
 (ns unspun.screens.number-needed
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [n-icon screen-w-h tffsz]]
+            [shared.ui :refer [n-icon screen-w-h tffsz get-dimensions]]
             [unspun.db :refer [app-state dimensions palette-index to-pc number-needed stories story-index nn-text-vector anyway]]
             [unspun.screens.mixins :refer [monitor]]
             [unspun.screens.scenario-title-view :refer [scenario-title]]
@@ -302,7 +302,7 @@
 
 
 (rum/defc page < rum/reactive []
-
+  (println "numbers dim check: " (= (get-dimensions) (rum/react dimensions)))
   (let [scenar ((rum/react stories) (rum/react story-index))
         palette (get-palette (rum/react palette-index))
         br (:baseline-risk scenar)
@@ -332,7 +332,7 @@
         rows (count (dicen nn highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
-    ;(println "nn-rerender")
+    (println "nn-rerender " w h)
     (letfn [(handle-scroll [event]
               (this-as this
                 (.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
@@ -439,6 +439,7 @@
 
 
 #_(rum/defc page < rum/reactive []
+    "Old icon layout algorithm"
     (let [scenar ((rum/react stories) (rum/react story-index))
           br (:baseline-risk scenar)
           rr (:relative-risk scenar)

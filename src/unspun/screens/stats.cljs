@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar list-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
-            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item linking tffsz]]
+            [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item linking tffsz get-dimensions]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector nn-text-vector to-pc clamp parse-sources dimensions caps-tidy story]]
             [unspun.navigation.bottom-nav :refer [story-links]]
             [unspun.screens.mixins :refer [monitor]]
@@ -127,7 +127,8 @@
         outcome-type (:outcome-type scenar)
         br-sources (parse-sources (:sources-baseline-risk scenar))
         rr-sources (parse-sources (:sources-relative-risk scenar))]
-
+    (println "stats")
+    (println "stats dim check: " (= (get-dimensions) (rum/react dimensions)))
     (view {:style {:flex 1}}
           (view {:key   1
                  :style {:flex            0.3
