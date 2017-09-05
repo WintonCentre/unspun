@@ -11,7 +11,7 @@
     "devtools": "react-devtools"
   },
   "dependencies": {
-    "@expo/ex-navigation": "~2.10.0",
+    "@expo/ex-navigation": "~2.11.1",
     "@expo/vector-icons": "~4.0.0",
     "babel-preset-react-native-stage-0": "~1.0.1",
     "expo": "^16.0.0",

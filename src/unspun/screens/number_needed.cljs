@@ -429,7 +429,7 @@
                                         :size  50
                                         :style {:width           50
                                                 :textAlign       "center"
-                                                :opacity 0.7
+                                                :opacity 0.3
                                                 :color           (:text-icons palette)
                                                 :backgroundColor "rgba(0,0,0,0)"
                                                 }}))

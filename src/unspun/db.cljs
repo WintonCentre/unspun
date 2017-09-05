@@ -8,7 +8,7 @@
             [shared.ui :refer [get-dimensions]]
             ))
 
-(def version "v0.0.16")
+(def version "v0.16.1")
 
 (def flash-error-time 5000)                                 ; duration (ms) of flash error messages
 
@@ -85,7 +85,7 @@
              :sources-relative-risk "[Risk per 50g of daily processed meat. IARC Monograph](http://www.thelancet.com/journals/lanonc/article/PIIS1470-2045%2815%2900444-1/abstract)"
              :sources-baseline-risk "[Lifetime risk 7.3% for men, 5.5% for women](http://www.cancerresearchuk.org/health-professional/cancer-statistics/risk/lifetime-risk#heading-One)"
              }
-   :hrt    {:tags                  #{"preventitive" "breast" "cancer" "osteoporosis"}
+   :hrt     {:tags                  #{"preventitive" "breast" "cancer" "osteoporosis"}
              :icon                  "ios-woman"
              :subject               "woman"
              :subjects              "women in their 50s"
@@ -98,8 +98,8 @@
              :outcome-type          "risk"
              :with-label            "Taking HRT"
              :without-label         "No HRT"
-             :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
-             :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :sources-relative-risk nil
+             :sources-baseline-risk nil
              :causative             false
              }
    :wine    {:tags                  #{"alcohol" "breast" "cancer"}
@@ -110,14 +110,13 @@
              :exposure              "drinking half a bottle of wine a day"
              :baseline-risk         0.12
              :relative-risk         1.30
-             :evidence-source       "https://wintoncentre.maths.cam.ac.uk/"
              :outcome-verb          "develop"
              :outcome               "breast cancer"
              :outcome-type          "risk"
              :with-label            "Half a bottle a day"
              :without-label         "Not drinking"
-             :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
-             :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :sources-relative-risk nil
+             :sources-baseline-risk nil
              :causative             false
              }
    :wdoc    {:tags                  #{"gender" "care"}
@@ -128,14 +127,13 @@
              :exposure              "being seen by a female doctor"
              :baseline-risk         0.115
              :relative-risk         0.96
-             :evidence-source       "https://wintoncentre.maths.cam.ac.uk/"
              :outcome-verb          "die"
              :outcome               "within 30 days of admission"
              :outcome-type          "risk"
              :with-label            "Female doctor"
              :without-label         "Male doctor"
-             :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
-             :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :sources-relative-risk nil
+             :sources-baseline-risk nil
              :causative             false
              }
    :statins {:tags                  #{"preventitive" "medication"}
@@ -149,11 +147,10 @@
              :outcome-verb          "have"
              :outcome               "a heart attack or stroke within 10 years"
              :outcome-type          "risk"
-             :sources               "https://wintoncentre.maths.cam.ac.uk/"
              :with-label            "Taking statins"
              :without-label         "No statins"
-             :sources-relative-risk "https://wintoncentre.maths.cam.ac.uk/"
-             :sources-baseline-risk "https://wintoncentre.maths.cam.ac.uk/"
+             :sources-relative-risk nil
+             :sources-baseline-risk nil
              :causative             true
              }})
 

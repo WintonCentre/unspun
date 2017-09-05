@@ -38,23 +38,24 @@ When the figwheel clojure REPL starts, type `(start figwheel)`. This will attemp
 ##### Also connect to Android device
 
 ``` shell
-    exp ios
+    exp start -i
 ```
 
 ##### Also connect to iOS Simulator
 
 ``` shell
-    exp android
+    exp start -a
 ```
 ##### Connecting figwheel in the REPL
 
 When the first simulator or device starts up it will connect to figwheel, and you will see a prompt in the REPL. This indicates that the clojurescript REPL has opened on the device.
 
 ##### Troubleshooting
-Exponent and React-Native create a couple of servers to handle app serving, uploading, and packaging. It's quite easy to get these into a broken state. Easiest to reset all servers with:
-```shell
-   exp stop --all
-```
+The emulators can be fussy about which protocol and host they use to connect to the local exp server. figwheel-bridge.js has some config related to port numbers that is relevant.
+
+Currently:
+* android emulator now needs http://aq-875.gmp26.unspun.exp.direct:80   (host: tunnel protocol:http)
+* IOS needs explanation://localhost:19000 (host: localhost protocol: exp). It is occasionally happy with the android setting.
 
 ### Add new assets or external modules
 1. `require` module:

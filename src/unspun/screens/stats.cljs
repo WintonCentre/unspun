@@ -190,8 +190,8 @@
                     (n-list
                       {:key   "stats-list"
                        :style {:flex         1
-                               :paddingLeft  (+ icon-offset)
-                               :paddingRight (* 4 tffsz)}}
+                               :paddingLeft  (- icon-offset tffsz)
+                               :paddingRight (* 3 tffsz)}}
 
                       (n-list-item
                         {:key (gensym "item")}
