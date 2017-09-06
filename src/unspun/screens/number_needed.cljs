@@ -261,20 +261,22 @@
 (rum/defc nested-n-square** < rum/static
   [scenar palette rr w h n highlight]
   (let [w (min w h)
-        padding 20
+        padding (* 4 tffsz)
         cols (count ((dicen n highlight) 0))
         rows (count (dicen n highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
-
+(prn "nn " w h)
     (view {:style {:flex          1
                    :flexDirection "column"
                    :alignItems    "center"
+                   :justifyContent "flex-start"
                    :opacity       0.8}}
           (view {:style {:flex    0
                          :width   w
                          :height  (+ (* 2 padding) (icon-top (count (dicen n highlight)) a n))
                          :padding padding
+                         :paddingTop (/ padding 2)
                          }}
                 (for [[i row] (zipmap (range) (dicen n highlight))]
                   (view {:key   (str "r" i)
@@ -332,7 +334,7 @@
         rows (count (dicen nn highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
-    (println "nn-rerender " w h)
+
     (letfn [(handle-scroll [event]
               (this-as this
                 (.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
@@ -344,31 +346,67 @@
                      :justifyContent  "flex-start"
                      :backgroundColor (:primary palette)
                      }}
+            ;;
+            ;; Title and text
+            ;;
             (view {:style {:flex            0.3
-                           :justifyContent  "center"
+                           :position        "relative"
+                           :justifyContent  "flex-start"
                            :alignItems      "stretch"
                            :backgroundColor (:dark-primary palette)
                            }}
-
                   (story-links palette)
 
-                  (scroll-view {:style           {:flex 0.6}
-                                :key             1
-                                :backgroundColor (:dark-primary palette)
-                                }
-                               (scenario-title (:title scenar) text-field (:qoe scenar))
-                               (text {:style {:padding    20
-                                              :paddingTop 5
-                                              :fontSize   tffsz}}
-                                     (text-field :light-primary "normal" nn-head)
-                                     (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
-                                     (text-field :light-primary "normal" nn-one-to-group)
-                                     (text-field :light-primary "bold" nn-group)
-                                     (text-field :light-primary "normal" nn-group-to-anyway)
-                                     (text-field :accent "bold" nn-anyway)
-                                     (text-field :light-primary "normal" nn-tail)))
-                  )
+                  (view {:key   1
+                         :style {:position "absolute"
+                                 :backgroundColor "rgba(0,0,0,0)"
+                                 :top      (* 3 tffsz)
+                                 :bottom   0
+                                 :left     0
+                                 :right    0
+                                 :zIndex   1}}
+                        (scroll-view {:style {:flex 0.6}
+                                      :key   1
+                                      ;:backgroundColor (:dark-primary palette)
+                                      }
+                                     (scenario-title (:title scenar) text-field (:qoe scenar))
+                                     (text {:style {:padding    20
+                                                    :paddingTop 5
+                                                    :fontSize   tffsz}}
+                                           (text-field :light-primary "normal" nn-head)
+                                           (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
+                                           (text-field :light-primary "normal" nn-one-to-group)
+                                           (text-field :light-primary "bold" nn-group)
+                                           (text-field :light-primary "normal" nn-group-to-anyway)
+                                           (text-field :accent "bold" nn-anyway)
+                                           (text-field :light-primary "normal" nn-tail))))
+                  (view {:key   2
+                         :style {:position "absolute"
+                                 :top      "90%"
+                                 :bottom   0
+                                 :left     0
+                                 :right    0
+                                 :zIndex   2}}
+                        (view {:style          {:flex 1}
+                               :flexDirection  "column"
+                               :justifyContent "flex-end"
+                               :alignItems     "center"
+                               }
 
+                              (ionicon {:name  "ios-arrow-down"
+                                        :size  50
+                                        :style {:width           50
+                                                :textAlign       "center"
+                                                :opacity         0.5
+                                                :color           (:text-icons palette)
+                                                :backgroundColor "rgba(0,0,0,0)"
+                                                }}))
+                        )
+
+                  )
+            ;;
+            ;; Graphics
+            ;;
             (view {:style {:flex          0.7
                            :flexDirection "column"}}
 
@@ -425,11 +463,11 @@
 
                                }
 
-                              (ionicon {:name  "ios-arrow-down" ;"ios-radio-button-on"
+                              (ionicon {:name  "ios-arrow-down"
                                         :size  50
                                         :style {:width           50
                                                 :textAlign       "center"
-                                                :opacity 0.3
+                                                :opacity         0.3
                                                 :color           (:text-icons palette)
                                                 :backgroundColor "rgba(0,0,0,0)"
                                                 }}))
