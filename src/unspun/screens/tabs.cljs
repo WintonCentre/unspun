@@ -16,7 +16,7 @@
 (rum/defcs page < rum/reactive (add-page-title "Scenario") [state]
   (let [navigator (aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))]
-    (println "tabs dim check: " (= (get-dimensions) (rum/react dimensions)))
+
     (view {:style {:flex 1}}
           (sliding-tab-navigation
             {:flex               0.9
@@ -29,7 +29,7 @@
                                   }
              :position           (if ios "bottom" "top")
              :labelStyle         {:color "white"}
-             :initialTab         "icons"                    ;"bars"
+             :initialTab         "bars"
              }
             (sliding-tab-navigation-item
               {:id    "stats"

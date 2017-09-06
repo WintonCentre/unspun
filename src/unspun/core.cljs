@@ -20,7 +20,7 @@
 (defn resizer
   "Resize handler which responds to screen orientation changes"
   [event]
-  (println "core " (get-dimensions))
+  ;(println "core " (get-dimensions))
   (reset! dimensions (get-dimensions)))
 
 (defc AppRoot < rum/reactive (resize-mixin resizer) [state]

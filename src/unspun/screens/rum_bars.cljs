@@ -2,6 +2,7 @@
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
             [shared.ui :refer [font-scale pixel-ratio get-dimensions tffsz ios? button txt rn-button]]
+            [shared.icons :refer [ionicon]]
             [cljs-exponent.components :refer [element text view image status-bar animated-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index compare-text-vector to-pc clamp two-sf dimensions]]
@@ -15,9 +16,9 @@
 
 ;; vector-icons
 (def vector-icons (js/require "@expo/vector-icons"))
-(def Ionicons (aget vector-icons "Ionicons"))
 
-(defn ionicon [attrs] (.createElement js/React Ionicons attrs))
+
+
 (def ac-unit (ionicon (clj->js {:name  "md-checkmark-circle"
                                 :size  30
                                 :style {:transform [{:rotate "90deg"} {:scale 0.8}]}
@@ -128,7 +129,6 @@
               (rum/local nil :rescaler)
               (pan-responder-mixin ::zoomer (:height (get-dimensions)))
   ([state]
-   (println "bars dim check: " (= (get-dimensions) (rum/react dimensions)))
    (let [scenar ((rum/react stories) (rum/react story-index))
          db (rum/react app-state)                           ;unused?
          br (:baseline-risk scenar)
@@ -152,37 +152,67 @@
                                      :fontWeight weight
                                      }} content))
          ]
-     (println "bars")
      (view
        {:style {:flex 1}}
 
        (view {:style page-style}
-             (view {:key   1
-                    :style {:flex           0.3
-                            :flexDirection "column"
-                            :justifyContent "center"
-                            :alignItems     "stretch"
+             (view {:style {:flex            0.4
+                            :position        "relative"
+                            :justifyContent  "flex-start"
+                            :alignItems      "stretch"
                             :backgroundColor (:dark-primary palette)
                             }}
-
                    (story-links palette)
 
-                   (scroll-view {:style {:backgroundColor (:dark-primary palette)
-                                         :flex            0.6}}
-                                (scenario-title (:title scenar) text-field (:qoe scenar))
-                                (text {:style {:padding    20
-                                               :paddingTop 5
-                                               :fontSize   tffsz}}
-                                      (text-field :light-primary "normal" cmp-head)
-                                      (text-field :text-icons "bold" cmp-brpc)
-                                      (text-field :light-primary "normal" cmp-brpc-to-change)
-                                      (text-field :light-primary "bold" cmp-change)
-                                      (text-field :light-primary "normal" cmp-change-to-erpc)
-                                      (text-field :text-icons "bold" cmp-erpc))
-                                )
+                   (view {:key   1
+                          :style {:position "absolute"
+                                  :backgroundColor "rgba(0,0,0,0)"
+                                  :top      (* 3 tffsz)
+                                  :bottom   0
+                                  :left     0
+                                  :right    0
+                                  :zIndex   1}}
+                         (scroll-view {:style {:backgroundColor (:dark-primary palette)
+                                               :flex            0.6}}
+                                      (scenario-title (:title scenar) text-field (:qoe scenar))
+                                      (text {:style {:padding    20
+                                                     :paddingTop 5
+                                                     :fontSize   tffsz}}
+                                            (text-field :light-primary "normal" cmp-head)
+                                            (text-field :text-icons "bold" cmp-brpc)
+                                            (text-field :light-primary "normal" cmp-brpc-to-change)
+                                            (text-field :light-primary "bold" cmp-change)
+                                            (text-field :light-primary "normal" cmp-change-to-erpc)
+                                            (text-field :text-icons "bold" cmp-erpc))
+                                      )
+                         )
+                   (view {:key   2
+                          :style {:position "absolute"
+                                  :height   (* 3 tffsz)
+                                  :bottom   (* 0.2 tffsz)
+                                  :left     0
+                                  :right    0
+                                  :zIndex   2}}
+                         (view {:style          {:flex 1}
+                                :flexDirection  "column"
+                                :justifyContent "flex-end"
+                                :alignItems     "center"
+                                }
+
+                               (ionicon {:name  "ios-arrow-down"
+                                         :size  50
+                                         :style {:width           50
+                                                 :textAlign       "center"
+                                                 :opacity         0.3
+                                                 :color           (:text-icons palette)
+                                                 :backgroundColor "rgba(0,0,0,0)"
+                                                 }}))
+                         )
+
                    )
+
              (view {:key   2
-                    :style {:flex 0.7}}
+                    :style {:flex 0.6}}
                    ;;;
                    ;; top and bottom buttons
                    ;;;
@@ -291,7 +321,7 @@
                                                     :textAlign "left"}}
                                            (:with-label scenar)))))
 
-                   #_(view {:key   4
+                   (view {:key   4
                           :style {:position "absolute"
                                   :top      0
                                   :bottom   0
@@ -299,14 +329,13 @@
                                   :right    0
                                   :flex     1
                                   :zIndex   1
-                                  :opacity  (if zooming 1 0.5)
+                                  :opacity  (if zooming 1 0.3)
                                   }}
                          (view {:style {:flex           1
                                         :flexDirection  "column"
-                                        :justifyContent "center"
+                                        :justifyContent "flex-start"
                                         :alignItems     "center"}}
-                               (ionicon (clj->js {:name  "ios-resize"
-                                                  :size  80
-                                                  :style {:transform       [{:rotate "-45deg"}]
-                                                          :backgroundColor "rgba(0,0,0,0)"
-                                                          :color           (:accent palette)}}))))))))))
+                               (ionicon (clj->js {:name  "ios-arrow-up"
+                                                  :size  50
+                                                  :style {:backgroundColor "rgba(0,0,0,0)"
+                                                          :color           (:text-icons palette)}}))))))))))

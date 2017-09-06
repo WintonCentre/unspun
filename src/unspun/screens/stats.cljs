@@ -84,7 +84,7 @@
                          :flex 0.8
                          :left         (* 0.5 tffsz)}}
                 (let [small-link-style style]
-                  (txt {:key "first"
+                  #_(txt {:key "first"
                         :style style} "Source")
                   (map (fn [source] (when source
                                       (when-not (empty? (:prefix source))
@@ -127,11 +127,9 @@
         outcome-type (:outcome-type scenar)
         br-sources (parse-sources (:sources-baseline-risk scenar))
         rr-sources (parse-sources (:sources-relative-risk scenar))]
-    (println "stats")
-    (println "stats dim check: " (= (get-dimensions) (rum/react dimensions)))
     (view {:style {:flex 1}}
           (view {:key   1
-                 :style {:flex            0.3
+                 :style {:flex            0.4
                          :flexDirection   "column"
                          :justifyContent  "center"
                          :alignItems      "stretch"
@@ -174,7 +172,7 @@
                              )
                 )
           (view {:key   2
-                 :style {:flex 0.7}}
+                 :style {:flex 0.6}}
                 (container
                   {:key   "stats-container"
                    :style {:flex            1
@@ -198,7 +196,7 @@
                         (view {:flex 1}
                               (txt {:key   1
                                     :style text-style}
-                                   (str "Background " outcome-type ": " (percentage br) " (baseline " outcome-type ": " (sigfigs 2 br) ")\n")
+                                   (str "Background or baseline " outcome-type ": " (percentage br)  "\n")
                                    )
                               (show-sources small-text-style br-sources palette))
                         )

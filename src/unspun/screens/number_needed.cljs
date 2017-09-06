@@ -266,7 +266,7 @@
         rows (count (dicen n highlight))
         a (/ (- w (* 2 padding)) cols)
         ]
-(prn "nn " w h)
+
     (view {:style {:flex          1
                    :flexDirection "column"
                    :alignItems    "center"
@@ -304,7 +304,6 @@
 
 
 (rum/defc page < rum/reactive []
-  (println "numbers dim check: " (= (get-dimensions) (rum/react dimensions)))
   (let [scenar ((rum/react stories) (rum/react story-index))
         palette (get-palette (rum/react palette-index))
         br (:baseline-risk scenar)
@@ -349,7 +348,7 @@
             ;;
             ;; Title and text
             ;;
-            (view {:style {:flex            0.3
+            (view {:style {:flex            0.4
                            :position        "relative"
                            :justifyContent  "flex-start"
                            :alignItems      "stretch"
@@ -382,8 +381,8 @@
                                            (text-field :light-primary "normal" nn-tail))))
                   (view {:key   2
                          :style {:position "absolute"
-                                 :top      "90%"
-                                 :bottom   0
+                                 :height   (* 3 tffsz)
+                                 :bottom   (* 0.2 tffsz)
                                  :left     0
                                  :right    0
                                  :zIndex   2}}
@@ -397,7 +396,7 @@
                                         :size  50
                                         :style {:width           50
                                                 :textAlign       "center"
-                                                :opacity         0.5
+                                                :opacity         0.3
                                                 :color           (:text-icons palette)
                                                 :backgroundColor "rgba(0,0,0,0)"
                                                 }}))
@@ -407,7 +406,7 @@
             ;;
             ;; Graphics
             ;;
-            (view {:style {:flex          0.7
+            (view {:style {:flex          0.6
                            :flexDirection "column"}}
 
                   (view {:key   1

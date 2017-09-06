@@ -187,7 +187,7 @@
         story-count (count stories)
         palette-count (count palettes)
         navigator (aget (:rum/react-component state) "props" "navigator")]
-    (println "new stories")
+
     (container
       {:style {:flex 1}}
       (content
