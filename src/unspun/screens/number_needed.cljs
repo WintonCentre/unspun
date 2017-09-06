@@ -8,6 +8,7 @@
             [unspun.navigation.bottom-nav :refer [story-links]]
             [shared.icons :refer [ionicon]]
             [rum.core :as rum]
+            [clojure.string :refer [trimr]]
             [cljs.pprint :refer [pp]]))
 
 (defn draw-square
@@ -322,11 +323,12 @@
 
         [nn-head nn-one nn-one-to-group nn-group nn-group-to-anyway nn-anyway nn-tail :as texts] (nn-text-vector scenar)
 
-        text-field (fn [palette-key weight content]
+        text-field (fn [palette-key weight content & [background]]
                      (text {:key   (gensym "text-field")
-                            :style {:color      (palette-key palette)
-                                    :fontWeight weight
-                                    }} content))
+                            :style (merge {:color      (palette-key palette)
+                                           :fontWeight weight
+                                           }
+                                          (if background {:backgroundColor background}))} content))
 
         padding 10
         cols (count ((dicen nn highlight) 0))
@@ -373,8 +375,10 @@
                                                     :paddingTop 5
                                                     :fontSize   tffsz}}
                                            (text-field :light-primary "normal" nn-head)
-                                           (text-field (if (> rr 1) :accent :text-icons) "bold" nn-one)
-                                           (text-field :light-primary "normal" nn-one-to-group)
+                                           (text-field (if (> rr 1) :text-icons :dark-primary)
+                                                       "bold" (trimr nn-one)
+                                                       (if (> rr 1) (:accent palette) (:text-icons palette)))
+                                           (text-field :light-primary "normal" (str " " nn-one-to-group))
                                            (text-field :light-primary "bold" nn-group)
                                            (text-field :light-primary "normal" nn-group-to-anyway)
                                            (text-field :accent "bold" nn-anyway)
