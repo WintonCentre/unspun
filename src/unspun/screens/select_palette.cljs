@@ -18,13 +18,13 @@
 (def palette-titles
   (mapv name (keys palettes)))
 
-(rum/defc select-palette-item! < rum/reactive [navigation index]
+(rum/defc select-palette-item! < rum/reactive [navigator-nil index]
   (n-list-item
     {:key      (str "palette" index)
      :selected (= (rum/react palette-index) index)
      :onPress  #(do
                   (reset! palette-index index)
-                  (.pop navigation)
+                  (.pop navigator-nil)
                   )}
     (view {:key   30
            :style {:backgroundColor (:dark-primary (get-palette index))
@@ -53,10 +53,9 @@
 
 (rum/defcs page < rum/reactive
                   (rum/local 0 ::selection) [state]
-  (let [navigation (aget (:rum/react-component state) "props" "navigator")
+  (let [navigation-nil nil                                  ;(aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))
         palette-count (count palettes)]
-    (.log js/console navigation)
     (container
       {:style {:flex 1}}
       (content
@@ -69,6 +68,6 @@
         (apply n-list
                {:key 70
                 :style {:flex 1}}
-               (mapv #(select-palette-item! navigation %) (range palette-count)))
+               (mapv #(select-palette-item! navigator-nil %) (range palette-count)))
 
         ))))

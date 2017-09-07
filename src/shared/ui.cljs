@@ -32,20 +32,19 @@
 (def secure-store (oget expo "SecureStore"))
 
 ;; ex-navigation
-(def ex-navigation (js/require "@expo/ex-navigation"))
-(def create-router (oget ex-navigation "createRouter"))
+;(def ex-navigation (js/require "@expo/ex-navigation"))
+;(def create-router (oget ex-navigation "createRouter"))
 
-(def navigation-provider (partial element (oget ex-navigation "NavigationProvider")))
-(def stack-navigation (partial element (oget ex-navigation "StackNavigation")))
-(def drawer-navigation-layout (partial element (oget ex-navigation "DrawerNavigationLayout")))
-(def drawer-navigation (partial element (oget ex-navigation "DrawerNavigation")))
-(def drawer-navigation-item (partial element (oget ex-navigation "DrawerNavigationItem")))
+;(def navigation-provider (partial element (oget ex-navigation "NavigationProvider")))
+;(def stack-navigation (partial element (oget ex-navigation "StackNavigation")))
+;(def drawer-navigation-layout (partial element (oget ex-navigation "DrawerNavigationLayout")))
+;(def drawer-navigation (partial element (oget ex-navigation "DrawerNavigation")))
+;(def drawer-navigation-item (partial element (oget ex-navigation "DrawerNavigationItem")))
 
-(def tab-navigation (partial element (oget ex-navigation "TabNavigation")))
-(def tab-navigation-item (partial element (oget ex-navigation "TabNavigationItem")))
-(def sliding-tab-navigation (partial element (oget ex-navigation "SlidingTabNavigation")))
-(def sliding-tab-navigation-item (partial element (oget ex-navigation "SlidingTabNavigationItem")))
-
+;(def tab-navigation (partial element (oget ex-navigation "TabNavigation")))
+;(def tab-navigation-item (partial element (oget ex-navigation "TabNavigationItem")))
+;(def sliding-tab-navigation (partial element (oget ex-navigation "SlidingTabNavigation")))
+;(def sliding-tab-navigation-item (partial element (oget ex-navigation "SlidingTabNavigationItem")))
 
 ;; Hyperlinks
 (def linking (oget react-native "Linking"))
@@ -140,7 +139,8 @@
 ;;;
 (defn add-page-title [title]
   {:will-mount (fn [state]
-                 (aset (:rum/react-component state) "props" "route" "config" "navigationBar" "title" title)
+                 ;todo: replace this
+                 ;(aset (:rum/react-component state) "props" "route" "config" "navigationBar" "title" title)
                  state)})
 
 

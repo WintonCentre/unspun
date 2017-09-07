@@ -28,8 +28,8 @@
                      :color        (:text-icons palette)
                      :marginBottom 15}]
     (letfn [(jumpToDrawer [drawerId route]
-              (let [navigation (aget (:rum/react-component state) "props" "navigation")]
-                (.performAction navigation (fn [stateUtils]
+              (let [navigator-nil                          ;(aget (:rum/react-component state) "props" "navigation")]
+                #_(.performAction navigator-nil (fn [stateUtils]
                                              (.jumpToItem ((aget stateUtils "drawer") "top-drawer") drawerId)))
                 ))]
 

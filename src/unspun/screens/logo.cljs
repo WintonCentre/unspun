@@ -47,8 +47,8 @@
   (let [pal-index (rum/react palette-index)
         palette (get-palette pal-index)]
     (letfn [(jumpToDrawer [drawerId route]
-              (let [navigation (aget (:rum/react-component state) "props" "navigation")]
-                (.performAction navigation (fn [stateUtils]
+              (let [navigator-nil (aget (:rum/react-component state) "props" "navigator")]
+                (.performAction navigator-nil (fn [stateUtils]
                                              (.jumpToItem ((aget stateUtils "drawer") "top-drawer") drawerId)))
                 ))]
 

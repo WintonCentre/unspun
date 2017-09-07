@@ -6,9 +6,9 @@
             [cljs-exponent.components :as rn]
             [unspun.db :refer [app-state dimensions]]
             [shared.async-storage :refer [reload-app-state!]]
-            [unspun.navigation.router :refer [Router]]
+    ;[unspun.navigation.router :refer [Router]]
             [unspun.screens.top-drawer :refer [drawer]]
-            [shared.ui :refer [navigation-provider get-dimensions]]
+            [shared.ui :refer [get-dimensions]]
             [unspun.screens.top-drawer :refer [drawer]]
             [unspun.screens.mixins :refer [resize-mixin]]
             ))
@@ -26,8 +26,9 @@
 (defc AppRoot < rum/reactive (resize-mixin resizer) [state]
   "Root of app is a sliding drawer component wrapped in an ex-navigation provider.
   We also ensure that app-state contains the correct screen dimensions at all times"
-  (navigation-provider {:router Router}
-                       (drawer)))
+  #_(navigation-provider {:router Router}
+                       (drawer))
+  )
 
 (defonce root-component-factory (support/make-root-component-factory))
 

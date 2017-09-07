@@ -3,7 +3,10 @@
             [themes.palettes :refer [get-palette]]
             [unspun.db :refer [app-state palette-index stories story-index to-pc clamp dimensions]]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar] :as rn]
-            [shared.ui :refer [sliding-tab-navigation sliding-tab-navigation-item ionicon add-page-title ios? get-dimensions]]
+            [shared.ui :refer [; sliding-tab-navigation
+                               ; sliding-tab-navigation-item
+                               ionicon add-page-title ios? get-dimensions
+                               ]]
             [unspun.navigation.bottom-nav :refer [story-links]]
             [unspun.screens.rum-bars :as bars]
             [unspun.screens.number-needed :as nn]
@@ -14,11 +17,11 @@
 (def ios (ios?))
 
 (rum/defcs page < rum/reactive (add-page-title "Scenario") [state]
-  (let [navigator (aget (:rum/react-component state) "props" "navigator")
+  (let [navigator-nil nil                                   ;(aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))]
 
     (view {:style {:flex 1}}
-          (sliding-tab-navigation
+          #_(sliding-tab-navigation
             {:flex               0.9
              :key                "tabs"
              :id                 "tab-navigation"

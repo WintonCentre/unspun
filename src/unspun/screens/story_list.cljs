@@ -151,7 +151,8 @@
                                                        :alignItems     "center"
                                                        })
                       :onPress #(do (reset! story-index index)
-                                    (.push navigator "tabs"))
+                                    ;(.push navigator-nil "tabs")
+                                    )
                       :button  true
                       }
                      (view {:style {:flex 0.2
@@ -186,7 +187,8 @@
         stories (rum/react stories)
         story-count (count stories)
         palette-count (count palettes)
-        navigator (aget (:rum/react-component state) "props" "navigator")]
+        navigator-nil nil                                       ;(aget (:rum/react-component state) "props" "navigator")
+        ]
 
     (container
       {:style {:flex 1}}
@@ -205,14 +207,9 @@
 
 
         (apply n-list
-               (->> [(map-indexed #(rum/with-key (story-card! navigator palette %2) %1) (range story-count))]
-                    (cons (rum/with-key (add-card! navigator palette) "refresher"))
+               (->> [(map-indexed #(rum/with-key (story-card! navigator-nil palette %2) %1) (range story-count))]
+                    (cons (rum/with-key (add-card! navigator-nil palette) "refresher"))
                     (cons {:key 1 :style {:flex 1}}))
 
 
-               #_(concat [{:key   1
-                           :style {:flex 1}
-                           }]
-                         [(rum/with-key (add-card! navigator palette) "refresher")]
-                         ;[(story-card! navigator palette 0)]
-                         [(map-indexed #(rum/with-key (story-card! navigator palette %2) %1) (range story-count))]))))))
+               )))))
