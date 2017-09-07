@@ -7,7 +7,7 @@
                  [org.clojure/clojurescript "1.9.521"]
                  [org.clojure/core.async "0.3.442"]
                  [rum "0.10.8" :exclusions [cljsjs/react cljsjs/react-dom sablono]]
-                 [cljs-exponent "0.1.6"]
+                 [cljs-exponent "0.1.7"]
                  [react-native-externs "0.0.2-SNAPSHOT"]
                  [org.clojure/tools.namespace "0.2.11"]
                  [core-async-storage "0.3.0" :exclusions [org.clojure/core.async]]]

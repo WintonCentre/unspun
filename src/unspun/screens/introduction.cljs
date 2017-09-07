@@ -2,7 +2,7 @@
   (:require [cljs-exponent.components :refer [element text view image touchable-highlight status-bar scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [n-icon tffsz]]
-            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index ]]
+            [unspun.db :refer [app-state palette-index to-pc number-needed stories story-index]]
             [rum.core :as rum]))
 
 (def shadow-size 1)
@@ -17,7 +17,7 @@
                     :padding         20
                     :backgroundColor (:primary palette)}
         header-style {:fontSize     (* 1.2 tffsz)
-                      :fontWeight "bold"
+                      :fontWeight   "bold"
                       :color        (:text-icons palette)
                       :marginBottom 20}
         text-style {:fontSize     tffsz
@@ -28,9 +28,11 @@
                      :color        (:text-icons palette)
                      :marginBottom 15}]
     (letfn [(jumpToDrawer [drawerId route]
-              (let [navigator-nil                          ;(aget (:rum/react-component state) "props" "navigation")]
-                #_(.performAction navigator-nil (fn [stateUtils]
-                                             (.jumpToItem ((aget stateUtils "drawer") "top-drawer") drawerId)))
+              (let [navigation-nil nil
+                    ;(aget (:rum/react-component state) "props" "navigation")
+                    ]
+                (.performAction navigation-nil (fn [stateUtils]
+                                                 (.jumpToItem ((aget stateUtils "drawer") "top-drawer") drawerId)))
                 ))]
 
       (view {:style {:flex 1}}

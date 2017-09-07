@@ -68,6 +68,6 @@
         (apply n-list
                {:key 70
                 :style {:flex 1}}
-               (mapv #(select-palette-item! navigator-nil %) (range palette-count)))
+               (mapv #(select-palette-item! navigation-nil %) (range palette-count)))
 
         ))))

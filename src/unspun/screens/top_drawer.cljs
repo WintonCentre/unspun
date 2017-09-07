@@ -5,9 +5,6 @@
             [cljs-exponent.components :refer [element text view image touchable-highlight style-sheet] :as rn]
             [unspun.db :refer [app-state brand-title palette-index]]
             [themes.palettes :refer [palettes get-palette header-background header-foreground]]
-            #_[shared.ui :refer [ex-navigation create-router navigation-provider
-                               stack-navigation drawer-navigation-layout drawer-navigation drawer-navigation-item
-                               ionicon]]
             [shared.ui :refer [ionicon]]
             #_[unspun.navigation.router :refer [Router]]
     ;[unspun.screens.svg-test-page :refer [test-page]]

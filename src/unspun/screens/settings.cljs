@@ -106,7 +106,8 @@
                     (settings-list-item
                       {:key     4
                        :icon    (palette-icon palette)
-                       :onPress #(.push nil #_(aget (:rum/react-component state) "props" "navigator") "select-palette")
+                       ; todo: add action
+                       ;:onPress #_(.push nil #_(aget (:rum/react-component state) "props" "navigator") "select-palette")
                        :title   "Choose a colour scheme" :hasNavArrow true})
 
                     (settings-list-header
@@ -118,7 +119,8 @@
                     (settings-list-item
                       {:key     6
                        :icon    (download-icon palette)
-                       :onPress #(.push nil #_(aget (:rum/react-component state) "props" "navigator") "edit-url")
+                       ; todo: add action
+                       ;:onPress #_(.push nil #_(aget (:rum/react-component state) "props" "navigator") "edit-url")
                        :title   "Set the URL for scenario updates" :hasNavArrow true}
                       )
                     ))
