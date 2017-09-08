@@ -40,7 +40,7 @@
                      :fontSize        16
                      :flex            1}}
             "To use your own source for scenarios, download and edit the CSV file below. If you publish your version as CSV somewhere and provide its address in the box below, the app will use it on refresh.")
-      (card {:key   2
+      (view {:key   2
              :style {:backgroundColor (:dark-primary palette)
                      :padding         0
                      :margin          0
@@ -62,8 +62,8 @@
                                  }}
                        (text-input {:style           {:flex            1
                                                       :height          70
-                                                      :borderColor     (:accent palette)
-                                                      :borderWidth     1
+                                                      ;:borderColor     (:accent palette)
+                                                      ;:borderWidth     1
                                                       :backgroundColor "#fff"
                                                       :padding         20
                                                       :paddingTop      10
@@ -81,7 +81,7 @@
                         :key    3
                         :style
                                 {:backgroundColor (:dark-primary palette)
-                                 :margin          10
+                                 :margin          00
                                  :flex            1
                                  :flexDirection   "row"
                                  :justifyContent  "flex-end"
@@ -149,6 +149,8 @@
       (container
         (card {:key   2
                :style {:backgroundColor (:primary palette)
+                       :borderWidth     0
+                       :borderColor     "rgba(0,0,0,0)"
                        :padding         0
                        :margin          0}
                }
@@ -167,8 +169,6 @@
                                    }}
                          (text-input {:style           {:flex            1
                                                         :height          60
-                                                        ;:borderColor     'gray'
-                                                        ;:borderWidth     1
                                                         :backgroundColor "#fff"
                                                         :padding         0
                                                         :margin          0

@@ -123,6 +123,6 @@
                        :title   "Set the URL for scenario updates" :hasNavArrow true}
                       )
                     ))
-            (view {:style {:flex 1}}
+            #_(view {:style {:flex 1}}
                   )
             ))))
