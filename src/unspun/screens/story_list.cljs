@@ -1,5 +1,6 @@
 (ns unspun.screens.story-list
   (:require [rum.core :as rum]
+            [goog.object :as gobj]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar animated-view refresh-control touchable-highlight] :as rn]
             [shared.ui :refer [ionicon native-base my-theme container content n-icon txt n-list n-list-item radio card card-item button add-page-title tffsz get-dimensions]]
             [unspun.db :refer [app-state dimensions refreshing palette-index stories story-index story caps-tidy scenario-url flash-error]]
@@ -8,6 +9,8 @@
             [shared.non-phantom :refer [slurp-csv]]
             [shared.client :refer [store-csv]]
             ))
+
+(def oget gobj/get)
 
 (def palette-titles
   (mapv name (keys palettes)))
@@ -19,13 +22,13 @@
 
 (defn refresh-icon [palette]
   (n-icon {:name  "ios-cloud-download"
-           :style {:color       "white"
-                   :width       tffsz
-                   :fontSize    tffsz
+           :style {:color     "white"
+                   :width     tffsz
+                   :fontSize  tffsz
                    ;:borderColor "black"
                    ;:borderWidth 1
-                   :transform   [{:scale 2                  ;(/ 16 tffsz)
-                                  }]
+                   :transform [{:scale 2                    ;(/ 16 tffsz)
+                                }]
                    }}))
 
 ;; todo: refactor
@@ -33,18 +36,18 @@
   [w]
   (/ (* w tffsz) 16))
 
-(def icon-offset (iscale 70)    )
+(def icon-offset (iscale 70))
 
 (defn story-icon [palette name]
   (n-icon {:name  name
            :key   (gensym "story")
-           :style {:flex        0
-                   :width       30
-                   :marginLeft  0
+           :style {:flex       0
+                   :width      30
+                   :marginLeft 0
                    ;:borderWidth 1
                    ;:borderColor "red"
-                   :color       (:dark-primary palette)
-                   :transform   [{:scale (iscale 1.5)}]}
+                   :color      (:dark-primary palette)
+                   :transform  [{:scale (iscale 1.5)}]}
            }))
 
 (defn edit-icon [palette]
@@ -154,12 +157,12 @@
                                     (.push navigator "tabs"))
                       :button  true
                       }
-                     (view {:style {:flex 0.2
-                                    :marginLeft     tffsz}}
+                     (view {:style {:flex       0.2
+                                    :marginLeft tffsz}}
                            (story-icon palette (:icon scenar)))
-                     (view {:style {:flex        1
-                                    :width       (- w icon-offset 60)
-                                    :padding     0
+                     (view {:style {:flex    1
+                                    :width   (- w icon-offset 60)
+                                    :padding 0
                                     ;:borderWidth 1
                                     ;:borderColor "red"
                                     }}
@@ -187,6 +190,8 @@
         story-count (count stories)
         palette-count (count palettes)
         navigator (aget (:rum/react-component state) "props" "navigator")]
+    #_(.log js/console "Scenarios state"
+          (oget (:rum/react-component state) "props" "navigator"))
 
     (container
       {:style {:flex 1}}

@@ -51,6 +51,7 @@
   (let [palette (get-palette (rum/react palette-index))
         notifications-on (rum/react notifications)
         cache-on (rum/react use-cache)]
+    ;(.log js/console (:rum/react-component state))
     (this-as this-page
       (view {:style {:backgroundColor (:primary palette)
                      :flex            1}}

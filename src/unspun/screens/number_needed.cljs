@@ -338,7 +338,7 @@
 
     (letfn [(handle-scroll [event]
               (this-as this
-                (.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
+                ;(.log js/console (-> event (.-nativeEvent) (.-contentOffset) (.-y)))
                 ))]
 
 

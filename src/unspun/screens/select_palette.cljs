@@ -56,7 +56,7 @@
   (let [navigation (aget (:rum/react-component state) "props" "navigator")
         palette (get-palette (rum/react palette-index))
         palette-count (count palettes)]
-    (.log js/console navigation)
+    ;(.log js/console navigation)
     (container
       {:style {:flex 1}}
       (content
