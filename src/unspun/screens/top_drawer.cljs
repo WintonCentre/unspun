@@ -20,6 +20,7 @@
                                                               ;:height     64
                                                               :width      180
                                                               ;:backgroundColor "red"
+                                                              :opacity    0
                                                               :paddingTop 64
                                                               }
 
@@ -136,14 +137,14 @@
            :initialRoute       (.getRoute Router "settings")}))
 
       #_(drawer-navigation-item
-        {:id            "share"
-         :selectedStyle (aget st "selectedItemStyle")
-         :renderIcon    #(menu-icon "ios-share-outline" palette %)
-         :renderTitle   (fn [isSelected] (title palette "Share" isSelected))}
-        (stack-navigation
-          {:id                 "share-stack"
-           :navigatorUID       "share"
-           :defaultRouteConfig (defaultRouteConfig "Share")
-           :initialRoute       (.getRoute Router "not-yet")}))
+          {:id            "share"
+           :selectedStyle (aget st "selectedItemStyle")
+           :renderIcon    #(menu-icon "ios-share-outline" palette %)
+           :renderTitle   (fn [isSelected] (title palette "Share" isSelected))}
+          (stack-navigation
+            {:id                 "share-stack"
+             :navigatorUID       "share"
+             :defaultRouteConfig (defaultRouteConfig "Share")
+             :initialRoute       (.getRoute Router "not-yet")}))
 
       )))

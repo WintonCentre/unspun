@@ -1,6 +1,7 @@
 (ns shared.ui
   (:require [goog.object :as gobj]
             [cljs-exponent.core :refer [react-native expo]]
+    ;[react-native-deprecated-components]
             [cljs-exponent.components :refer [element text text-input view image touchable-highlight status-bar refresh-control] :as rn]))
 
 (def oget gobj/get)
@@ -45,6 +46,10 @@
 (def tab-navigation-item (partial element (oget ex-navigation "TabNavigationItem")))
 (def sliding-tab-navigation (partial element (oget ex-navigation "SlidingTabNavigation")))
 (def sliding-tab-navigation-item (partial element (oget ex-navigation "SlidingTabNavigationItem")))
+
+;; moving to expo sdkv18
+(def rn-deprecated (js/require "react-native-deprecated-custom-components"))
+(def navigator (partial element (oget rn-deprecated "Navigator")))
 
 
 ;; Hyperlinks

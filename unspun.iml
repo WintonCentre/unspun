@@ -21,7 +21,7 @@
     <orderEntry type="library" name="Leiningen: args4j:2.33" level="project" />
     <orderEntry type="library" name="Leiningen: clj-stacktrace:0.2.8" level="project" />
     <orderEntry type="library" name="Leiningen: clj-time:0.11.0" level="project" />
-    <orderEntry type="library" name="Leiningen: cljs-exponent:0.1.6" level="project" />
+    <orderEntry type="library" name="Leiningen: cljs-exponent:0.1.7" level="project" />
     <orderEntry type="library" name="Leiningen: clojure-complete:0.2.4" level="project" />
     <orderEntry type="library" name="Leiningen: com.cemerick/piggieback:0.2.1" level="project" />
     <orderEntry type="library" name="Leiningen: com.google.code.findbugs/jsr305:3.0.1" level="project" />
