@@ -3,7 +3,7 @@
     "name": "unspun",
     "description": "relative risks unspun",
     "slug": "unspun",
-    "sdkVersion": "19.0.0",
+    "sdkVersion": "20.0.0",
     "version": "1.0.0",
     "orientation": "default",
     "primaryColor": "#cccccc",

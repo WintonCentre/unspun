@@ -8,7 +8,7 @@
             [shared.ui :refer [get-dimensions]]
             ))
 
-(def version "v0.19.0")
+(def version "v0.20.0")
 
 (def flash-error-time 5000)                                 ; duration (ms) of flash error messages
 
