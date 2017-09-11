@@ -314,6 +314,7 @@
         highlight (into #{} (map inc (ffloyd-sample (- nn 2)
                                                     (max 0 ((if (> rr 1) identity dec) (anyway rr br))))))
         {w :width h :height} (rum/react dimensions)
+        portrait (> h w)
         h (- h 168)                                         ; adjustment for existing header and footer
         isz 16
         row-n (js/Math.floor (/ w isz))
@@ -343,74 +344,75 @@
 
 
       (view {:style {:flex            1
-                     :flexDirection   "column"
+                     :flexDirection   (if portrait "column" "row")
                      :justifyContent  "flex-start"
                      :backgroundColor (:primary palette)
                      }}
             ;;
             ;; Title and text
             ;;
-            (view {:style {:flex            0.4
-                           :position        "relative"
-                           :justifyContent  "flex-start"
-                           :alignItems      "stretch"
-                           :backgroundColor (:dark-primary palette)
-                           }}
-                  (story-links palette)
+            (view {:style {:flex (if portrait 0.4 0.5)}}
+                  (view {:style {:flex            1
+                                 :position        "relative"
+                                 :justifyContent  "flex-start"
+                                 :alignItems      "stretch"
+                                 :backgroundColor (:dark-primary palette)
+                                 }}
+                        (story-links palette)
 
-                  (view {:key   1
-                         :style {:position "absolute"
-                                 :backgroundColor "rgba(0,0,0,0)"
-                                 :top      (* 3 tffsz)
-                                 :bottom   0
-                                 :left     0
-                                 :right    0
-                                 :zIndex   1}}
-                        (scroll-view {:style {:flex 0.6}
-                                      :key   1
-                                      ;:backgroundColor (:dark-primary palette)
-                                      }
-                                     (scenario-title (:title scenar) text-field (:qoe scenar))
-                                     (text {:style {:padding    20
-                                                    :paddingTop 5
-                                                    :fontSize   tffsz}}
-                                           (text-field :light-primary "normal" nn-head)
-                                           (text-field (if (> rr 1) :text-icons :dark-primary)
-                                                       "bold" (trimr nn-one)
-                                                       (if (> rr 1) (:accent palette) (:text-icons palette)))
-                                           (text-field :light-primary "normal" (str " " nn-one-to-group))
-                                           (text-field :light-primary "bold" nn-group)
-                                           (text-field :light-primary "normal" nn-group-to-anyway)
-                                           (text-field :accent "bold" nn-anyway)
-                                           (text-field :light-primary "normal" nn-tail))))
-                  (view {:key   2
-                         :style {:position "absolute"
-                                 :height   (* 3 tffsz)
-                                 :bottom   (* 0.2 tffsz)
-                                 :left     0
-                                 :right    0
-                                 :zIndex   2}}
-                        (view {:style          {:flex 1}
-                               :flexDirection  "column"
-                               :justifyContent "flex-end"
-                               :alignItems     "center"
-                               }
+                        (view {:key   1
+                               :style {:position        "absolute"
+                                       :backgroundColor "rgba(0,0,0,0)"
+                                       :top             (* 3 tffsz)
+                                       :bottom          0
+                                       :left            0
+                                       :right           0
+                                       :zIndex          1}}
+                              (scroll-view {:style {:flex 0.6}
+                                            :key   1
+                                            ;:backgroundColor (:dark-primary palette)
+                                            }
+                                           (scenario-title (:title scenar) text-field (:qoe scenar))
+                                           (text {:style {:padding    20
+                                                          :paddingTop 5
+                                                          :fontSize   tffsz}}
+                                                 (text-field :light-primary "normal" nn-head)
+                                                 (text-field (if (> rr 1) :text-icons :dark-primary)
+                                                             "bold" (trimr nn-one)
+                                                             (if (> rr 1) (:accent palette) (:text-icons palette)))
+                                                 (text-field :light-primary "normal" (str " " nn-one-to-group))
+                                                 (text-field :light-primary "bold" nn-group)
+                                                 (text-field :light-primary "normal" nn-group-to-anyway)
+                                                 (text-field :accent "bold" nn-anyway)
+                                                 (text-field :light-primary "normal" nn-tail))))
+                        (view {:key   2
+                               :style {:position "absolute"
+                                       :height   (* 3 tffsz)
+                                       :bottom   (* 0.2 tffsz)
+                                       :left     0
+                                       :right    0
+                                       :zIndex   2}}
+                              (view {:style          {:flex 1}
+                                     :flexDirection  "column"
+                                     :justifyContent "flex-end"
+                                     :alignItems     "center"
+                                     }
 
-                              (ionicon {:name  "ios-arrow-down"
-                                        :size  50
-                                        :style {:width           50
-                                                :textAlign       "center"
-                                                :opacity         0.3
-                                                :color           (:text-icons palette)
-                                                :backgroundColor "rgba(0,0,0,0)"
-                                                }}))
-                        )
+                                    (ionicon {:name  "ios-arrow-down"
+                                              :size  50
+                                              :style {:width           50
+                                                      :textAlign       "center"
+                                                      :opacity         0.3
+                                                      :color           (:text-icons palette)
+                                                      :backgroundColor "rgba(0,0,0,0)"
+                                                      }}))
+                              )
 
-                  )
+                        ))
             ;;
             ;; Graphics
             ;;
-            (view {:style {:flex          0.6
+            (view {:style {:flex          (if portrait 0.6 0.5)
                            :flexDirection "column"}}
 
                   (view {:key   1
@@ -428,7 +430,7 @@
                                                             :flexDirection "column"
                                                             :opacity       1}}
 
-                                     (nested-n-square** scenar palette rr w h nn highlight)))
+                                     (nested-n-square** scenar palette rr (if portrait w (* 2 w)) (if portrait h (+ h 168)) nn highlight)))
 
                   (view {:key   2
                          :style {:position "absolute"
