@@ -139,6 +139,8 @@
          palette (get-palette (rum/react palette-index))
          page-style {:flex            1
                      :backgroundColor (:primary palette)}
+         {w :width h :height} (rum/react dimensions)
+         portrait (> h w)
 
          ;scale 1.9
          ub (/ 100 (rum/react (:scale state)))
@@ -155,8 +157,8 @@
      (view
        {:style {:flex 1}}
 
-       (view {:style page-style}
-             (view {:style {:flex            0.4
+       (view {:style (merge page-style {:flexDirection (if portrait "column" "row")})}
+             (view {:style {:flex            (if portrait 0.4 0.5)
                             :position        "relative"
                             :justifyContent  "flex-start"
                             :alignItems      "stretch"
@@ -212,7 +214,7 @@
                    )
 
              (view {:key   2
-                    :style {:flex 0.6}}
+                    :style {:flex (if portrait 0.6 0.5)}}
                    ;;;
                    ;; top and bottom buttons
                    ;;;
