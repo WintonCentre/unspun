@@ -140,7 +140,7 @@
          page-style {:flex            1
                      :backgroundColor (:primary palette)}
          {w :width h :height} (rum/react dimensions)
-         portrait (> h w)
+         portrait #(> h w)
 
          ;scale 1.9
          ub (/ 100 (rum/react (:scale state)))
@@ -157,10 +157,10 @@
      (println "w h " w h)
      (view {:style (merge page-style {:flex          1
                                       :justifyContent "flex-start"
-                                      :flexDirection (if portrait "column" "row")})}
+                                      :flexDirection (if (portrait) "column" "row")})}
 
-           (view {:key 1
-                  :style {:flex            (if portrait 0.4 0.5)
+           (view {:key   1
+                  :style {:flex            (if (> h w) 0.4 0.5)
                           :position        "relative"
                           :justifyContent  "flex-start"
                           :alignItems      "stretch"
@@ -216,7 +216,7 @@
                  )
 
            (view {:key   2
-                  :style {:flex (if portrait 0.6 0.5)}}
+                  :style {:flex (if (portrait) 0.6 0.5)}}
                  ;;;
                  ;; top and bottom buttons
                  ;;;

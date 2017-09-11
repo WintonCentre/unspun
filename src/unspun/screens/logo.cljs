@@ -65,31 +65,35 @@
                            :flexDirection (if portrait "column" "row")
                            :justifyContent (if portrait "space-around" "space-around")}}
 
-                  (view {:style {:flex           (if portrait 10.5)
-                                 :justifyContent (if portrait "flex-start" "space-around")}}
-                        (text {:style (brand-style)}
-                              (if (winton-brand? (rum/react scenario-url))
-                                (rum/react brand-title)
-                                "Customised"))
+                  (view {:style {:flex           (if portrait 0.7 0.5)
+                                 :justifyContent (if portrait "space-around" "space-around")}}
 
-                        (when (winton-brand? (rum/react scenario-url))
-                          (view {}
-                                (text {:style (brand-style)}
-                                      (rum/react app-banner))
+                        (view {:style {:flex 1
+                                       :justifyContent "space-around"}}
+                              (text {:style (brand-style)}
+                                    (if (winton-brand? (rum/react scenario-url))
+                                      (rum/react brand-title)
+                                      "Customised"))
 
-                                (text {:style (version-style)}
-                                      version)))
+                              (when (winton-brand? (rum/react scenario-url))
+                                (view {}
+                                      (text {:style (brand-style)}
+                                            (rum/react app-banner))
 
-                        (when (winton-brand? (rum/react scenario-url))
-                          (view {:style {:flexDirection  "column"
-                                         :justifyContent "flex-start"
-                                         :alignItems     "center"
-                                         }}
-                                (image {:source     (if (= (:dark-on-light palettes) palette) light-brand brand)
-                                        :resizeMode "contain"
-                                        :style      {:width     250
-                                                     :height    250
-                                                     :transform [{:scale (/ tffsz 16)}]}}))))
+                                      (text {:style (version-style)}
+                                            version)))
+
+                              (when (winton-brand? (rum/react scenario-url))
+                                (view {:style {:flexDirection  "column"
+                                               :justifyContent "flex-start"
+                                               :alignItems     "center"
+                                               }}
+                                      (image {:source     (if (= (:dark-on-light palettes) palette) light-brand brand)
+                                              :resizeMode "contain"
+                                              :style      {:width     250
+                                                           :height    250
+                                                           :transform [{:scale (min 1 (/ tffsz 16))
+                                                                        }]}})))))
                   (view {:style {:flex           (if portrait 0.3 0.5)
                                  :paddingBottom  tffsz
                                  :justifyContent (if portrait "flex-end" "space-around")}}
