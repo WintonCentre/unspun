@@ -73,7 +73,7 @@
               (formatter value))))
 
 #_(defn percentage [value]
-  (str (.toPrecision (js/Number. (* 100 value)) 2) "%"))
+    (str (.toPrecision (js/Number. (* 100 value)) 2) "%"))
 
 (defn percentage [value]
   (str (two-sf (* 100 value)) "%"))
@@ -154,190 +154,192 @@
                                      :fontWeight weight
                                      }} content))
          ]
-     (view
-       {:style {:flex 1}}
+     (println "w h " w h)
+     (view {:style (merge page-style {:flex          1
+                                      :justifyContent "flex-start"
+                                      :flexDirection (if portrait "column" "row")})}
 
-       (view {:style (merge page-style {:flexDirection (if portrait "column" "row")})}
-             (view {:style {:flex            (if portrait 0.4 0.5)
-                            :position        "relative"
-                            :justifyContent  "flex-start"
-                            :alignItems      "stretch"
-                            :backgroundColor (:dark-primary palette)
-                            }}
-                   (story-links palette)
+           (view {:key 1
+                  :style {:flex            (if portrait 0.4 0.5)
+                          :position        "relative"
+                          :justifyContent  "flex-start"
+                          :alignItems      "stretch"
+                          :backgroundColor (:dark-primary palette)
+                          }}
+                 (story-links palette)
 
-                   (view {:key   1
-                          :style {:position "absolute"
-                                  :backgroundColor "rgba(0,0,0,0)"
-                                  :top      (* 3 tffsz)
-                                  :bottom   0
-                                  :left     0
-                                  :right    0
-                                  :zIndex   1}}
-                         (scroll-view {:style {:backgroundColor (:dark-primary palette)
-                                               :flex            0.6}}
-                                      (scenario-title (:title scenar) text-field (:qoe scenar))
-                                      (text {:style {:padding    20
-                                                     :paddingTop 5
-                                                     :fontSize   tffsz}}
-                                            (text-field :light-primary "normal" cmp-head)
-                                            (text-field :text-icons "bold" cmp-brpc)
-                                            (text-field :light-primary "normal" cmp-brpc-to-change)
-                                            (text-field :light-primary "bold" cmp-change)
-                                            (text-field :light-primary "normal" cmp-change-to-erpc)
-                                            (text-field :text-icons "bold" cmp-erpc))
-                                      )
-                         )
-                   (view {:key   2
-                          :style {:position "absolute"
-                                  :height   (* 3 tffsz)
-                                  :bottom   (* 0.2 tffsz)
-                                  :left     0
-                                  :right    0
-                                  :zIndex   2}}
-                         (view {:style          {:flex 1}
-                                :flexDirection  "column"
-                                :justifyContent "flex-end"
-                                :alignItems     "center"
+                 (view {:key   1
+                        :style {:position        "absolute"
+                                :backgroundColor "rgba(0,0,0,0)"
+                                :top             (* 3 tffsz)
+                                :bottom          0
+                                :left            0
+                                :right           0
+                                :zIndex          1}}
+                       (scroll-view {:style {:backgroundColor (:dark-primary palette)
+                                             :flex            1}}
+                                    (scenario-title (:title scenar) text-field (:qoe scenar))
+                                    (text {:style {:padding    20
+                                                   :paddingTop 5
+                                                   :fontSize   tffsz}}
+                                          (text-field :light-primary "normal" cmp-head)
+                                          (text-field :text-icons "bold" cmp-brpc)
+                                          (text-field :light-primary "normal" cmp-brpc-to-change)
+                                          (text-field :light-primary "bold" cmp-change)
+                                          (text-field :light-primary "normal" cmp-change-to-erpc)
+                                          (text-field :text-icons "bold" cmp-erpc))
+                                    )
+                       )
+                 (view {:key   2
+                        :style {:position "absolute"
+                                :height   (* 3 tffsz)
+                                :bottom   (* 0.2 tffsz)
+                                :left     0
+                                :right    0
+                                :zIndex   2}}
+                       (view {:style          {:flex 1}
+                              :flexDirection  "column"
+                              :justifyContent "flex-end"
+                              :alignItems     "center"
+                              }
+
+                             (ionicon {:name  "ios-arrow-down"
+                                       :size  50
+                                       :style {:width           50
+                                               :textAlign       "center"
+                                               :opacity         0.3
+                                               :color           (:text-icons palette)
+                                               :backgroundColor "rgba(0,0,0,0)"
+                                               }}))
+                       )
+
+                 )
+
+           (view {:key   2
+                  :style {:flex (if portrait 0.6 0.5)}}
+                 ;;;
+                 ;; top and bottom buttons
+                 ;;;
+                 (view (merge {:key   1
+                               :style {:position       "absolute"
+                                       :top            0
+                                       :bottom         0
+                                       :left           0
+                                       :right          0
+                                       :zIndex         2
+                                       :flex           1
+                                       :alignItems     "center"
+                                       :justifyContent "space-between"}}
+                              (js->clj (.-panHandlers (::zoomer state)))))
+                 ;;;
+                 ;; ticks
+                 ;;;
+                 (view {:key   2
+                        :style {:position       "absolute"
+                                :top            0
+                                :bottom         0
+                                :left           0
+                                :right          0
+                                :flex           0.9
+                                :alignItems     "stretch"
+                                :justifyContent "space-between"
+                                :zIndex         1
                                 }
+                        }
+                       (view {:key   2
+                              :style {:flex 1}}
+                             (for [[y1 y0] (partition 2 1 (reverse (map (i->o axis-scale) ticks)))]
+                               (view {:key   (rand-int 100000)
+                                      :style {:flex          (- y1 y0)
+                                              :flexDirection "row"
+                                              :alignItems    "flex-start"
+                                              }}
+                                     (text {:key   1
+                                            :style {:flex            0.1
+                                                    :color           (:light-primary palette)
+                                                    :backgroundColor "rgba(0,0,0,0)"
+                                                    :fontSize        (/ tffsz 1.4)
+                                                    :textAlign       "center"}}
+                                           (str (cl-format nil (tick-format-specifier axis-scale)
+                                                           (let [y ((o->i axis-scale) y1)]
+                                                             (if (> y 1) (Math.round y) y))
+                                                           ) "%"))
+                                     (view {:key   1.5
+                                            :style {:flex           0.8
+                                                    :height         1
+                                                    :alignItems     "flex-start"
+                                                    :borderTopColor (:light-primary palette)
+                                                    :borderTopWidth 1}})
+                                     (text {:key   2
+                                            :style {:flex            0.1
+                                                    :color           (:light-primary palette)
+                                                    :backgroundColor "rgba(0,0,0,0)"
+                                                    :fontSize        (/ tffsz 1.4)
+                                                    :textAlign       "center"}}
+                                           (str (cl-format nil (tick-format-specifier axis-scale)
+                                                           (let [y ((o->i axis-scale) y1)]
+                                                             (if (> y 1) (Math.round y) y))) "%"))))))
+                 ;;;
+                 ;; bars
+                 ;;;
+                 (view {:key   3
+                        :style {:position "absolute"
+                                :top      0
+                                :bottom   0
+                                :left     0
+                                :right    0
+                                :flex     1
+                                :zIndex   0
+                                }}
+                       (view {:key   2
+                              :style {:flex              1
+                                      :flexDirection     "row"
+                                      :borderBottomWidth 1
+                                      :borderTopWidth    1
+                                      :borderBottomColor (:light-primary palette)
+                                      :borderTopColor    (:light-primary palette)
+                                      }
+                              }
+                             (view {:key   1
+                                    :style {:flex           0.3
+                                            :justifyContent "center"}}
+                                   (text {:style {:color        (:text-icons palette)
+                                                  :fontSize     (/ tffsz 1)
+                                                  :textAlign    "right"
+                                                  :paddingRight 10}}
+                                         (:without-label scenar)))
+                             (view {:key   2
+                                    :style {:flex 0.2}}
+                                   (labelled-vertical-bar palette br (rum/react (:scale state))))
+                             (view {:key   3
+                                    :style {:flex 0.1}})
+                             (view {:key   4
+                                    :style {:flex 0.2}}
+                                   (labelled-vertical-bar palette er (rum/react (:scale state))))
+                             (view {:key   5
+                                    :style {:flex           0.3
+                                            :justifyContent "center"}}
+                                   (text {:style {:color     (:text-icons palette)
+                                                  :fontSize  (/ tffsz 1)
+                                                  :padding   10
+                                                  :textAlign "left"}}
+                                         (:with-label scenar)))))
 
-                               (ionicon {:name  "ios-arrow-down"
-                                         :size  50
-                                         :style {:width           50
-                                                 :textAlign       "center"
-                                                 :opacity         0.3
-                                                 :color           (:text-icons palette)
-                                                 :backgroundColor "rgba(0,0,0,0)"
-                                                 }}))
-                         )
-
-                   )
-
-             (view {:key   2
-                    :style {:flex (if portrait 0.6 0.5)}}
-                   ;;;
-                   ;; top and bottom buttons
-                   ;;;
-                   (view (merge {:key   1
-                                 :style {:position       "absolute"
-                                         :top            0
-                                         :bottom         0
-                                         :left           0
-                                         :right          0
-                                         :zIndex         2
-                                         :flex           1
-                                         :alignItems     "center"
-                                         :justifyContent "space-between"}}
-                                (js->clj (.-panHandlers (::zoomer state)))))
-                   ;;;
-                   ;; ticks
-                   ;;;
-                   (view {:key   2
-                          :style {:position       "absolute"
-                                  :top            0
-                                  :bottom         0
-                                  :left           0
-                                  :right          0
-                                  :flex           0.9
-                                  :alignItems     "stretch"
-                                  :justifyContent "space-between"
-                                  :zIndex         1
-                                  }
-                          }
-                         (view {:key   2
-                                :style {:flex 1}}
-                               (for [[y1 y0] (partition 2 1 (reverse (map (i->o axis-scale) ticks)))]
-                                 (view {:key   (rand-int 100000)
-                                        :style {:flex          (- y1 y0)
-                                                :flexDirection "row"
-                                                :alignItems    "flex-start"
-                                                }}
-                                       (text {:key   1
-                                              :style {:flex            0.1
-                                                      :color           (:light-primary palette)
-                                                      :backgroundColor "rgba(0,0,0,0)"
-                                                      :fontSize        (/ tffsz 1.4)
-                                                      :textAlign       "center"}}
-                                             (str (cl-format nil (tick-format-specifier axis-scale)
-                                                             (let [y ((o->i axis-scale) y1)]
-                                                               (if (> y 1) (Math.round y) y))
-                                                             ) "%"))
-                                       (view {:key   1.5
-                                              :style {:flex           0.8
-                                                      :height         1
-                                                      :alignItems     "flex-start"
-                                                      :borderTopColor (:light-primary palette)
-                                                      :borderTopWidth 1}})
-                                       (text {:key   2
-                                              :style {:flex            0.1
-                                                      :color           (:light-primary palette)
-                                                      :backgroundColor "rgba(0,0,0,0)"
-                                                      :fontSize        (/ tffsz 1.4)
-                                                      :textAlign       "center"}}
-                                             (str (cl-format nil (tick-format-specifier axis-scale)
-                                                             (let [y ((o->i axis-scale) y1)]
-                                                               (if (> y 1) (Math.round y) y))) "%"))))))
-                   ;;;
-                   ;; bars
-                   ;;;
-                   (view {:key   3
-                          :style {:position "absolute"
-                                  :top      0
-                                  :bottom   0
-                                  :left     0
-                                  :right    0
-                                  :flex     1
-                                  :zIndex   0
-                                  }}
-                         (view {:key   2
-                                :style {:flex              1
-                                        :flexDirection     "row"
-                                        :borderBottomWidth 1
-                                        :borderTopWidth    1
-                                        :borderBottomColor (:light-primary palette)
-                                        :borderTopColor    (:light-primary palette)
-                                        }
-                                }
-                               (view {:key   1
-                                      :style {:flex           0.3
-                                              :justifyContent "center"}}
-                                     (text {:style {:color        (:text-icons palette)
-                                                    :fontSize     (/ tffsz 1)
-                                                    :textAlign    "right"
-                                                    :paddingRight 10}}
-                                           (:without-label scenar)))
-                               (view {:key   2
-                                      :style {:flex 0.2}}
-                                     (labelled-vertical-bar palette br (rum/react (:scale state))))
-                               (view {:key   3
-                                      :style {:flex 0.1}})
-                               (view {:key   4
-                                      :style {:flex 0.2}}
-                                     (labelled-vertical-bar palette er (rum/react (:scale state))))
-                               (view {:key   5
-                                      :style {:flex           0.3
-                                              :justifyContent "center"}}
-                                     (text {:style {:color     (:text-icons palette)
-                                                    :fontSize  (/ tffsz 1)
-                                                    :padding   10
-                                                    :textAlign "left"}}
-                                           (:with-label scenar)))))
-
-                   (view {:key   4
-                          :style {:position "absolute"
-                                  :top      0
-                                  :bottom   0
-                                  :left     0
-                                  :right    0
-                                  :flex     1
-                                  :zIndex   1
-                                  :opacity  (if zooming 1 0.3)
-                                  }}
-                         (view {:style {:flex           1
-                                        :flexDirection  "column"
-                                        :justifyContent "flex-start"
-                                        :alignItems     "center"}}
-                               (ionicon (clj->js {:name  "ios-arrow-up"
-                                                  :size  50
-                                                  :style {:backgroundColor "rgba(0,0,0,0)"
-                                                          :color           (:text-icons palette)}}))))))))))
+                 (view {:key   4
+                        :style {:position "absolute"
+                                :top      0
+                                :bottom   0
+                                :left     0
+                                :right    0
+                                :flex     1
+                                :zIndex   1
+                                :opacity  (if zooming 1 0.3)
+                                }}
+                       (view {:style {:flex           1
+                                      :flexDirection  "column"
+                                      :justifyContent "flex-start"
+                                      :alignItems     "center"}}
+                             (ionicon (clj->js {:name  "ios-arrow-up"
+                                                :size  50
+                                                :style {:backgroundColor "rgba(0,0,0,0)"
+                                                        :color           (:text-icons palette)}})))))))))

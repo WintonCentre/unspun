@@ -25,8 +25,7 @@
              :navigatorUID       "tab-navigation"
              :barBackgroundColor "black"
              :indicatorStyle     {:backgroundColor (:accent palette)
-                                  :height          (if ios "100%" 4)
-                                  }
+                                  :height          (if ios "100%" 4)}
              :position           (if ios "bottom" "top")
              :labelStyle         {:color "white"}
              :initialTab         "bars"
@@ -40,8 +39,7 @@
             (sliding-tab-navigation-item
               {:id    "bars"
                :key   "bars"
-               :title "Graph"
-               }
+               :title "Graph"}
               (bars/page))
             (sliding-tab-navigation-item
               {:id    "icons"

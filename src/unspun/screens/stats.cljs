@@ -74,19 +74,19 @@
 
 (defn show-sources [style sources palette]
   (when (and sources (pos? (count sources)))
-    (view {:style {:flexDirection "row"
+    (view {:style {:flexDirection  "row"
                    :justifyContent "space-between"
-                   :alignItems    "center"
-                   :padding       tffsz
-                   :borderRadius  tffsz
-                   :borderWidth   1
-                   :borderColor   (:color style)}}
+                   :alignItems     "center"
+                   :padding        tffsz
+                   :borderRadius   tffsz
+                   :borderWidth    1
+                   :borderColor    (:color style)}}
           (view {:style {:paddingRight tffsz
-                         :flex 0.8
+                         :flex         0.8
                          :left         (* 0.5 tffsz)}}
                 (let [small-link-style style]
-                  #_(txt {:key "first"
-                        :style style} "Source")
+                  #_(txt {:key   "first"
+                          :style style} "Source")
                   (map (fn [source] (when source
                                       (when-not (empty? (:prefix source))
                                         (txt {:key   2
@@ -112,7 +112,8 @@
         er (* br rr)
         erpc (to-pc (clamp [0 1] er))
         palette (get-palette (rum/react palette-index))
-        w (:width (rum/react dimensions))
+        {w :width h :height} (rum/react dimensions)
+        portrait (> h w)
         page-style {:flex            1
                     :backgroundColor (:primary palette)}
 
@@ -124,19 +125,20 @@
 
         text-style {:color    (:text-icons palette)
                     :fontSize tffsz}
-        small-text-style (merge text-style {:fontSize tffsz
+        small-text-style (merge text-style {:fontSize           tffsz
                                             ;:fontWeight "bold"
                                             :textDecorationLine "underline"})
         outcome-type (:outcome-type scenar)
         br-sources (parse-sources (:sources-baseline-risk scenar))
         rr-sources (parse-sources (:sources-relative-risk scenar))]
-    (view {:style {:flex 1}}
+    (view {:style {:flex          1
+                   :flexDirection (if portrait "column" "row")}}
 
 
           (view {:key   1
-                 :style {:flex            0.3
+                 :style {:flex            (if portrait 0.3 0.5)
                          :flexDirection   "column"
-                         :justifyContent  "center"
+                         :justifyContent  "space-around"
                          :alignItems      "stretch"
                          :backgroundColor (:dark-primary palette)
                          }}
@@ -150,9 +152,9 @@
                                             :justifyContent "flex-start"
                                             :alignItems     "center"
                                             :padding        0}}
-                                   #_(view {:style {:flex        0
-                                                  :marginLeft  tffsz}}
-                                         (story-icon palette (:icon scenar)))
+                                   #_(view {:style {:flex       0
+                                                    :marginLeft tffsz}}
+                                           (story-icon palette (:icon scenar)))
                                    (view {:style {:flex         1
                                                   :width        w ;(- w icon-offset 60)
                                                   :paddingLeft  20
@@ -173,7 +175,7 @@
 
 
           (view {:key   2
-                 :style {:flex 0.7}}
+                 :style {:flex (if portrait 0.7 0.5)}}
                 (container
                   {:key   "stats-container"
                    :style {:flex            1
@@ -198,7 +200,7 @@
                         (view {:flex 1}
                               (txt {:key   1
                                     :style (merge text-style {:fontWeight "bold"})}
-                                   (str "Background or baseline " outcome-type ": " (percentage br)  "\n")
+                                   (str "Background or baseline " outcome-type ": " (percentage br) "\n")
                                    )
                               (show-sources small-text-style br-sources palette))
                         )

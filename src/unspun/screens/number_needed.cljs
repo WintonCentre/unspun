@@ -368,7 +368,7 @@
                                        :left            0
                                        :right           0
                                        :zIndex          1}}
-                              (scroll-view {:style {:flex 0.6}
+                              (scroll-view {:style {:flex 1}
                                             :key   1
                                             ;:backgroundColor (:dark-primary palette)
                                             }
@@ -430,7 +430,7 @@
                                                             :flexDirection "column"
                                                             :opacity       1}}
 
-                                     (nested-n-square** scenar palette rr (if portrait w (* 2 w)) (if portrait h (+ h 168)) nn highlight)))
+                                     (nested-n-square** scenar palette rr (if portrait w (/ w 2)) (if portrait h (+ h 168)) nn highlight)))
 
                   (view {:key   2
                          :style {:position "absolute"
