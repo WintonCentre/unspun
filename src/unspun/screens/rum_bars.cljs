@@ -154,7 +154,7 @@
                                      :fontWeight weight
                                      }} content))
          ]
-     (println "w h " w h)
+
      (view {:style (merge page-style {:flex          1
                                       :justifyContent "flex-start"
                                       :flexDirection (if (portrait) "column" "row")})}

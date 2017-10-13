@@ -1,6 +1,7 @@
 (ns unspun.screens.stats
   (:require-macros [rum.core :refer [defc defcs]])
   (:require [rum.core :as rum]
+            [clojure.string :refer [capitalize]]
             [cljs-exponent.components :refer [element text view image touchable-highlight status-bar list-view scroll-view] :as rn]
             [themes.palettes :refer [get-palette]]
             [shared.ui :refer [native-base my-theme container content n-icon txt n-list n-list-item linking tffsz get-dimensions]]
@@ -209,8 +210,11 @@
                         (view {:flex 1}
                               (txt {:key   1
                                     :style (merge text-style {:fontWeight "bold"})}
-                                   (str (if (> rr 1) (str "Increased " outcome-type ": " (percentage (- rr 1)))
-                                                     (str "Decreased " outcome-type ": " (percentage (- 1 rr)))) "\n(Relative risk: " (sigfigs 2 rr) ")\n")
+                                   (str "Relative " outcome-type ": " (sigfigs 2 rr) "\n"
+                                        "(" (capitalize outcome-type)
+                                        (if (> rr 1) (str " increased by " (percentage (- rr 1)) ")")
+                                                     (str " decreased by " (percentage (- 1 rr)) ")"))
+                                        )
                                    )
                               (show-sources small-text-style rr-sources palette))
                         )

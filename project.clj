@@ -50,6 +50,7 @@
                                                          :parallel-build     false
                                                          :optimize-constants false
                                                          :optimizations      :advanced
+                                                         :language-in        :ecmascript5
                                                          :closure-defines    {"goog.DEBUG" false}}}]}}
              :test {:doo          {:build "test"}
                     :plugins      [[lein-doo "0.1.7"]]
