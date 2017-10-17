@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.9.0-alpha16"]
                  [org.clojure/clojurescript "1.9.521"]
                  [org.clojure/core.async "0.3.442"]
-                 [rum "0.10.8" :exclusions [cljsjs/react cljsjs/react-dom sablono]]
+                 [rum "0.10.80" :exclusions [cljsjs/react cljsjs/react-dom sablono]]
                  [cljs-exponent "0.1.7"]
                  [react-native-externs "0.0.2-SNAPSHOT"]
                  [org.clojure/tools.namespace "0.2.11"]

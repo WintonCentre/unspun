@@ -210,7 +210,7 @@
                         (view {:flex 1}
                               (txt {:key   1
                                     :style (merge text-style {:fontWeight "bold"})}
-                                   (str "Relative " outcome-type ": " (sigfigs 2 rr) "\n"
+                                   (str "Relative " outcome-type ": " (sigfigs 3 rr) "\n"
                                         "(" (capitalize outcome-type)
                                         (if (> rr 1) (str " increased by " (percentage (- rr 1)) ")")
                                                      (str " decreased by " (percentage (- 1 rr)) ")"))

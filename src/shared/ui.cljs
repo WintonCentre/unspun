@@ -126,7 +126,7 @@
 
 (defn text-field-font-size []
   (let [{:keys [width height scale]} (get-dimensions)]
-    (Math.sqrt (/ (* width height) 1300))))
+    (Math.sqrt (/ (* width height) 1000))))                 ;was 1300
 
 (def tffsz (text-field-font-size))
 
