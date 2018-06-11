@@ -155,9 +155,9 @@
                                      }} content))
          ]
 
-     (view {:style (merge page-style {:flex          1
+     (view {:style (merge page-style {:flex           1
                                       :justifyContent "flex-start"
-                                      :flexDirection (if (portrait) "column" "row")})}
+                                      :flexDirection  (if (portrait) "column" "row")})}
 
            (view {:key   1
                   :style {:flex            (if (> h w) 0.4 0.5)
@@ -254,6 +254,12 @@
                                               :flexDirection "row"
                                               :alignItems    "flex-start"
                                               }}
+                                     #_(println axis-scale
+                                              (tick-format-specifier axis-scale)
+                                              (str (cl-format nil (tick-format-specifier axis-scale)
+                                                              (let [y ((o->i axis-scale) y1)]
+                                                                (if (> y 1) (Math.round y) y))
+                                                              ) "%"))
                                      (text {:key   1
                                             :style {:flex            0.1
                                                     :color           (:light-primary palette)

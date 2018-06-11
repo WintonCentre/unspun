@@ -73,6 +73,7 @@
    :o->i                  (fn [scale] (linear (:out scale) (:in scale)))
    :ticks                 (fn [scale] (scale-ticks scale tick-count))
    :tick-format-specifier (fn [scale] (numeric-format-specifier scale))
+   :tick-count            tick-count
    })
 
 (defn i->o [scale] ((:i->o scale) scale))
