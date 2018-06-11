@@ -447,7 +447,7 @@
                                              :flexDirection  "row"
                                              :justifyContent "center"
                                              :alignItems     "center"}}
-                                    (text {:style {:fontSize        (* tffsz 10)
+                                    (text {:style {:fontSize        (* tffsz 8)
                                                    :color           (:light-primary palette)
                                                    :backgroundColor "rgba(0,0,0,0)"
                                                    :opacity         0.7

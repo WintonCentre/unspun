@@ -3,7 +3,7 @@
   (:require [rum.core :as rum]
             [cljs-exponent.components :refer [text view image touchable-highlight status-bar animated-view] :as rn]
             [themes.palettes :refer [get-palette palettes]]
-            [unspun.db :refer [version app-state palette-index brand-title app-banner to-pc clamp winton-csv scenario-url dimensions]]
+            [unspun.db :refer [version app-state palette-index brand-title app-banner to-pc clamp winton-csv press-alert-csv scenario-url dimensions]]
             [shared.ui :refer [tffsz]]
             ))
 
@@ -40,7 +40,7 @@
    :color      (:light-primary (get-palette @palette-index))})
 
 (defn winton-brand? [url]
-  (= url winton-csv))
+  (#{winton-csv press-alert-csv} url))
 
 
 (defcs logo-page < rum/reactive [state router]

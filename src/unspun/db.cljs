@@ -18,6 +18,7 @@
 
 (def app-src "https://github.com/wintoncentre/unspun")
 (def winton-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/risk-app-data.csv")
+(def press-alert-csv "https://wintoncentre.maths.cam.ac.uk/files/unspun-data/press-alert-data.csv")
 
 ;;;
 ;; APP-STATE
@@ -177,7 +178,7 @@
                       :screen        :home
                       :error         nil
                       :refreshing    false
-                      :scenario-url  winton-csv
+                      :scenario-url  press-alert-csv        ;winton-csv
                       :dimensions    (get-dimensions)
                       }))
 

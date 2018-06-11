@@ -36,7 +36,7 @@
           y1 (aget gesture-state "moveY")]
       ;(prn "y0 = " y0 " y1 = " y1 " factor = " (clamp [1 10] (inc (/ (- y0 y1) (- y0 700)))) " scale = " @(:scale state))
       (when-not @(:rescaler state) (reset! (:rescaler state) y0))
-      (let [rescale (clamp [1 10] (* @(:scale0 state) (inc (/ (- y0 y1) (- origin y0)))))]
+      (let [rescale (clamp [1 100] (* @(:scale0 state) (inc (/ (- y0 y1) (- origin y0)))))]
         (if (different rescale @(:scale state))
           (reset! (:scale state) rescale))))))
 

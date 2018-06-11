@@ -78,7 +78,7 @@
 (defn percentage [value]
   (str (two-sf (* 100 value)) "%"))
 
-(def inner-top-label (partial bar-value-label {:font-size   (/ tffsz 0.6)
+(def inner-top-label (partial bar-value-label {:font-size   (/ tffsz 0.9)
                                                :font-weight "400"
                                                :text-color  :text-icons
                                                :on-edge     :bottom

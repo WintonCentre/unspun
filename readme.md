@@ -27,11 +27,20 @@ If you don't want to use XDE (not IDE, it stands for Exponent Development Tools)
     exp signup
 ```
 
+#### The native
+
+
+
 #### Start the figwheel server
 ``` shell
     lein figwheel
 ```
-When the figwheel clojure REPL starts, type `(start figwheel)`. This will attempt to connect to the device or simulator under test.
+When the figwheel clojure REPL starts, type
+```clj
+(start figwheel)
+```
+
+This will attempt to connect to the device or simulator under test.
 
 #### Start Exponent server (Using `exp`)
 
